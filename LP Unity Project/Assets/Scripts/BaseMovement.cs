@@ -5,12 +5,13 @@ public class PlayerController : MonoBehaviour
 {
     [Header("Movement")]
     public float speed = 5f;
+    public float sprintSpeed = 9f;
     public float turnSpeed = 10f;
 
     [Header("Jump")]
     public float jumpForce = 10f;
     public Transform groundCheck;
-    public float groundCheckRadius = 0.2f;
+    public float groundCheckRadius = 0.3f;
     public LayerMask groundLayer;
 
     [Header("Camera/Look")]
@@ -28,12 +29,14 @@ public class PlayerController : MonoBehaviour
     private float horizontalInput;
     private float verticalInput;
     private bool jumpPressed;
+    private bool isSprinting;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 
         Cursor.lockState = CursorLockMode.Locked;
 
@@ -43,6 +46,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        CheckGround();
         ReadInput();
         HandleJump();
         UpdateCameraTarget();
@@ -50,7 +54,7 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        CheckGround();
+        
         MovePlayer();
         RotatePlayer();
     }
@@ -59,6 +63,8 @@ public class PlayerController : MonoBehaviour
     {
         horizontalInput = Input.GetAxis("Horizontal");
         verticalInput = Input.GetAxis("Vertical");
+
+        isSprinting = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.Joystick1Button2);
 
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
@@ -77,16 +83,14 @@ public class PlayerController : MonoBehaviour
         pitch = Mathf.Clamp(pitch, minPitch, maxPitch);
     }
 
-
     void MovePlayer()
     {
-        
-        Vector3 moveDir = new Vector3(horizontalInput, 0f, verticalInput);
-        Vector3 horizontalVelocity = moveDir.normalized * speed;
-        horizontalVelocity = transform.TransformDirection(horizontalVelocity);
+        float currentSpeed = isSprinting ? sprintSpeed : speed;
 
-       
-        Vector3 newVelocity = new Vector3(horizontalVelocity.x, rb.velocity.y, horizontalVelocity.z);
+        Vector3 moveDir = transform.forward * verticalInput + transform.right * horizontalInput;
+        moveDir = moveDir.normalized * currentSpeed;
+
+        Vector3 newVelocity = new Vector3(moveDir.x, rb.velocity.y, moveDir.z);
         rb.velocity = newVelocity;
     }
 
@@ -96,13 +100,11 @@ public class PlayerController : MonoBehaviour
         rb.MoveRotation(Quaternion.Slerp(rb.rotation, targetRot, turnSpeed * Time.fixedDeltaTime));
     }
 
-
     void HandleJump()
     {
-        jumpPressed = Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Joystick1Button0);
-        if (jumpPressed && isGrounded)
+        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Joystick1Button0)) && isGrounded)
         {
-            rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z);
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
     }
 
@@ -111,16 +113,13 @@ public class PlayerController : MonoBehaviour
         isGrounded = Physics.CheckSphere(groundCheck.position, groundCheckRadius, groundLayer);
     }
 
-   
     void UpdateCameraTarget()
     {
         if (cameraTarget == null) return;
 
-        
         Vector3 targetPos = transform.position + Vector3.up * cameraYOffset;
         cameraTarget.position = Vector3.Lerp(cameraTarget.position, targetPos, 10f * Time.deltaTime);
 
-        
         cameraTarget.rotation = Quaternion.Euler(pitch, yaw, 0f);
     }
 }
