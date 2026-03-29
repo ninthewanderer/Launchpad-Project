@@ -31,6 +31,8 @@ public class PlayerController : MonoBehaviour
     private bool jumpPressed;
     private bool isSprinting;
 
+    public bool IsGrounded => isGrounded;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();

@@ -454,7 +454,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 880295145}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.15589054, y: 0.2628012, z: -0.043070097, w: 0.9511986}
+  m_LocalRotation: {x: 0.15589054, y: 0.26280126, z: -0.043070108, w: 0.9511986}
   m_LocalPosition: {x: -0.014003824, y: 0.6299418, z: -2.5801516}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -563,7 +563,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8290a32288ca8844bbaab74bf7788bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentBoots: 0
+  horizontalBoostForce: 200
+  verticalBoostForce: 300
+  maxVerticalSpeed: 30
+  maxFuel: 3
+  fuelBurnRate: 1
+  fuelRegenRate: 1.5
+  dashCooldown: 0.5
+  holdThreshold: 0.15
+  dashLockoutTime: 0.15
+  currentBoots: 3
   movement: {fileID: 0}
 --- !u!1 &2142708109
 GameObject:
@@ -629,7 +638,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2142708109}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.15589051, y: 0.26280114, z: -0.04307007, w: 0.9511986}
+  m_LocalRotation: {x: 0.15589051, y: 0.26280123, z: -0.043070093, w: 0.9511986}
   m_LocalPosition: {x: 0, y: 2.661, z: -2.95}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0

@@ -12,65 +12,117 @@ public class BootMovement : MonoBehaviour
         RocketBoots
     }
 
-    public BootType currentBoots = BootType.None;
+    public float horizontalBoostForce = 20f;
+    public float verticalBoostForce = 30f;
+    public float maxVerticalSpeed = 12f;
 
+    public float maxFuel = 3f;
+    public float fuelBurnRate = 1f;
+    public float fuelRegenRate = 1.5f;
+
+    public float dashCooldown = 0.5f;
+    public float holdThreshold = 0.15f;
+    public float dashLockoutTime = 0.15f;
+
+    private float currentFuel;
+    private float dashTimer;
+    private float holdTimer;
+    private float airTime;
+
+    private bool usedHorizontalDash;
+    private bool usedVerticalBoost;
+
+    public BootType currentBoots = BootType.None;
     public PlayerController movement;
+
+    private Rigidbody rb;
 
     void Start()
     {
         movement = GetComponent<PlayerController>();
-        ApplyBoots();
+        rb = GetComponent<Rigidbody>();
+        currentFuel = maxFuel;
     }
 
-    public void SetBoots(BootType newBoots)
+    void Update()
     {
-        currentBoots = newBoots;
-        ApplyBoots();
-    }
+        HandleCooldowns();
+        HandleFuel();
 
-    void ApplyBoots()
-    {
-        ResetAbilities();
-
-        switch (currentBoots)
+        if (currentBoots == BootType.RocketBoots)
         {
-            case BootType.MagnetBoots:
-                ApplyMagnetBoots();
-                break;
-
-            case BootType.SteamBoots:
-                ApplySteamBoots();
-                break;
-
-            case BootType.RocketBoots:
-                ApplyRocketBoots();
-                break;
+            HandleRocketBoots();
         }
     }
 
-    void ResetAbilities()
+    void HandleRocketBoots()
     {
-        // Reset to default values
+        if (movement == null || rb == null) return;
+
+        if (movement.IsGrounded)
+        {
+            usedHorizontalDash = false;
+            usedVerticalBoost = false;
+            holdTimer = 0f;
+            airTime = 0f;
+            return;
+        }
+        else
+        {
+            airTime += Time.deltaTime;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            holdTimer = 0f;
+        }
+
+        if (Input.GetKey(KeyCode.Space))
+        {
+            holdTimer += Time.deltaTime;
+
+            if (holdTimer > holdThreshold && !usedVerticalBoost && currentFuel > 0f)
+            {
+                if (rb.velocity.y < maxVerticalSpeed)
+                {
+                    rb.AddForce(Vector3.up * verticalBoostForce, ForceMode.Acceleration);
+                    currentFuel -= fuelBurnRate * Time.deltaTime;
+                }
+
+                usedVerticalBoost = true;
+            }
+        }
+
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            if (airTime > dashLockoutTime &&
+                holdTimer <= holdThreshold &&
+                !usedHorizontalDash &&
+                dashTimer <= 0f)
+            {
+                usedHorizontalDash = true;
+                dashTimer = dashCooldown;
+
+                Vector3 boostDir = movement.transform.forward;
+                rb.AddForce(boostDir * horizontalBoostForce, ForceMode.VelocityChange);
+            }
+
+            holdTimer = 0f;
+        }
     }
 
-    void ApplyMagnetBoots()
+    void HandleFuel()
     {
-        //Walk on magnetic surfaces
-
-        //Rotate Camera to align with player orientation (Run 3 Style)
+        if (movement.IsGrounded)
+        {
+            currentFuel += fuelRegenRate * Time.deltaTime;
+            currentFuel = Mathf.Clamp(currentFuel, 0f, maxFuel);
+        }
     }
 
-    void ApplySteamBoots()
+    void HandleCooldowns()
     {
-        //Walk on water
-
-        //Spray water on boss to damage
-    }
-
-    void ApplyRocketBoots()
-    {
-        //Hold space in air for vertical boost
-
-        //Press space in air for horizontal boost
+        if (dashTimer > 0f)
+            dashTimer -= Time.deltaTime;
     }
 }
