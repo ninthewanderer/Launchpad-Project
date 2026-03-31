@@ -52,6 +52,19 @@ public class BootMovement : MonoBehaviour
         if (currentBoots == BootType.RocketBoots)
         {
             HandleRocketBoots();
+        
+        }
+        else if (currentBoots == BootType.MagnetBoots)
+        {
+            HandleMagnetBoots();
+        }
+        else if (currentBoots == BootType.SteamBoots)
+        {
+            HandleSteamBoots();
+        }
+        else
+        {
+            Debug.LogWarning("No boots equipped or unrecognized boot type.");
         }
     }
 
@@ -109,6 +122,16 @@ public class BootMovement : MonoBehaviour
 
             holdTimer = 0f;
         }
+    }
+
+    void HandleMagnetBoots()
+    {
+        // Placeholder for magnet boots logic
+    }
+
+    void HandleSteamBoots()
+    {
+        // Placeholder for steam boots logic
     }
 
     void HandleFuel()

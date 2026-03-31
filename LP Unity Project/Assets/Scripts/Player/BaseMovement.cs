@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
     public Transform groundCheck;
     public float groundCheckRadius = 0.3f;
     public LayerMask groundLayer;
+    public float steamBoost = 15f;
 
     [Header("Camera/Look")]
     public Transform cameraTarget;
@@ -30,6 +31,7 @@ public class PlayerController : MonoBehaviour
     private float verticalInput;
     private bool jumpPressed;
     private bool isSprinting;
+ 
 
     public bool IsGrounded => isGrounded;
 
@@ -84,7 +86,13 @@ public class PlayerController : MonoBehaviour
         pitch -= mouseY + stickY;
         pitch = Mathf.Clamp(pitch, minPitch, maxPitch);
     }
-
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Steam"))
+        {
+            rb.AddForce(Vector3.up * steamBoost, ForceMode.Impulse);
+        }
+    }
     void MovePlayer()
     {
         float currentSpeed = isSprinting ? sprintSpeed : speed;
