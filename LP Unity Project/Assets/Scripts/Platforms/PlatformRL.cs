@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class PlatformLR : MonoBehaviour
+public class PlatformRL : MonoBehaviour
 {
     public float MoveDistance = 5f;
     public float Speed = 2f;        
@@ -20,13 +20,13 @@ public class PlatformLR : MonoBehaviour
         while (true) 
         {
             
-            yield return StartCoroutine(MoveTo(originalPosition + Vector3.left * MoveDistance));
+            yield return StartCoroutine(MoveTo(originalPosition + Vector3.right * MoveDistance));
 
            
             yield return StartCoroutine(MoveTo(originalPosition));
 
             
-            yield return StartCoroutine(MoveTo(originalPosition + Vector3.right * MoveDistance));
+            yield return StartCoroutine(MoveTo(originalPosition + Vector3.left * MoveDistance));
 
             
             yield return StartCoroutine(MoveTo(originalPosition));

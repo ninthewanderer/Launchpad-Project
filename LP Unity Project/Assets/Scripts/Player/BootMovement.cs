@@ -16,21 +16,21 @@ public class BootMovement : MonoBehaviour
     public float verticalBoostForce = 30f;
     public float maxVerticalSpeed = 12f;
 
-    public float maxFuel = 3f;
-    public float fuelBurnRate = 1f;
-    public float fuelRegenRate = 1.5f;
-
     public float dashCooldown = 0.5f;
     public float holdThreshold = 0.15f;
     public float dashLockoutTime = 0.15f;
+    public LayerMask MagneticLayer;
+    public Transform groundCheck;
+    public float groundCheckRadius = 0.3f;
 
-    private float currentFuel;
     private float dashTimer;
     private float holdTimer;
     private float airTime;
 
     private bool usedHorizontalDash;
     private bool usedVerticalBoost;
+    private bool isMagnetActive;
+ 
 
     public BootType currentBoots = BootType.None;
     public PlayerController movement;
@@ -41,13 +41,11 @@ public class BootMovement : MonoBehaviour
     {
         movement = GetComponent<PlayerController>();
         rb = GetComponent<Rigidbody>();
-        currentFuel = maxFuel;
     }
 
     void Update()
     {
         HandleCooldowns();
-        HandleFuel();
 
         if (currentBoots == BootType.RocketBoots)
         {
@@ -94,12 +92,11 @@ public class BootMovement : MonoBehaviour
         {
             holdTimer += Time.deltaTime;
 
-            if (holdTimer > holdThreshold && !usedVerticalBoost && currentFuel > 0f)
+            if (holdTimer > holdThreshold && !usedVerticalBoost)
             {
                 if (rb.velocity.y < maxVerticalSpeed)
                 {
                     rb.AddForce(Vector3.up * verticalBoostForce, ForceMode.Acceleration);
-                    currentFuel -= fuelBurnRate * Time.deltaTime;
                 }
 
                 usedVerticalBoost = true;
@@ -126,7 +123,42 @@ public class BootMovement : MonoBehaviour
 
     void HandleMagnetBoots()
     {
-        // Placeholder for magnet boots logic
+        //Still in progress
+        RaycastHit hit;
+        float sphereCastRadius = 0.5f;
+        float sphereCastDistance = 2f;
+        rb.freezeRotation = true;
+        rb.useGravity = true;
+
+        bool magnet = Physics.SphereCast(transform.position, sphereCastRadius, -transform.up, out hit, sphereCastDistance, MagneticLayer);
+
+        if (magnet)
+        {
+            Vector3 surfaceNormal = hit.normal;
+
+            float gravityForce = 9.81f;
+            rb.AddForce(-surfaceNormal * gravityForce, ForceMode.Acceleration);
+
+            float rotationSpeed = 10f;
+            Quaternion targetRotation = Quaternion.FromToRotation(transform.up, surfaceNormal) * transform.rotation;
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
+
+            float moveInput = Input.GetAxis("Horizontal");
+            float moveSpeed = 5f;
+
+            Vector3 moveDirection = transform.right * moveInput;
+            rb.MovePosition(rb.position + moveDirection * moveSpeed * Time.fixedDeltaTime);
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                rb.AddForce(surfaceNormal * verticalBoostForce, ForceMode.Acceleration);
+            }
+        }
+        else
+        {
+            Quaternion uprightRotation = Quaternion.FromToRotation(transform.up, Vector3.up) * transform.rotation;
+            transform.rotation = Quaternion.Slerp(transform.rotation, uprightRotation, Time.deltaTime * 5f);
+        }
     }
 
     void HandleSteamBoots()
@@ -134,18 +166,14 @@ public class BootMovement : MonoBehaviour
         // Placeholder for steam boots logic
     }
 
-    void HandleFuel()
-    {
-        if (movement.IsGrounded)
-        {
-            currentFuel += fuelRegenRate * Time.deltaTime;
-            currentFuel = Mathf.Clamp(currentFuel, 0f, maxFuel);
-        }
-    }
 
     void HandleCooldowns()
     {
         if (dashTimer > 0f)
             dashTimer -= Time.deltaTime;
+    }
+    void CheckMagnet()
+    {
+        isMagnetActive = Physics.CheckSphere(groundCheck.position, groundCheckRadius, MagneticLayer);
     }
 }

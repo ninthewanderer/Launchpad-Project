@@ -440,6 +440,12 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 111653816}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &128701330 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3448807917780501378, guid: 2a39719f71044a646b6113cb50735fcf,
+    type: 3}
+  m_PrefabInstance: {fileID: 738191309055914950}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &200495595
 GameObject:
   m_ObjectHideFlags: 0
@@ -1385,6 +1391,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: FillInPlayer
+      objectReference: {fileID: 0}
+    - target: {fileID: 6479524656199787295, guid: 2a39719f71044a646b6113cb50735fcf,
+        type: 3}
+      propertyPath: groundCheck
+      value: 
+      objectReference: {fileID: 128701330}
+    - target: {fileID: 6479524656199787295, guid: 2a39719f71044a646b6113cb50735fcf,
+        type: 3}
+      propertyPath: currentBoots
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6479524656199787295, guid: 2a39719f71044a646b6113cb50735fcf,
+        type: 3}
+      propertyPath: MagneticLayer.m_Bits
+      value: 64
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
