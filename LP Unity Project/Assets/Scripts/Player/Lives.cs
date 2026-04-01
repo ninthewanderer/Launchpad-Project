@@ -39,7 +39,9 @@ public class Lives : MonoBehaviour
         }
         else
         {
+            respawn();
             StartCoroutine(DamageCooldown());
+            
         }
     }
 
@@ -48,7 +50,11 @@ public class Lives : MonoBehaviour
         yield return new WaitForSeconds(damageCooldown);
         canTakeDamage = true;
     }
-
+    void respawn()
+    {
+        // Add respawn logic
+        Debug.Log("Player respawned!");
+    }
     void GameOver()
     {
         Debug.Log("Game Over!");
