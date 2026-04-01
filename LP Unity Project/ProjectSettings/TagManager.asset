@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Ground
   - Steam
+  - Obstacle
   layers:
   - Default
   - TransparentFX
