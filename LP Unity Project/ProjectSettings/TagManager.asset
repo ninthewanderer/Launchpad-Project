@@ -7,6 +7,7 @@ TagManager:
   - Ground
   - Steam
   - Obstacle
+  - Checkpoint
   layers:
   - Default
   - TransparentFX

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Lives : MonoBehaviour
 {
@@ -9,14 +10,22 @@ public class Lives : MonoBehaviour
 
     private bool canTakeDamage = true;
 
+    public Image[] hearts;
+
+    public Sprite fullHeart;
+    public Sprite emptyHeart;
+    private PlayerCheckpoint checkpoint;
+    
+
     void Start()
     {
         livesCount = 3;
+        checkpoint = GetComponent<PlayerCheckpoint>();
+        UpdateHearts();
     }
 
     private void OnTriggerEnter(Collider collision)
     {
-        
         if (collision.gameObject.CompareTag("Obstacle"))
         {
             LoseLife();
@@ -25,7 +34,6 @@ public class Lives : MonoBehaviour
 
     void LoseLife()
     {
-        
         if (!canTakeDamage) return;
 
         canTakeDamage = false;
@@ -33,15 +41,27 @@ public class Lives : MonoBehaviour
 
         Debug.Log("Lives remaining: " + livesCount);
 
+        UpdateHearts();
+
         if (livesCount <= 0)
         {
             GameOver();
         }
         else
         {
-            respawn();
+            respawnPlayer();
             StartCoroutine(DamageCooldown());
-            
+        }
+    }
+
+    void UpdateHearts()
+    {
+        for (int i = 0; i < hearts.Length; i++)
+        {
+            if (i < livesCount)
+                hearts[i].sprite = fullHeart;
+            else
+                hearts[i].sprite = emptyHeart;
         }
     }
 
@@ -50,16 +70,15 @@ public class Lives : MonoBehaviour
         yield return new WaitForSeconds(damageCooldown);
         canTakeDamage = true;
     }
-    void respawn()
+
+    void respawnPlayer()
     {
-        // Add respawn logic
-        Debug.Log("Player respawned!");
+        checkpoint.Respawn();
     }
+
     void GameOver()
     {
         Debug.Log("Game Over!");
-
-        // UnityEngine.SceneManagement.SceneManager.LoadScene("GameOverScene");
-        //Add game over logic here
+        //game over screen
     }
 }

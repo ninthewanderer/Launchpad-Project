@@ -8,6 +8,7 @@ public class PlatformFB : MonoBehaviour
 
     private Vector3 originalPosition;
     private bool hasStarted = false;
+    private Coroutine moveCoroutine;
 
     void Start()
     {
@@ -27,6 +28,9 @@ public class PlatformFB : MonoBehaviour
             );
             yield return null;
         }
+
+        
+        hasStarted = false;
     }
 
     void OnCollisionEnter(Collision collision)
@@ -35,11 +39,10 @@ public class PlatformFB : MonoBehaviour
         {
             collision.transform.SetParent(transform);
 
-       
             if (!hasStarted)
             {
                 hasStarted = true;
-                StartCoroutine(MovePlatform());
+                moveCoroutine = StartCoroutine(MovePlatform());
             }
         }
     }
@@ -50,5 +53,20 @@ public class PlatformFB : MonoBehaviour
         {
             collision.transform.SetParent(null);
         }
+    }
+
+    
+    public void ResetMovement()
+    {
+        
+        if (moveCoroutine != null)
+        {
+            StopCoroutine(moveCoroutine);
+            moveCoroutine = null;
+        }
+
+       
+        hasStarted = false;
+        transform.position = originalPosition;
     }
 }
