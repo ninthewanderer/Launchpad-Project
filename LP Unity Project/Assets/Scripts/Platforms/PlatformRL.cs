@@ -20,13 +20,13 @@ public class PlatformRL : MonoBehaviour
         while (true) 
         {
             
-            yield return StartCoroutine(MoveTo(originalPosition + Vector3.right * MoveDistance));
+            yield return StartCoroutine(MoveTo(originalPosition + Vector3.up * MoveDistance));
 
            
             yield return StartCoroutine(MoveTo(originalPosition));
 
             
-            yield return StartCoroutine(MoveTo(originalPosition + Vector3.left * MoveDistance));
+            yield return StartCoroutine(MoveTo(originalPosition + Vector3.down * MoveDistance));
 
             
             yield return StartCoroutine(MoveTo(originalPosition));
