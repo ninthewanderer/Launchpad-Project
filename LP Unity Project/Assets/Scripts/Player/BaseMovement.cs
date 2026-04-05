@@ -48,13 +48,8 @@ public class PlayerController : MonoBehaviour
         pitch = 0f;
     }
 
-    void Update()
-    {
-        
-    }
-
     // Moved player movement here to reduce jittering. - Chandler
-    void FixedUpdate()
+    void Update()
     {
         CheckGround();
         ReadInput();
@@ -62,6 +57,12 @@ public class PlayerController : MonoBehaviour
         UpdateCameraTarget();
         MovePlayer();
         RotatePlayer();
+    }
+
+    
+    void FixedUpdate()
+    {
+        
     }
 
     void ReadInput()
