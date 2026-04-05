@@ -55,14 +55,13 @@ public class PlayerController : MonoBehaviour
         ReadInput();
         HandleJump();
         UpdateCameraTarget();
-        MovePlayer();
-        RotatePlayer();
     }
 
     
     void FixedUpdate()
     {
-        
+        MovePlayer();
+        RotatePlayer();
     }
 
     void ReadInput()
