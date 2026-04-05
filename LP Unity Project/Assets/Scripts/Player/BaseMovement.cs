@@ -50,15 +50,16 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        
+    }
+
+    // Moved player movement here to reduce jittering. - Chandler
+    void FixedUpdate()
+    {
         CheckGround();
         ReadInput();
         HandleJump();
         UpdateCameraTarget();
-    }
-
-    void FixedUpdate()
-    {
-        
         MovePlayer();
         RotatePlayer();
     }
