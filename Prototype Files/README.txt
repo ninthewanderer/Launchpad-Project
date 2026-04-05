@@ -34,3 +34,5 @@ This level grants the player access to Rocket Boots, which is a vertical boost a
 
 Additionally, there are chimneys in the environment that when jumped on will propel the player upwards without consuming their movement ability, allowing them to reach greater heights.
 
+Interact with the floating hearts at certain checkpoints to restore 1 life.
+
