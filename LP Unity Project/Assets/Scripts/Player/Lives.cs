@@ -54,6 +54,22 @@ public class Lives : MonoBehaviour
         }
     }
 
+    // Added in case we want to implement healing power-ups. - Chandler
+    public bool AddLife()
+    {
+        // Gives the player another life as long as they have less than 3 lives.
+        if (livesCount < 3)
+        {
+            livesCount++;
+            Debug.Log("Lives remaining: " + livesCount);
+            UpdateHearts();
+            return true;
+        }
+        
+        Debug.Log("Lives are currently at full.");
+        return false;
+    }
+
     void UpdateHearts()
     {
         for (int i = 0; i < hearts.Length; i++)
