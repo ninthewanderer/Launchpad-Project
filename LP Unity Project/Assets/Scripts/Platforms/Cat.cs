@@ -10,7 +10,7 @@ public class Cat : MonoBehaviour
         {
         
             Debug.Log("You Won!");
-            //Link to win screen
+            UnityEngine.SceneManagement.SceneManager.LoadScene("WinScene");
         }
     }
 }

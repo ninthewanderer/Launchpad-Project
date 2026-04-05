@@ -79,6 +79,6 @@ public class Lives : MonoBehaviour
     void GameOver()
     {
         Debug.Log("Game Over!");
-        //game over screen
+        UnityEngine.SceneManagement.SceneManager.LoadScene("LoseScene");
     }
 }

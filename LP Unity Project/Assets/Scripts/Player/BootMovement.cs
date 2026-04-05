@@ -66,60 +66,62 @@ public class BootMovement : MonoBehaviour
         }
     }
 
-    void HandleRocketBoots()
+void HandleRocketBoots()
+{
+    if (movement == null || rb == null) return;
+
+    if (movement.IsGrounded)
     {
-        if (movement == null || rb == null) return;
+        usedHorizontalDash = false;
+        usedVerticalBoost = false;
+        holdTimer = 0f;
+        airTime = 0f;
+        return;
+    }
+    else
+    {
+        airTime += Time.deltaTime;
+    }
 
-        if (movement.IsGrounded)
-        {
-            usedHorizontalDash = false;
-            usedVerticalBoost = false;
-            holdTimer = 0f;
-            airTime = 0f;
-            return;
-        }
-        else
-        {
-            airTime += Time.deltaTime;
-        }
 
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            holdTimer = 0f;
-        }
+    if (Input.GetKeyDown(KeyCode.Space))
+    {
+        holdTimer = 0f;
+    }
 
-        if (Input.GetKey(KeyCode.Space))
-        {
-            holdTimer += Time.deltaTime;
+    if (Input.GetKey(KeyCode.Space))
+    {
+        holdTimer += Time.deltaTime;
 
-            if (holdTimer > holdThreshold && !usedVerticalBoost)
+        if (holdTimer > holdThreshold && !usedVerticalBoost)
+        {
+            if (rb.velocity.y < maxVerticalSpeed)
             {
-                if (rb.velocity.y < maxVerticalSpeed)
-                {
-                    rb.AddForce(Vector3.up * verticalBoostForce, ForceMode.Acceleration);
-                }
-
-                usedVerticalBoost = true;
-            }
-        }
-
-        if (Input.GetKeyUp(KeyCode.Space))
-        {
-            if (airTime > dashLockoutTime &&
-                holdTimer <= holdThreshold &&
-                !usedHorizontalDash &&
-                dashTimer <= 0f)
-            {
-                usedHorizontalDash = true;
-                dashTimer = dashCooldown;
-
-                Vector3 boostDir = movement.transform.forward;
-                rb.AddForce(boostDir * horizontalBoostForce, ForceMode.VelocityChange);
+                rb.AddForce(Vector3.up * verticalBoostForce, ForceMode.Acceleration);
             }
 
-            holdTimer = 0f;
+            usedVerticalBoost = true;
         }
     }
+
+    if (Input.GetKeyUp(KeyCode.Space))
+    {
+        holdTimer = 0f;
+    }
+
+
+    if (Input.GetKeyDown(KeyCode.LeftShift) &&
+        airTime > dashLockoutTime &&
+        !usedHorizontalDash &&
+        dashTimer <= 0f)
+    {
+        usedHorizontalDash = true;
+        dashTimer = dashCooldown;
+
+        Vector3 boostDir = movement.transform.forward;
+        rb.AddForce(boostDir * horizontalBoostForce, ForceMode.VelocityChange);
+    }
+}
 
     void HandleMagnetBoots()
     {
