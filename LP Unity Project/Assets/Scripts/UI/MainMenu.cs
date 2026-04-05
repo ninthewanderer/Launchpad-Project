@@ -6,6 +6,12 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
+    void Awake()
+    {
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+    }
+    
     public void StartGame()
     {
         SceneManager.LoadScene("LvlTwoBlockout");
