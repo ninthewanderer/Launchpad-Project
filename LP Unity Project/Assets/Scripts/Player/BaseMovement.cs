@@ -94,16 +94,25 @@ public class PlayerController : MonoBehaviour
             rb.AddForce(Vector3.up * steamBoost, ForceMode.Impulse);
         }
     }
-    void MovePlayer()
+void MovePlayer()
+{
+    float currentSpeed = isSprinting ? sprintSpeed : speed;
+
+    Vector3 moveDir = transform.forward * verticalInput + transform.right * horizontalInput;
+    moveDir = moveDir.normalized;
+
+
+    if (moveDir != Vector3.zero && Physics.Raycast(transform.position, moveDir, out RaycastHit hit, 0.6f))
     {
-        float currentSpeed = isSprinting ? sprintSpeed : speed;
 
-        Vector3 moveDir = transform.forward * verticalInput + transform.right * horizontalInput;
-        moveDir = moveDir.normalized * currentSpeed;
-
-        Vector3 newVelocity = new Vector3(moveDir.x, rb.velocity.y, moveDir.z);
-        rb.velocity = newVelocity;
+        moveDir = Vector3.ProjectOnPlane(moveDir, hit.normal);
     }
+
+    Vector3 moveVelocity = moveDir * currentSpeed;
+
+
+    rb.velocity = new Vector3(moveVelocity.x, rb.velocity.y, moveVelocity.z);
+}
 
     void RotatePlayer()
     {
