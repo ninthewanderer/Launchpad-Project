@@ -38,9 +38,6 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rb.interpolation = RigidbodyInterpolation.Interpolate;
-        rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
-        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 
         Cursor.lockState = CursorLockMode.Locked;
 
@@ -54,7 +51,6 @@ public class PlayerController : MonoBehaviour
         CheckGround();
         ReadInput();
         HandleJump();
-        UpdateCameraTarget();
     }
 
     
@@ -62,6 +58,7 @@ public class PlayerController : MonoBehaviour
     {
         MovePlayer();
         RotatePlayer();
+        // UpdateCameraTarget();
     }
 
     void ReadInput()
@@ -117,7 +114,9 @@ void MovePlayer()
     void RotatePlayer()
     {
         Quaternion targetRot = Quaternion.Euler(0f, yaw, 0f);
-        rb.MoveRotation(Quaternion.Slerp(rb.rotation, targetRot, turnSpeed * Time.fixedDeltaTime));
+        Debug.Log(yaw);
+        rb.transform.rotation = targetRot;
+        // rb.transform.rotation = (Quaternion.RotateTowards(rb.rotation, targetRot, turnSpeed * Time.fixedDeltaTime));
     }
 
     void HandleJump()
