@@ -61,7 +61,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: c1d44f98c55a26e43a63e881ea11804d,
         type: 3}
       propertyPath: m_Name
-      value: W_sqC_mid
+      value: P_W_sqC_mid
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -97,5 +97,5 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 2.0061111, y: 3, z: 2.009314}
+  m_Size: {x: 2.25, y: 3, z: 2.25}
   m_Center: {x: 0.9969444, y: 1.5000005, z: -0.99534297}
