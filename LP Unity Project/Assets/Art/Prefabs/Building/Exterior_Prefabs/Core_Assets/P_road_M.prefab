@@ -11,17 +11,17 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: c113ddbfe758f194f81aa0c94a430beb,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.1999998
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c113ddbfe758f194f81aa0c94a430beb,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -16.4
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c113ddbfe758f194f81aa0c94a430beb,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 4.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c113ddbfe758f194f81aa0c94a430beb,
         type: 3}
@@ -61,7 +61,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: c113ddbfe758f194f81aa0c94a430beb,
         type: 3}
       propertyPath: m_Name
-      value: road_M
+      value: P_road_M
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
