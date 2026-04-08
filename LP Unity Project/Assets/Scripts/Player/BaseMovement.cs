@@ -58,7 +58,7 @@ public class PlayerController : MonoBehaviour
     {
         MovePlayer();
         RotatePlayer();
-        // UpdateCameraTarget();
+        UpdateCameraTarget();
     }
 
     void ReadInput()
@@ -91,30 +91,27 @@ public class PlayerController : MonoBehaviour
             rb.AddForce(Vector3.up * steamBoost, ForceMode.Impulse);
         }
     }
-void MovePlayer()
-{
-    float currentSpeed = isSprinting ? sprintSpeed : speed;
-
-    Vector3 moveDir = transform.forward * verticalInput + transform.right * horizontalInput;
-    moveDir = moveDir.normalized;
-
-
-    if (moveDir != Vector3.zero && Physics.Raycast(transform.position, moveDir, out RaycastHit hit, 0.6f))
+    void MovePlayer()
     {
+        float currentSpeed = isSprinting ? sprintSpeed : speed;
 
-        moveDir = Vector3.ProjectOnPlane(moveDir, hit.normal);
+        Vector3 moveDir = transform.forward * verticalInput + transform.right * horizontalInput;
+        moveDir = moveDir.normalized;
+
+        Vector3 targetVelocity = moveDir * currentSpeed;
+
+
+        Vector3 velocityChange = targetVelocity - new Vector3(rb.velocity.x, 0, rb.velocity.z);
+
+        velocityChange = Vector3.ClampMagnitude(velocityChange, currentSpeed);
+
+
+        rb.AddForce(velocityChange, ForceMode.VelocityChange);
     }
-
-    Vector3 moveVelocity = moveDir * currentSpeed;
-
-
-    rb.velocity = new Vector3(moveVelocity.x, rb.velocity.y, moveVelocity.z);
-}
 
     void RotatePlayer()
     {
         Quaternion targetRot = Quaternion.Euler(0f, yaw, 0f);
-        Debug.Log(yaw);
         rb.transform.rotation = targetRot;
         // rb.transform.rotation = (Quaternion.RotateTowards(rb.rotation, targetRot, turnSpeed * Time.fixedDeltaTime));
     }
@@ -134,11 +131,14 @@ void MovePlayer()
 
     void UpdateCameraTarget()
     {
-        if (cameraTarget == null) return;
+        if (cameraTarget == null)
+        {
+            Debug.LogError("cameraTarget is NULL!");
+            return;
+        }
 
-        Vector3 targetPos = transform.position + Vector3.up * cameraYOffset;
-        cameraTarget.position = Vector3.Lerp(cameraTarget.position, targetPos, 10f * Time.deltaTime);
 
+        cameraTarget.position = transform.position + Vector3.up * cameraYOffset;
         cameraTarget.rotation = Quaternion.Euler(pitch, yaw, 0f);
     }
 }
