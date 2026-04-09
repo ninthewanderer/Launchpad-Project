@@ -8,6 +8,9 @@ TagManager:
   - Steam
   - Obstacle
   - Checkpoint
+  - Path 1
+  - Path 2
+  - Path 3
   layers:
   - Default
   - TransparentFX
@@ -17,7 +20,7 @@ TagManager:
   - UI
   - Magnetic
   - Player
-  - 
+  - Cat_Traces
   - 
   - 
   - 
