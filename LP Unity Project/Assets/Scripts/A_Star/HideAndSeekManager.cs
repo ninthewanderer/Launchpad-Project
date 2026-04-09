@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class HideAndSeekManager : MonoBehaviour
 {
@@ -8,35 +10,54 @@ public class HideAndSeekManager : MonoBehaviour
     public GameObject pathTwo;
     public GameObject pathThree;
 
-    public GameObject[] pathChildren;
+    private GameObject[] pathChildren;
+    private String pathName;
     
-    // Start is called before the first frame update
     void Start()
     {
+        // Picks a number between 0 and 2 which corresponds to the existing paths.
         int chosenPath = Random.Range(0, 3);
         switch (chosenPath)
         {
+            // Each chosen path will hide the other paths.
             case 0:
                 FindPath(pathOne);
+                pathName = "Path 1";
+                pathTwo.SetActive(false);
+                pathThree.SetActive(false);
                 break;
             case 1:
                 FindPath(pathTwo);
+                pathName = "Path 2";
+                pathOne.SetActive(false);
+                pathThree.SetActive(false);
                 break;
             case 2:
                 FindPath(pathThree);
+                pathName = "Path 3";
+                pathOne.SetActive(false);
+                pathTwo.SetActive(false);
                 break;
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    void FindPath(GameObject path)
+    // May not be necessary... finds all the children path objects in the path group.
+    private void FindPath(GameObject path)
     {
         pathChildren = new GameObject[path.transform.childCount];
-        foreach (Transform child in path.transform)
+        for (int i = 0; i < pathChildren.Length; i++)
+        {
+            pathChildren[i] = path.transform.GetChild(i).gameObject;
+        }
+    }
+    
+    public GameObject[] GivePath()
+    {
+        return pathChildren;
+    }
+
+    public String GivePathName()
+    {
+        return pathName;
     }
 }
