@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,10 +12,18 @@ public class HiddenCatManager : MonoBehaviour
     void Start()
     {
         // Ensures only the chosen cat's script is active in the scene at any given time.
-        hidingSpot = hnsManager.GetHidingSpot();
-        if (!gameObject.name.Equals(hidingSpot.name))
+        try
         {
-            enabled = false;
+            hidingSpot = hnsManager.GetHidingSpot();
+            if (!gameObject.name.Equals(hidingSpot.name))
+            {
+                enabled = false;
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
         }
     }
 
