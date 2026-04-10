@@ -44,10 +44,6 @@ public class DetectionBoots : MonoBehaviour
             SetCharge(-chargeLost);
             CheckForTraces();
         }
-        else if (onCooldown && (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Joystick1Button3)))
-        {
-            Debug.Log("Ability is on cooldown. Please wait " + abilityCooldown + " seconds.");
-        }
     }
 
     // Checks for traces of the cat near the player.
