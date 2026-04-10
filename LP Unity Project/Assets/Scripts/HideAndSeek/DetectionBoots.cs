@@ -2,23 +2,35 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class DetectionBoots : MonoBehaviour
 {
+    [Header("------- Hide & Seek -------")]
     public HideAndSeekManager hnsManager;
-    public LayerMask catTraces;
+    public LayerMask traceLayer;
+    private String pathName;
+    [Space(10)]
+    
+    [Header("------- Detection Boots -------")]
     public float detectionRadius;
     public float disappearTime;
     public float abilityCooldown;
-
-    private String pathName;
     private bool onCooldown = false;
-
+    public DetectionBootsUI chargeBar;
+    public float maxCharge;
+    private float currentCharge;
+    public float chargeLost;
+    
     void Start()
     {
-        // Obtains the name of the path picked by the Hide & Seek Manager.
-        pathName = hnsManager.GivePathName();
-        StartCoroutine(CooldownCheck());
+        // Starts the player off with full charge.
+        chargeBar.SetMaxCharge(maxCharge);
+        chargeBar.SetCurrentCharge(maxCharge);
+        currentCharge = maxCharge;
+        
+        pathName = hnsManager.GivePathName(); // Obtains the name of the path picked by the H&S Manager.
+        StartCoroutine(CooldownCheck()); // Starts constant boot cooldown management.
     }
 
     void Update()
@@ -28,6 +40,7 @@ public class DetectionBoots : MonoBehaviour
         if (!onCooldown && (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Joystick1Button3)))
         {
             onCooldown = true;
+            SetCharge(-chargeLost);
             CheckForTraces();
         }
         else if (onCooldown && (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Joystick1Button3)))
@@ -39,7 +52,7 @@ public class DetectionBoots : MonoBehaviour
     // Checks for traces of the cat near the player.
     private void CheckForTraces()
     {
-        Collider[] traces = Physics.OverlapSphere(transform.position, detectionRadius, catTraces,
+        Collider[] traces = Physics.OverlapSphere(transform.position, detectionRadius, traceLayer,
             QueryTriggerInteraction.Collide);
 
         if (traces.Length != 0)
@@ -78,5 +91,20 @@ public class DetectionBoots : MonoBehaviour
             }
             yield return null;
         }
+    }
+
+    // Manages the charge bar on the top right.
+    private void SetCharge(float newCharge)
+    {
+        // Adds the newCharge value onto currentCharge, ensuring it never drops below 0 or goes above maxCharge.
+        currentCharge += newCharge;
+        currentCharge = Mathf.Clamp(currentCharge, 0, maxCharge);
+
+        // If the player runs out of charge, they lose.
+        if (currentCharge == 0)
+        {
+            SceneManager.LoadScene("LoseScene");
+        }
+        chargeBar.SetCurrentCharge(currentCharge);
     }
 }

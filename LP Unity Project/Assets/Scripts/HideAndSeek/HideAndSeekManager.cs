@@ -6,58 +6,100 @@ using Random = UnityEngine.Random;
 
 public class HideAndSeekManager : MonoBehaviour
 {
+    // Needs to be assigned in the Inspector.
     public GameObject pathOne;
     public GameObject pathTwo;
     public GameObject pathThree;
+    public GameObject pathFour;
 
-    private GameObject[] pathChildren;
+    public GameObject[] hidingSpots;
+    
+    // Internal variable which stores the chosen path.
     private String pathName;
     
     void Start()
     {
-        // Picks a number between 0 and 2 which corresponds to the existing paths.
-        int chosenPath = Random.Range(0, 3);
+        // Picks a number between 0 and 3 which corresponds to the existing paths.
+        int chosenPath = Random.Range(0, 4);
         switch (chosenPath)
         {
-            // Each chosen path will hide the other paths.
+            // Each chosen path will hide the other paths & hiding spots.
             case 0:
-                FindPath(pathOne);
                 pathName = "Path 1";
                 pathTwo.SetActive(false);
                 pathThree.SetActive(false);
+                pathFour.SetActive(false);
+
+                for (int i = 0; i < hidingSpots.Length; i++)
+                {
+                    if (i != chosenPath)
+                    {
+                        hidingSpots[i].SetActive(false);
+                    }
+                }
                 break;
+            
             case 1:
-                FindPath(pathTwo);
                 pathName = "Path 2";
                 pathOne.SetActive(false);
                 pathThree.SetActive(false);
+                pathFour.SetActive(false);
+                
+                for (int i = 0; i < hidingSpots.Length; i++)
+                {
+                    if (i != chosenPath)
+                    {
+                        hidingSpots[i].SetActive(false);
+                    }
+                }
                 break;
+            
             case 2:
-                FindPath(pathThree);
                 pathName = "Path 3";
                 pathOne.SetActive(false);
                 pathTwo.SetActive(false);
+                pathFour.SetActive(false);
+                
+                for (int i = 0; i < hidingSpots.Length; i++)
+                {
+                    if (i != chosenPath)
+                    {
+                        hidingSpots[i].SetActive(false);
+                    }
+                }
+                break;
+            
+            case 3:
+                pathName = "Path 4";
+                pathOne.SetActive(false);
+                pathTwo.SetActive(false);
+                pathThree.SetActive(false);
+                
+                for (int i = 0; i < hidingSpots.Length; i++)
+                {
+                    if (i != chosenPath)
+                    {
+                        hidingSpots[i].SetActive(false);
+                    }
+                }
                 break;
         }
     }
 
-    // May not be necessary... finds all the children path objects in the path group.
-    private void FindPath(GameObject path)
-    {
-        pathChildren = new GameObject[path.transform.childCount];
-        for (int i = 0; i < pathChildren.Length; i++)
-        {
-            pathChildren[i] = path.transform.GetChild(i).gameObject;
-        }
-    }
-    
-    public GameObject[] GivePath()
-    {
-        return pathChildren;
-    }
-
+    // Returns the name of the path that has been randomly chosen.
     public String GivePathName()
     {
         return pathName;
+    }
+
+    // Returns the currently active hiding spot chosen by the H&S Manager.
+    public GameObject GetHidingSpot()
+    {
+        foreach (GameObject spot in hidingSpots)
+        {
+            if (spot.activeInHierarchy)
+                return spot;
+        }
+        return null;
     }
 }

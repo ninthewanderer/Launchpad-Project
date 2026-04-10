@@ -6,7 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="c69d5861-277c-44d1-bbc5-96bdb29f1afc" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.LP Unity Project/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.LP Unity Project/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/ChandlerWork.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/ChandlerWork.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/HideAndSeek/DetectionBoots.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/HideAndSeek/DetectionBoots.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/HideAndSeek/HideAndSeekManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/HideAndSeek/HideAndSeekManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,8 +20,8 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/A_Star/DetectionBoots.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/A_Star/HideAndSeekManager.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/HideAndSeek/DetectionBootsUI.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/HideAndSeek/HiddenCatManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/UI/UnlockCursor.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
@@ -107,7 +110,7 @@
       <workItem from="1775422446745" duration="707000" />
       <workItem from="1775435108647" duration="10000" />
       <workItem from="1775751897887" duration="621000" />
-      <workItem from="1775838553336" duration="1857000" />
+      <workItem from="1775838553336" duration="5827000" />
     </task>
     <servers />
   </component>
