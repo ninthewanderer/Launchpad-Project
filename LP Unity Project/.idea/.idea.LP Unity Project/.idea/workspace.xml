@@ -6,11 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="c69d5861-277c-44d1-bbc5-96bdb29f1afc" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.LP Unity Project/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.LP Unity Project/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Art/Prefabs/A_Star/Node.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Prefabs/A_Star/Node.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Art/Prefabs/A_Star/Path 1.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Prefabs/A_Star/Path 1.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Art/Prefabs/A_Star/Path 2.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Prefabs/A_Star/Path 2.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/A_Star/HideAndSeekManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/A_Star/HideAndSeekManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/A_Star/HideAndSeekManager.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/A_Star/HideAndSeekManager.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/HideAndSeek/DetectionBoots.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/HideAndSeek/DetectionBoots.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -111,6 +107,7 @@
       <workItem from="1775422446745" duration="707000" />
       <workItem from="1775435108647" duration="10000" />
       <workItem from="1775751897887" duration="621000" />
+      <workItem from="1775838553336" duration="1857000" />
     </task>
     <servers />
   </component>

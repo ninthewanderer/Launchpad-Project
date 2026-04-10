@@ -44640,10 +44640,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hnsManager: {fileID: 589451832}
-  detectionRadius: 10
   catTraces:
     serializedVersion: 2
     m_Bits: 256
+  detectionRadius: 10
+  disappearTime: 3
+  abilityCooldown: 5
 --- !u!1001 &1733337603
 PrefabInstance:
   m_ObjectHideFlags: 0
