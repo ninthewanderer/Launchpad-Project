@@ -28,6 +28,7 @@ public class DetectionBoots : MonoBehaviour
         chargeBar.SetMaxCharge(maxCharge);
         chargeBar.SetCurrentCharge(maxCharge);
         currentCharge = maxCharge;
+        chargeBar.BarOffCooldown();
         
         pathName = hnsManager.GivePathName(); // Obtains the name of the path picked by the H&S Manager.
         StartCoroutine(CooldownCheck()); // Starts constant boot cooldown management.
@@ -42,10 +43,6 @@ public class DetectionBoots : MonoBehaviour
             onCooldown = true;
             SetCharge(-chargeLost);
             CheckForTraces();
-        }
-        else if (onCooldown && (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Joystick1Button3)))
-        {
-            Debug.Log("Ability is on cooldown. Please wait " + abilityCooldown + " seconds.");
         }
     }
 
@@ -85,8 +82,9 @@ public class DetectionBoots : MonoBehaviour
         {
             if (onCooldown)
             {
+                chargeBar.BarOnCooldown();
                 yield return new WaitForSeconds(abilityCooldown);
-                Debug.Log("Ability can now be used.");
+                chargeBar.BarOffCooldown();
                 onCooldown = false;
             }
             yield return null;
