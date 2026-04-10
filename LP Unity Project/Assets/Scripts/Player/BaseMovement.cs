@@ -15,14 +15,14 @@ public class PlayerController : MonoBehaviour
     public LayerMask groundLayer;
     public float steamBoost = 15f;
 
-    [Header("Camera/Look")]
-    public Transform cameraTarget;
-    public float cameraYOffset = 1.5f;
-    public float mouseSensitivity = 200f;
-    public float controllerSensitivity = 150f;
-    public float minPitch = -30f;
-    public float maxPitch = 60f;
-
+[Header("Camera/Look")]
+public Transform cameraTarget;
+public float cameraYOffset = 1.5f;
+public float mouseSensitivity = 200f;
+public float controllerSensitivity = 150f;
+public float minPitch = -30f;
+public float maxPitch = 60f;
+public float shoulderOffsetX = 0.5f;
     private Rigidbody rb;
     private bool isGrounded;
     private float yaw;
@@ -113,7 +113,6 @@ public class PlayerController : MonoBehaviour
     {
         Quaternion targetRot = Quaternion.Euler(0f, yaw, 0f);
         rb.transform.rotation = targetRot;
-        // rb.transform.rotation = (Quaternion.RotateTowards(rb.rotation, targetRot, turnSpeed * Time.fixedDeltaTime));
     }
 
     void HandleJump()
@@ -129,16 +128,17 @@ public class PlayerController : MonoBehaviour
         isGrounded = Physics.CheckSphere(groundCheck.position, groundCheckRadius, groundLayer);
     }
 
-    void UpdateCameraTarget()
+void UpdateCameraTarget()
+{
+    if (cameraTarget == null)
     {
-        if (cameraTarget == null)
-        {
-            Debug.LogError("cameraTarget is NULL!");
-            return;
-        }
-
-
-        cameraTarget.position = transform.position + Vector3.up * cameraYOffset;
-        cameraTarget.rotation = Quaternion.Euler(pitch, yaw, 0f);
+        Debug.LogError("cameraTarget is NULL!");
+        return;
     }
+
+    cameraTarget.position = transform.position + Vector3.up * cameraYOffset;
+    cameraTarget.rotation = Quaternion.Euler(pitch, yaw, 0f);
+
+    cameraTarget.position += cameraTarget.right * shoulderOffsetX;
+}
 }
