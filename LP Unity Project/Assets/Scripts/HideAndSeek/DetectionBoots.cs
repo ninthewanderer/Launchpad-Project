@@ -28,6 +28,7 @@ public class DetectionBoots : MonoBehaviour
         chargeBar.SetMaxCharge(maxCharge);
         chargeBar.SetCurrentCharge(maxCharge);
         currentCharge = maxCharge;
+        chargeBar.BarOffCooldown();
         
         pathName = hnsManager.GivePathName(); // Obtains the name of the path picked by the H&S Manager.
         StartCoroutine(CooldownCheck()); // Starts constant boot cooldown management.
@@ -85,8 +86,9 @@ public class DetectionBoots : MonoBehaviour
         {
             if (onCooldown)
             {
+                chargeBar.BarOnCooldown();
                 yield return new WaitForSeconds(abilityCooldown);
-                Debug.Log("Ability can now be used.");
+                chargeBar.BarOffCooldown();
                 onCooldown = false;
             }
             yield return null;

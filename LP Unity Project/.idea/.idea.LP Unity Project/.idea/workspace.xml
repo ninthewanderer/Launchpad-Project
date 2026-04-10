@@ -5,9 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c69d5861-277c-44d1-bbc5-96bdb29f1afc" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/Assets/Art/Prefabs/Building/SteamPipe.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Prefabs/Building/SteamPipe.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/HideAndSeek/HiddenCatManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/HideAndSeek/HiddenCatManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/HideAndSeek/HiddenCatManager.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/HideAndSeek/HiddenCatManager.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.LP Unity Project/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.LP Unity Project/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/ChandlerWork.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/ChandlerWork.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/HideAndSeek/DetectionBoots.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/HideAndSeek/DetectionBoots.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/HideAndSeek/DetectionBootsUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/HideAndSeek/DetectionBootsUI.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -110,6 +111,7 @@
       <workItem from="1775751897887" duration="621000" />
       <workItem from="1775838553336" duration="5827000" />
       <workItem from="1775845553294" duration="58000" />
+      <workItem from="1775860579016" duration="659000" />
     </task>
     <servers />
   </component>
