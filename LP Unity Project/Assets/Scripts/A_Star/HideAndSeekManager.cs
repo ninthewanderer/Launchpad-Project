@@ -37,6 +37,6 @@ public class HideAndSeekManager : MonoBehaviour
     void FindPath(GameObject path)
     {
         pathChildren = new GameObject[path.transform.childCount];
-        foreach (Transform child in path.transform)
+        foreach (Transform child in path.transform);
     }
 }
