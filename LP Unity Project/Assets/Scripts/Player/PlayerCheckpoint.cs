@@ -4,7 +4,7 @@ public class PlayerCheckpoint : MonoBehaviour
 {
     private Vector3 currentCheckpointPosition;
     private int currentCheckpointIndex = -1;
-    public Reset objectToReset;
+
 
     private void Start()
     {
@@ -29,7 +29,6 @@ public class PlayerCheckpoint : MonoBehaviour
     public void Respawn()
     {
         transform.position = currentCheckpointPosition;
-        objectToReset.ResetObject();
         Debug.Log("Player respawned at checkpoint index: " + currentCheckpointIndex);
     }
 }

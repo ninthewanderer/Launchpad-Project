@@ -15,37 +15,41 @@ public class PlayerController : MonoBehaviour
     public LayerMask groundLayer;
     public float steamBoost = 15f;
 
-[Header("Camera/Look")]
-public Transform cameraTarget;
-public float cameraYOffset = 1.5f;
-public float mouseSensitivity = 200f;
-public float controllerSensitivity = 150f;
-public float minPitch = -30f;
-public float maxPitch = 60f;
-public float shoulderOffsetX = 0.5f;
+    [Header("Camera/Look")]
+    public Transform cameraTarget;
+    public float cameraYOffset = 1.5f;
+    public float mouseSensitivity = 200f;
+    public float controllerSensitivity = 150f;
+    public float minPitch = -30f;
+    public float maxPitch = 60f;
+    public float shoulderOffsetX = 0.5f;
+
     private Rigidbody rb;
     private bool isGrounded;
     private float yaw;
     private float pitch;
     private float horizontalInput;
     private float verticalInput;
-    private bool jumpPressed;
     private bool isSprinting;
- 
+
+    private Vector3 wallNormal = Vector3.zero;
+    private bool isTouchingWall = false;
 
     public bool IsGrounded => isGrounded;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        rb.freezeRotation = true;
+
+        Collider col = GetComponent<Collider>();
+        if (col != null) col.material = null;
 
         Cursor.lockState = CursorLockMode.Locked;
-
         yaw = transform.eulerAngles.y;
         pitch = 0f;
     }
 
-    // Moved player movement here to reduce jittering. - Chandler
     void Update()
     {
         CheckGround();
@@ -53,20 +57,38 @@ public float shoulderOffsetX = 0.5f;
         HandleJump();
     }
 
-    
     void FixedUpdate()
     {
         MovePlayer();
+        if (isGrounded) CancelWallVelocity();
         RotatePlayer();
+    }
+
+    void LateUpdate()
+    {
         UpdateCameraTarget();
     }
 
     void ReadInput()
     {
-        horizontalInput = Input.GetAxis("Horizontal");
-        verticalInput = Input.GetAxis("Vertical");
+        float keyboardH = Input.GetAxis("Horizontal");
+        float keyboardV = Input.GetAxis("Vertical");
 
-        isSprinting = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.Joystick1Button2);
+        float leftStickH = 0f;
+        float leftStickV = 0f;
+        try
+        {
+            leftStickH = Input.GetAxis("LeftStickX");
+            leftStickV = Input.GetAxis("LeftStickY");
+        }
+        catch { }
+
+        horizontalInput = Mathf.Abs(keyboardH) > Mathf.Abs(leftStickH) ? keyboardH : leftStickH;
+        verticalInput = Mathf.Abs(keyboardV) > Mathf.Abs(leftStickV) ? keyboardV : leftStickV;
+
+        isSprinting = Input.GetKey(KeyCode.LeftControl)
+                   || Input.GetKey(KeyCode.Joystick1Button8)
+                   || Input.GetKey(KeyCode.Joystick1Button2);
 
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
@@ -84,13 +106,7 @@ public float shoulderOffsetX = 0.5f;
         pitch -= mouseY + stickY;
         pitch = Mathf.Clamp(pitch, minPitch, maxPitch);
     }
-    void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Steam"))
-        {
-            rb.AddForce(Vector3.up * steamBoost, ForceMode.Impulse);
-        }
-    }
+
     void MovePlayer()
     {
         float currentSpeed = isSprinting ? sprintSpeed : speed;
@@ -98,26 +114,62 @@ public float shoulderOffsetX = 0.5f;
         Vector3 moveDir = transform.forward * verticalInput + transform.right * horizontalInput;
         moveDir = moveDir.normalized;
 
+  
+        if (isTouchingWall && !isGrounded && moveDir != Vector3.zero)
+        {
+            float dot = Vector3.Dot(moveDir, wallNormal);
+            if (dot < 0f)
+            {
+                moveDir = moveDir - wallNormal * dot;
+                if (moveDir.sqrMagnitude < 0.01f)
+                    return; 
+                moveDir = moveDir.normalized;
+            }
+        }
+
+  
+        if (isTouchingWall && isGrounded && moveDir != Vector3.zero)
+        {
+            float dot = Vector3.Dot(moveDir, wallNormal);
+            if (dot < 0f)
+            {
+                moveDir = moveDir - wallNormal * dot;
+                if (moveDir.sqrMagnitude > 0.001f)
+                    moveDir = moveDir.normalized;
+                else
+                    moveDir = Vector3.zero;
+            }
+        }
+
         Vector3 targetVelocity = moveDir * currentSpeed;
-
-
-        Vector3 velocityChange = targetVelocity - new Vector3(rb.velocity.x, 0, rb.velocity.z);
-
+        Vector3 velocityChange = targetVelocity - new Vector3(rb.velocity.x, 0f, rb.velocity.z);
         velocityChange = Vector3.ClampMagnitude(velocityChange, currentSpeed);
-
-
         rb.AddForce(velocityChange, ForceMode.VelocityChange);
+    }
+
+    void CancelWallVelocity()
+    {
+        if (!isTouchingWall) return;
+
+        float penetrationSpeed = Vector3.Dot(rb.velocity, -wallNormal);
+        if (penetrationSpeed > 0f)
+        {
+            rb.velocity += wallNormal * penetrationSpeed;
+        }
     }
 
     void RotatePlayer()
     {
         Quaternion targetRot = Quaternion.Euler(0f, yaw, 0f);
-        rb.transform.rotation = targetRot;
+        rb.MoveRotation(targetRot);
     }
 
     void HandleJump()
     {
-        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Joystick1Button0)) && isGrounded)
+        bool jumpKeyboard = Input.GetKeyDown(KeyCode.Space);
+        bool jumpController = Input.GetKeyDown(KeyCode.Joystick1Button0);
+
+        if ((jumpKeyboard || jumpController) && isGrounded)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
@@ -128,17 +180,45 @@ public float shoulderOffsetX = 0.5f;
         isGrounded = Physics.CheckSphere(groundCheck.position, groundCheckRadius, groundLayer);
     }
 
-void UpdateCameraTarget()
-{
-    if (cameraTarget == null)
+    void OnCollisionEnter(Collision collision)
     {
-        Debug.LogError("cameraTarget is NULL!");
-        return;
+        if (collision.gameObject.CompareTag("Steam"))
+        {
+            rb.AddForce(Vector3.up * steamBoost, ForceMode.Impulse);
+        }
     }
 
-    cameraTarget.position = transform.position + Vector3.up * cameraYOffset;
-    cameraTarget.rotation = Quaternion.Euler(pitch, yaw, 0f);
+    void OnCollisionStay(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Steam")) return;
 
-    cameraTarget.position += cameraTarget.right * shoulderOffsetX;
-}
+        foreach (ContactPoint contact in collision.contacts)
+        {
+            if (contact.normal.y < 0.4f)
+            {
+                wallNormal = contact.normal;
+                isTouchingWall = true;
+                return;
+            }
+        }
+    }
+
+    void OnCollisionExit(Collision collision)
+    {
+        isTouchingWall = false;
+        wallNormal = Vector3.zero;
+    }
+
+    void UpdateCameraTarget()
+    {
+        if (cameraTarget == null)
+        {
+            Debug.LogError("cameraTarget is NULL!");
+            return;
+        }
+
+        cameraTarget.position = transform.position + Vector3.up * cameraYOffset;
+        cameraTarget.rotation = Quaternion.Euler(pitch, yaw, 0f);
+        cameraTarget.position += cameraTarget.right * shoulderOffsetX;
+    }
 }
