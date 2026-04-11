@@ -687,8 +687,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: The time is ticking...
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 63da3387a76bea8429137b446f92cf48, type: 2}
-  m_sharedMaterial: {fileID: 4212901317769625987, guid: 63da3387a76bea8429137b446f92cf48,
+  m_fontAsset: {fileID: 11400000, guid: 9b051fb0f4338134fb2e6295d439d872, type: 2}
+  m_sharedMaterial: {fileID: 3001456475187705583, guid: 9b051fb0f4338134fb2e6295d439d872,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}

@@ -310,10 +310,35 @@ PrefabInstance:
       propertyPath: m_Name
       value: NewPlayar
       objectReference: {fileID: 0}
+    - target: {fileID: 3890445420285849084, guid: 2a39719f71044a646b6113cb50735fcf,
+        type: 3}
+      propertyPath: shoulderOffsetX
+      value: 2.05
+      objectReference: {fileID: 0}
     - target: {fileID: 6479524656199787295, guid: 2a39719f71044a646b6113cb50735fcf,
         type: 3}
       propertyPath: horizontalBoostForce
       value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 8529597407687746959, guid: 2a39719f71044a646b6113cb50735fcf,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8529597407687746959, guid: 2a39719f71044a646b6113cb50735fcf,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8529597407687746959, guid: 2a39719f71044a646b6113cb50735fcf,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8529597407687746959, guid: 2a39719f71044a646b6113cb50735fcf,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
