@@ -258,37 +258,37 @@ PrefabInstance:
     - target: {fileID: 810908278216666789, guid: 2a39719f71044a646b6113cb50735fcf,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -127
       objectReference: {fileID: 0}
     - target: {fileID: 810908278216666789, guid: 2a39719f71044a646b6113cb50735fcf,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.271
-      objectReference: {fileID: 0}
-    - target: {fileID: 810908278216666789, guid: 2a39719f71044a646b6113cb50735fcf,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -10.3
-      objectReference: {fileID: 0}
-    - target: {fileID: 810908278216666789, guid: 2a39719f71044a646b6113cb50735fcf,
-        type: 3}
-      propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 810908278216666789, guid: 2a39719f71044a646b6113cb50735fcf,
         type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -17
+      objectReference: {fileID: 0}
+    - target: {fileID: 810908278216666789, guid: 2a39719f71044a646b6113cb50735fcf,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.70710784
+      objectReference: {fileID: 0}
+    - target: {fileID: 810908278216666789, guid: 2a39719f71044a646b6113cb50735fcf,
+        type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 810908278216666789, guid: 2a39719f71044a646b6113cb50735fcf,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0.70710576
       objectReference: {fileID: 0}
     - target: {fileID: 810908278216666789, guid: 2a39719f71044a646b6113cb50735fcf,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 810908278216666789, guid: 2a39719f71044a646b6113cb50735fcf,
         type: 3}
@@ -298,7 +298,7 @@ PrefabInstance:
     - target: {fileID: 810908278216666789, guid: 2a39719f71044a646b6113cb50735fcf,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: -90
       objectReference: {fileID: 0}
     - target: {fileID: 810908278216666789, guid: 2a39719f71044a646b6113cb50735fcf,
         type: 3}
@@ -309,6 +309,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: NewPlayar
+      objectReference: {fileID: 0}
+    - target: {fileID: 2456005221150116165, guid: 2a39719f71044a646b6113cb50735fcf,
+        type: 3}
+      propertyPath: m_TagString
+      value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 3890445420285849084, guid: 2a39719f71044a646b6113cb50735fcf,
         type: 3}
@@ -392,8 +397,51 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 9064982981934499814}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2456005221150116165, guid: 2a39719f71044a646b6113cb50735fcf,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4543628111620075281}
+    - targetCorrespondingSourceObject: {fileID: 2456005221150116165, guid: 2a39719f71044a646b6113cb50735fcf,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2311015261822439280}
   m_SourcePrefab: {fileID: 100100000, guid: 2a39719f71044a646b6113cb50735fcf, type: 3}
+--- !u!1 &26203143172991561 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2456005221150116165, guid: 2a39719f71044a646b6113cb50735fcf,
+    type: 3}
+  m_PrefabInstance: {fileID: 2470343292218991372}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4543628111620075281
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 26203143172991561}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2dd5245c3f4daad4cad575c1c59027ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  livesCount: 3
+  damageCooldown: 1
+  hearts: []
+  fullHeart: {fileID: 21300000, guid: 24ca1a247f3b55a42b2a23623eff05dd, type: 3}
+  emptyHeart: {fileID: 21300000, guid: 2d75a15913c737342bc8af256b67a5aa, type: 3}
+--- !u!114 &2311015261822439280
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 26203143172991561}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ad04084b53514c45bdc7faf4aad92ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &2956754900454493609 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 810908278216666789, guid: 2a39719f71044a646b6113cb50735fcf,
