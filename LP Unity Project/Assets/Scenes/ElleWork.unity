@@ -1317,7 +1317,7 @@ PrefabInstance:
     - target: {fileID: 26203143172991561, guid: e1f1c2869583fe4419166feb3ab9f7c7,
         type: 3}
       propertyPath: m_Name
-      value: FillInPlayer
+      value: PrototypePlayer
       objectReference: {fileID: 0}
     - target: {fileID: 2956754900454493609, guid: e1f1c2869583fe4419166feb3ab9f7c7,
         type: 3}
