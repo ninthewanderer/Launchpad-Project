@@ -8,7 +8,7 @@ public class MainMenu : MonoBehaviour
 {
     public void StartGame()
     {
-        SceneManager.LoadScene("LvlTwoBlockout");
+        SceneManager.LoadScene("LvlHub");
     }
 
     public void Quit()

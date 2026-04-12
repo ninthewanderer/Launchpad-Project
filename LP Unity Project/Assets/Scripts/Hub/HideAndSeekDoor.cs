@@ -9,7 +9,7 @@ public class HideAndSeekDoor : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            SceneManager.LoadScene("ChandlerWork");
+            SceneManager.LoadScene("LvlHide&Seek");
         }
     }
 }
