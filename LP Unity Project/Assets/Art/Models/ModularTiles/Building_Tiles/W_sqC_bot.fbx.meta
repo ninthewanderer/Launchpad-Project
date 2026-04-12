@@ -7,6 +7,16 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: Wall1
+    second: {fileID: 2100000, guid: 9148cc766b7ab9b4ea2628bd9fbec300, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Wall2
+    second: {fileID: 2100000, guid: 8af8a25c0cd37b046b9a467fc1f63176, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: openPBR_shader2
     second: {fileID: 2100000, guid: 73ae21ddf50f82949936a11d646bacd2, type: 2}
   materials:
