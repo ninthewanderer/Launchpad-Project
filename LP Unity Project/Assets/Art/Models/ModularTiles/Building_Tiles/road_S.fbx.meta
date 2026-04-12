@@ -7,6 +7,11 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: Road
+    second: {fileID: 2100000, guid: 4cf42aec63e5c3b4f953133d2c51c071, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: openPBR_shader1
     second: {fileID: 2100000, guid: 371abbef651a0724081f425ea56b9bef, type: 2}
   materials:

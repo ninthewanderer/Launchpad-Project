@@ -7,6 +7,11 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: Sidewalk
+    second: {fileID: 2100000, guid: c9f7c2226cb0412409c2b80b23ef895f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: openPBR_shader1
     second: {fileID: 2100000, guid: 73ae21ddf50f82949936a11d646bacd2, type: 2}
   materials:
