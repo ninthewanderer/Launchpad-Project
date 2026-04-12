@@ -92,7 +92,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &9064982981934499814
 Transform:
   m_ObjectHideFlags: 0
@@ -427,7 +427,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   livesCount: 3
   damageCooldown: 1
-  hearts: []
+  hearts:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   fullHeart: {fileID: 21300000, guid: 24ca1a247f3b55a42b2a23623eff05dd, type: 3}
   emptyHeart: {fileID: 21300000, guid: 2d75a15913c737342bc8af256b67a5aa, type: 3}
 --- !u!114 &2311015261822439280
