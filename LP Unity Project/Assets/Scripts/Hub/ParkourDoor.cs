@@ -9,7 +9,7 @@ public class ParkourDoor : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            SceneManager.LoadScene("BrandonWork");
+            SceneManager.LoadScene("LvlPlatforming");
         }
     }
 }
