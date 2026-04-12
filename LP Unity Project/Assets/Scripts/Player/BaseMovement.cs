@@ -24,6 +24,10 @@ public class PlayerController : MonoBehaviour
     public float maxPitch = 60f;
     public float shoulderOffsetX = 0.5f;
 
+    [Header("Controller")]
+   
+    public float stickDeadZone = 0.15f;
+
     private Rigidbody rb;
     private bool isGrounded;
     private float yaw;
@@ -69,8 +73,17 @@ public class PlayerController : MonoBehaviour
         UpdateCameraTarget();
     }
 
+  
+    float ApplyDeadZone(float value)
+    {
+        if (Mathf.Abs(value) < stickDeadZone) return 0f;
+        
+        return Mathf.Sign(value) * (Mathf.Abs(value) - stickDeadZone) / (1f - stickDeadZone);
+    }
+
     void ReadInput()
     {
+      
         float keyboardH = Input.GetAxis("Horizontal");
         float keyboardV = Input.GetAxis("Vertical");
 
@@ -78,18 +91,21 @@ public class PlayerController : MonoBehaviour
         float leftStickV = 0f;
         try
         {
-            leftStickH = Input.GetAxis("LeftStickX");
-            leftStickV = Input.GetAxis("LeftStickY");
+            leftStickH = ApplyDeadZone(Input.GetAxis("LeftStickX"));
+            leftStickV = ApplyDeadZone(Input.GetAxis("LeftStickY"));
         }
         catch { }
 
+  
         horizontalInput = Mathf.Abs(keyboardH) > Mathf.Abs(leftStickH) ? keyboardH : leftStickH;
-        verticalInput = Mathf.Abs(keyboardV) > Mathf.Abs(leftStickV) ? keyboardV : leftStickV;
+        verticalInput   = Mathf.Abs(keyboardV) > Mathf.Abs(leftStickV) ? keyboardV : leftStickV;
+
 
         isSprinting = Input.GetKey(KeyCode.LeftControl)
-                   || Input.GetKey(KeyCode.Joystick1Button8)
+                   || Input.GetKey(KeyCode.Joystick1Button8)  
                    || Input.GetKey(KeyCode.Joystick1Button2);
 
+       
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
 
@@ -97,14 +113,14 @@ public class PlayerController : MonoBehaviour
         float stickY = 0f;
         try
         {
-            stickX = Input.GetAxis("RightStickX") * controllerSensitivity * Time.deltaTime;
-            stickY = Input.GetAxis("RightStickY") * controllerSensitivity * Time.deltaTime;
+            stickX = ApplyDeadZone(Input.GetAxis("RightStickX")) * controllerSensitivity * Time.deltaTime;
+            stickY = ApplyDeadZone(Input.GetAxis("RightStickY")) * controllerSensitivity * Time.deltaTime;
         }
         catch { }
 
-        yaw += mouseX + stickX;
+        yaw   += mouseX + stickX;
         pitch -= mouseY + stickY;
-        pitch = Mathf.Clamp(pitch, minPitch, maxPitch);
+        pitch  = Mathf.Clamp(pitch, minPitch, maxPitch);
     }
 
     void MovePlayer()
@@ -114,7 +130,7 @@ public class PlayerController : MonoBehaviour
         Vector3 moveDir = transform.forward * verticalInput + transform.right * horizontalInput;
         moveDir = moveDir.normalized;
 
-  
+       
         if (isTouchingWall && !isGrounded && moveDir != Vector3.zero)
         {
             float dot = Vector3.Dot(moveDir, wallNormal);
@@ -122,12 +138,12 @@ public class PlayerController : MonoBehaviour
             {
                 moveDir = moveDir - wallNormal * dot;
                 if (moveDir.sqrMagnitude < 0.01f)
-                    return; 
+                    return;
                 moveDir = moveDir.normalized;
             }
         }
 
-  
+       
         if (isTouchingWall && isGrounded && moveDir != Vector3.zero)
         {
             float dot = Vector3.Dot(moveDir, wallNormal);
@@ -141,8 +157,8 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        Vector3 targetVelocity = moveDir * currentSpeed;
-        Vector3 velocityChange = targetVelocity - new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+        Vector3 targetVelocity  = moveDir * currentSpeed;
+        Vector3 velocityChange  = targetVelocity - new Vector3(rb.velocity.x, 0f, rb.velocity.z);
         velocityChange = Vector3.ClampMagnitude(velocityChange, currentSpeed);
         rb.AddForce(velocityChange, ForceMode.VelocityChange);
     }
@@ -166,10 +182,11 @@ public class PlayerController : MonoBehaviour
 
     void HandleJump()
     {
-        bool jumpKeyboard = Input.GetKeyDown(KeyCode.Space);
-        bool jumpController = Input.GetKeyDown(KeyCode.Joystick1Button0);
+        
+        bool jumpPressed = Input.GetKeyDown(KeyCode.Space)
+                        || Input.GetKeyDown(KeyCode.Joystick1Button0);
 
-        if ((jumpKeyboard || jumpController) && isGrounded)
+        if (jumpPressed && isGrounded)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
@@ -217,8 +234,8 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        cameraTarget.position = transform.position + Vector3.up * cameraYOffset;
-        cameraTarget.rotation = Quaternion.Euler(pitch, yaw, 0f);
+        cameraTarget.position  = transform.position + Vector3.up * cameraYOffset;
+        cameraTarget.rotation  = Quaternion.Euler(pitch, yaw, 0f);
         cameraTarget.position += cameraTarget.right * shoulderOffsetX;
     }
 }
