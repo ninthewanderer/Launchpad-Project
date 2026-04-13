@@ -43,6 +43,7 @@ public class DetectionBoots : MonoBehaviour
             onCooldown = true;
             SetCharge(-chargeLost);
             CheckForTraces();
+            GetComponent<PlayerSounds>()?.PlayDetectionBootsSound();
         }
     }
 
