@@ -397,6 +397,7 @@ GameObject:
   - component: {fileID: 563073992359454658}
   - component: {fileID: 8475058780013839536}
   - component: {fileID: 5014048693266293631}
+  - component: {fileID: 7269072804517089695}
   m_Layer: 5
   m_Name: LevelClearedCanvas
   m_TagString: Untagged
@@ -497,6 +498,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 84e2172cf604e844890466fc31ab20f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7269072804517089695
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8041214131124456380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5f586476ae05a541aebef69b8b2dd2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &8135498431274301912
