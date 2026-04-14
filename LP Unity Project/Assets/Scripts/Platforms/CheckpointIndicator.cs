@@ -6,13 +6,18 @@ public class CheckpointIndicator : MonoBehaviour
 {
     public GameObject checkpointCone;
     public float heightOffset;
+    private Vector3 startPosition;
+
+    void Start()
+    {
+        startPosition = checkpointCone.transform.position;
+    }
     
     void Update()
     {
         // Moves the cone up and down at a consistent speed.
-        checkpointCone.transform.position = new Vector3(checkpointCone.transform.position.x,
-            (checkpointCone.transform.position.y + Mathf.Sin(Time.time) * heightOffset),
-            checkpointCone.transform.position.z);
+        checkpointCone.transform.position = new Vector3(startPosition.x, Mathf.Sin(Time.time) * heightOffset + startPosition.y,
+            startPosition.z);
     }
     
     public void OnTriggerEnter(Collider other)

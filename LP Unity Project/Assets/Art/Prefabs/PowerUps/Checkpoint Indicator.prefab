@@ -593,7 +593,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   checkpointCone: {fileID: 2780694196245457487}
-  heightOffset: 0.005
+  heightOffset: 0.5
 --- !u!65 &6325559483955099821
 BoxCollider:
   m_ObjectHideFlags: 0
