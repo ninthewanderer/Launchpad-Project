@@ -5,10 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c69d5861-277c-44d1-bbc5-96bdb29f1afc" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.LP Unity Project/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.LP Unity Project/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/ChandlerWork.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/ChandlerWork.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/HideAndSeek/DetectionBoots.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/HideAndSeek/DetectionBoots.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/HideAndSeek/DetectionBootsUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/HideAndSeek/DetectionBootsUI.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Art/Materials/MiscellaneousMaterials/Checkpoint.mat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Art/Materials/MiscellaneousMaterials/Checkpoint.mat.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Art/Prefabs/PowerUps/Checkpoint Indicator.prefab" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Art/Prefabs/PowerUps/Checkpoint Indicator.prefab.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/ProBuilder Data.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/ProBuilder Data/Default Color Palette.asset" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/ProBuilder Data/Default Color Palette.asset.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Platforms/CheckpointIndicator.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Platforms/CheckpointIndicator.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProjectSettings/Packages/com.unity.probuilder/Settings.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/MiscellaneousMaterials/Heart_PowerUp.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/MiscellaneousMaterials/Heart_PowerUp.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/LvlPlatforming.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/LvlPlatforming.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Packages/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/Packages/manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Packages/packages-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/Packages/packages-lock.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
