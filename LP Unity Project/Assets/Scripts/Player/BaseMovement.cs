@@ -6,7 +6,6 @@ public class PlayerController : MonoBehaviour
     [Header("Movement")]
     public float speed = 5f;
     public float sprintSpeed = 9f;
-    public float turnSpeed = 10f;
 
     [Header("Jump")]
     public float jumpForce = 10f;
@@ -25,7 +24,6 @@ public class PlayerController : MonoBehaviour
     public float shoulderOffsetX = 0.5f;
 
     [Header("Controller")]
-   
     public float stickDeadZone = 0.15f;
 
     private Rigidbody rb;
@@ -39,6 +37,10 @@ public class PlayerController : MonoBehaviour
     private Vector3 wallNormal = Vector3.zero;
     private bool isTouchingWall = false;
 
+    // ── Magnet boot integration ──────────────────────────────────────────────
+    [HideInInspector] public bool  magnetActive       = false;
+    [HideInInspector] public Vector3 magnetSurfaceNormal = Vector3.up;
+
     public bool IsGrounded => isGrounded;
 
     void Start()
@@ -50,7 +52,7 @@ public class PlayerController : MonoBehaviour
         if (col != null) col.material = null;
 
         Cursor.lockState = CursorLockMode.Locked;
-        yaw = transform.eulerAngles.y;
+        yaw   = transform.eulerAngles.y;
         pitch = 0f;
     }
 
@@ -58,7 +60,9 @@ public class PlayerController : MonoBehaviour
     {
         CheckGround();
         ReadInput();
-        HandleJump();
+
+        if (!magnetActive)
+            HandleJump();
     }
 
     void FixedUpdate()
@@ -73,17 +77,16 @@ public class PlayerController : MonoBehaviour
         UpdateCameraTarget();
     }
 
-  
+    // ── Input ─────────────────────────────────────────────────────────────────
+
     float ApplyDeadZone(float value)
     {
         if (Mathf.Abs(value) < stickDeadZone) return 0f;
-        
         return Mathf.Sign(value) * (Mathf.Abs(value) - stickDeadZone) / (1f - stickDeadZone);
     }
 
     void ReadInput()
     {
-      
         float keyboardH = Input.GetAxis("Horizontal");
         float keyboardV = Input.GetAxis("Vertical");
 
@@ -96,16 +99,13 @@ public class PlayerController : MonoBehaviour
         }
         catch { }
 
-  
         horizontalInput = Mathf.Abs(keyboardH) > Mathf.Abs(leftStickH) ? keyboardH : leftStickH;
         verticalInput   = Mathf.Abs(keyboardV) > Mathf.Abs(leftStickV) ? keyboardV : leftStickV;
 
-
         isSprinting = Input.GetKey(KeyCode.LeftControl)
-                   || Input.GetKey(KeyCode.Joystick1Button8)  
+                   || Input.GetKey(KeyCode.Joystick1Button8)
                    || Input.GetKey(KeyCode.Joystick1Button2);
 
-       
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
 
@@ -123,42 +123,31 @@ public class PlayerController : MonoBehaviour
         pitch  = Mathf.Clamp(pitch, minPitch, maxPitch);
     }
 
+    // ── Movement ──────────────────────────────────────────────────────────────
+
     void MovePlayer()
     {
+
+        if (magnetActive) return;
+
         float currentSpeed = isSprinting ? sprintSpeed : speed;
 
-        Vector3 moveDir = transform.forward * verticalInput + transform.right * horizontalInput;
-        moveDir = moveDir.normalized;
+        Vector3 moveDir = (transform.forward * verticalInput
+                         + transform.right   * horizontalInput).normalized;
 
-       
-        if (isTouchingWall && !isGrounded && moveDir != Vector3.zero)
+        if (isTouchingWall && moveDir != Vector3.zero)
         {
             float dot = Vector3.Dot(moveDir, wallNormal);
             if (dot < 0f)
             {
-                moveDir = moveDir - wallNormal * dot;
-                if (moveDir.sqrMagnitude < 0.01f)
-                    return;
+                moveDir -= wallNormal * dot;
+                if (moveDir.sqrMagnitude < 0.001f) return;
                 moveDir = moveDir.normalized;
             }
         }
 
-       
-        if (isTouchingWall && isGrounded && moveDir != Vector3.zero)
-        {
-            float dot = Vector3.Dot(moveDir, wallNormal);
-            if (dot < 0f)
-            {
-                moveDir = moveDir - wallNormal * dot;
-                if (moveDir.sqrMagnitude > 0.001f)
-                    moveDir = moveDir.normalized;
-                else
-                    moveDir = Vector3.zero;
-            }
-        }
-
-        Vector3 targetVelocity  = moveDir * currentSpeed;
-        Vector3 velocityChange  = targetVelocity - new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+        Vector3 targetVelocity = moveDir * currentSpeed;
+        Vector3 velocityChange = targetVelocity - new Vector3(rb.velocity.x, 0f, rb.velocity.z);
         velocityChange = Vector3.ClampMagnitude(velocityChange, currentSpeed);
         rb.AddForce(velocityChange, ForceMode.VelocityChange);
     }
@@ -166,43 +155,61 @@ public class PlayerController : MonoBehaviour
     void CancelWallVelocity()
     {
         if (!isTouchingWall) return;
-
         float penetrationSpeed = Vector3.Dot(rb.velocity, -wallNormal);
         if (penetrationSpeed > 0f)
-        {
             rb.velocity += wallNormal * penetrationSpeed;
-        }
     }
+
+    // ── Rotation ──────────────────────────────────────────────────────────────
 
     void RotatePlayer()
     {
-        Quaternion targetRot = Quaternion.Euler(0f, yaw, 0f);
-        rb.MoveRotation(targetRot);
+        if (magnetActive)
+        {
+
+            Quaternion surfaceYaw = Quaternion.AngleAxis(yaw, magnetSurfaceNormal);
+
+            Vector3 surfaceForward = Vector3.ProjectOnPlane(
+                Quaternion.Euler(0f, yaw, 0f) * Vector3.forward,
+                magnetSurfaceNormal).normalized;
+
+            if (surfaceForward.sqrMagnitude > 0.001f)
+            {
+                Quaternion targetRot = Quaternion.LookRotation(surfaceForward, magnetSurfaceNormal);
+                rb.MoveRotation(Quaternion.Slerp(transform.rotation, targetRot, Time.fixedDeltaTime * 15f));
+            }
+        }
+        else
+        {
+
+            rb.MoveRotation(Quaternion.Euler(0f, yaw, 0f));
+        }
     }
+
+    // ── Jump ──────────────────────────────────────────────────────────────────
 
     void HandleJump()
     {
-        
         bool jumpPressed = Input.GetKeyDown(KeyCode.Space)
                         || Input.GetKeyDown(KeyCode.Joystick1Button0);
 
         if (jumpPressed && isGrounded)
-        {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-        }
     }
+
+    // ── Ground check ──────────────────────────────────────────────────────────
 
     void CheckGround()
     {
         isGrounded = Physics.CheckSphere(groundCheck.position, groundCheckRadius, groundLayer);
     }
 
+    // ── Collisions ───────────────────────────────────────────────────────────
+
     void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Steam"))
-        {
             rb.AddForce(Vector3.up * steamBoost, ForceMode.Impulse);
-        }
     }
 
     void OnCollisionStay(Collision collision)
@@ -213,7 +220,7 @@ public class PlayerController : MonoBehaviour
         {
             if (contact.normal.y < 0.4f)
             {
-                wallNormal = contact.normal;
+                wallNormal     = contact.normal;
                 isTouchingWall = true;
                 return;
             }
@@ -223,8 +230,10 @@ public class PlayerController : MonoBehaviour
     void OnCollisionExit(Collision collision)
     {
         isTouchingWall = false;
-        wallNormal = Vector3.zero;
+        wallNormal     = Vector3.zero;
     }
+
+    // ── Camera ────────────────────────────────────────────────────────────────
 
     void UpdateCameraTarget()
     {
@@ -234,8 +243,19 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        cameraTarget.position  = transform.position + Vector3.up * cameraYOffset;
-        cameraTarget.rotation  = Quaternion.Euler(pitch, yaw, 0f);
+        Vector3 cameraUp = magnetActive ? magnetSurfaceNormal : Vector3.up;
+
+
+        cameraTarget.position = transform.position + cameraUp * cameraYOffset;
+
+
+        Quaternion baseYaw    = Quaternion.LookRotation(
+            Vector3.ProjectOnPlane(Quaternion.Euler(0f, yaw, 0f) * Vector3.forward, cameraUp).normalized,
+            cameraUp);
+        Quaternion pitchRot   = Quaternion.AngleAxis(pitch, baseYaw * Vector3.right);
+        cameraTarget.rotation = pitchRot * baseYaw;
+
+
         cameraTarget.position += cameraTarget.right * shoulderOffsetX;
     }
 }

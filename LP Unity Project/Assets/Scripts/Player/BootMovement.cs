@@ -13,15 +13,23 @@ public class BootMovement : MonoBehaviour
     }
 
     public float horizontalBoostForce = 20f;
-    public float verticalBoostForce = 30f;
-    public float maxVerticalSpeed = 12f;
+    public float verticalBoostForce   = 30f;
+    public float maxVerticalSpeed     = 12f;
 
-    public float dashCooldown = 0.5f;
-    public float holdThreshold = 0.15f;
+    public float dashCooldown   = 0.5f;
+    public float holdThreshold  = 0.15f;
     public float dashLockoutTime = 0.15f;
+
     public LayerMask MagneticLayer;
     public Transform groundCheck;
     public float groundCheckRadius = 0.3f;
+
+
+    public float magnetRotationSpeed = 10f;
+
+    public float gravityStrength = 9.81f;
+
+    public float magnetMoveSpeed = 5f;
 
     private float dashTimer;
     private float holdTimer;
@@ -29,8 +37,6 @@ public class BootMovement : MonoBehaviour
 
     private bool usedHorizontalDash;
     private bool usedVerticalBoost;
-    private bool isMagnetActive;
-
 
     private bool magnetJumpQueued;
     private bool magnetIsActive;
@@ -41,10 +47,13 @@ public class BootMovement : MonoBehaviour
 
     private Rigidbody rb;
 
+
+    private static readonly Vector3 WorldGravity = new Vector3(0f, -9.81f, 0f);
+
     void Start()
     {
         movement = GetComponent<PlayerController>();
-        rb = GetComponent<Rigidbody>();
+        rb       = GetComponent<Rigidbody>();
     }
 
     void Update()
@@ -74,6 +83,7 @@ public class BootMovement : MonoBehaviour
             HandleMagnetBootsFixed();
     }
 
+    // ─── Rocket Boots ────────────────────────────────────────────────────────
 
     void HandleRocketBoots()
     {
@@ -90,131 +100,137 @@ public class BootMovement : MonoBehaviour
 
         airTime += Time.deltaTime;
 
-    
         bool boostHeld = Input.GetKey(KeyCode.Space)
                       || Input.GetKey(KeyCode.Joystick1Button0);
-
         bool boostDown = Input.GetKeyDown(KeyCode.Space)
                       || Input.GetKeyDown(KeyCode.Joystick1Button0);
-
         bool boostUp   = Input.GetKeyUp(KeyCode.Space)
                       || Input.GetKeyUp(KeyCode.Joystick1Button0);
 
-        if (boostDown)
-            holdTimer = 0f;
+        if (boostDown) holdTimer = 0f;
 
         if (boostHeld)
         {
             holdTimer += Time.deltaTime;
-
             if (holdTimer > holdThreshold && !usedVerticalBoost)
             {
                 if (rb.velocity.y < maxVerticalSpeed)
                     rb.AddForce(Vector3.up * verticalBoostForce, ForceMode.Acceleration);
-
                 usedVerticalBoost = true;
             }
         }
 
-        if (boostUp)
-            holdTimer = 0f;
+        if (boostUp) holdTimer = 0f;
 
-   
         bool dashPressed = Input.GetKeyDown(KeyCode.LeftShift)
-                        || Input.GetKeyDown(KeyCode.Joystick1Button1); 
+                        || Input.GetKeyDown(KeyCode.Joystick1Button1);
 
-        if (dashPressed &&
-            airTime > dashLockoutTime &&
-            !usedHorizontalDash &&
-            dashTimer <= 0f)
+        if (dashPressed && airTime > dashLockoutTime && !usedHorizontalDash && dashTimer <= 0f)
         {
             usedHorizontalDash = true;
             dashTimer          = dashCooldown;
-
-            Vector3 boostDir = movement.transform.forward;
-            rb.AddForce(boostDir * horizontalBoostForce, ForceMode.VelocityChange);
+            rb.AddForce(movement.transform.forward * horizontalBoostForce, ForceMode.VelocityChange);
         }
     }
 
+    // ─── Magnet Boots ─────────────────────────────────────────────────────────
 
     void HandleMagnetBootsUpdate()
     {
-        
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Joystick1Button0))
             magnetJumpQueued = true;
     }
 
     void HandleMagnetBootsFixed()
     {
-        RaycastHit hit;
-        float sphereCastRadius  = 0.5f;
-        float sphereCastDistance = 2f;
+        if (rb == null) return;
 
         rb.freezeRotation = true;
-        rb.useGravity     = true;
+
+        const float sphereCastRadius   = 0.5f;
+        const float sphereCastDistance = 2f;
+        
 
         bool onMagnetic = Physics.SphereCast(
             transform.position, sphereCastRadius,
-            -transform.up, out hit,
+            -transform.up, out RaycastHit hit,
             sphereCastDistance, MagneticLayer);
 
         magnetIsActive = onMagnetic;
+        movement.magnetActive         = onMagnetic;
+        movement.magnetSurfaceNormal  = onMagnetic ? hit.normal : Vector3.up;
 
         if (onMagnetic)
         {
             magnetSurfaceNormal = hit.normal;
 
-           
-            rb.AddForce(-magnetSurfaceNormal * 9.81f, ForceMode.Acceleration);
 
-           
-            float rotationSpeed     = 10f;
-            Quaternion targetRotation = Quaternion.FromToRotation(transform.up, magnetSurfaceNormal) * transform.rotation;
-            transform.rotation      = Quaternion.Slerp(transform.rotation, targetRotation, Time.fixedDeltaTime * rotationSpeed);
+            Physics.gravity = -magnetSurfaceNormal * gravityStrength;
 
-           
-            float keyH     = Input.GetAxis("Horizontal");
-            float stickH   = 0f;
-            try { stickH   = Input.GetAxis("LeftStickX"); } catch { }
-            float moveInput = Mathf.Abs(keyH) > Mathf.Abs(stickH) ? keyH : stickH;
 
-            float keyV     = Input.GetAxis("Vertical");
-            float stickV   = 0f;
-            try { stickV   = Input.GetAxis("LeftStickY"); } catch { }
-            float forwardInput = Mathf.Abs(keyV) > Mathf.Abs(stickV) ? keyV : stickV;
+            rb.AddForce(-magnetSurfaceNormal * gravityStrength, ForceMode.Acceleration);
 
-            float moveSpeed = 5f;
-            Vector3 moveDirection = transform.right * moveInput + transform.forward * forwardInput;
-            rb.MovePosition(rb.position + moveDirection * moveSpeed * Time.fixedDeltaTime);
 
-            
+            Quaternion targetRotation = Quaternion.FromToRotation(transform.up, magnetSurfaceNormal)
+                                      * transform.rotation;
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation, targetRotation,
+                Time.fixedDeltaTime * magnetRotationSpeed);
+
+
+            float inputH = GetAxis("Horizontal", "LeftStickX");
+            float inputV = GetAxis("Vertical",   "LeftStickY");
+
+
+            Vector3 surfaceRight   = Vector3.ProjectOnPlane(transform.right,   magnetSurfaceNormal).normalized;
+            Vector3 surfaceForward = Vector3.ProjectOnPlane(transform.forward, magnetSurfaceNormal).normalized;
+
+            Vector3 moveDir = surfaceRight * inputH + surfaceForward * inputV;
+            rb.MovePosition(rb.position + moveDir * magnetMoveSpeed * Time.fixedDeltaTime);
+
+
             if (magnetJumpQueued)
-                rb.AddForce(magnetSurfaceNormal * verticalBoostForce, ForceMode.Acceleration);
+            {
+                rb.AddForce(magnetSurfaceNormal * verticalBoostForce, ForceMode.Impulse);
+
+                Physics.gravity = WorldGravity;
+            }
         }
         else
         {
-            
-            Quaternion uprightRotation = Quaternion.FromToRotation(transform.up, Vector3.up) * transform.rotation;
-            transform.rotation = Quaternion.Slerp(transform.rotation, uprightRotation, Time.fixedDeltaTime * 5f);
+
+            Physics.gravity = WorldGravity;
+
+            Quaternion uprightRotation = Quaternion.FromToRotation(transform.up, Vector3.up)
+                                        * transform.rotation;
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation, uprightRotation,
+                Time.fixedDeltaTime * magnetRotationSpeed * 0.5f);
         }
 
         magnetJumpQueued = false;
     }
 
+    // ─── Steam Boots ──────────────────────────────────────────────────────────
 
     void HandleSteamBoots()
     {
-        // Placeholder for steam boots logic
+        // Placeholder
     }
+
+
 
     void HandleCooldowns()
     {
-        if (dashTimer > 0f)
-            dashTimer -= Time.deltaTime;
+        if (dashTimer > 0f) dashTimer -= Time.deltaTime;
     }
 
-    void CheckMagnet()
+
+    float GetAxis(string keyboardAxis, string joystickAxis)
     {
-        isMagnetActive = Physics.CheckSphere(groundCheck.position, groundCheckRadius, MagneticLayer);
+        float kb = Input.GetAxis(keyboardAxis);
+        float joy = 0f;
+        try { joy = Input.GetAxis(joystickAxis); } catch { }
+        return Mathf.Abs(kb) > Mathf.Abs(joy) ? kb : joy;
     }
 }
