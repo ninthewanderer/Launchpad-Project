@@ -6,7 +6,13 @@ using Random = UnityEngine.Random;
 
 public class HideAndSeekManager : MonoBehaviour
 {
+    /* FIXME: make this script more modular so that it can be utilized in the tutorial.
+     - Paths must now be in a GameObject array defined in the Inspector; remove assignable individual paths
+     - Start() must operate on the logic that we don't know how many paths currently exist */
+    
     // Needs to be assigned in the Inspector.
+    public GameObject[] paths;
+    
     public GameObject pathOne;
     public GameObject pathTwo;
     public GameObject pathThree;
@@ -19,8 +25,8 @@ public class HideAndSeekManager : MonoBehaviour
     
     void Start()
     {
-        // Picks a number between 0 and 3 which corresponds to the existing paths.
-        int chosenPath = Random.Range(0, 4);
+        // Picks a number between 0 and the total number of paths which corresponds to the existing paths.
+        int chosenPath = Random.Range(0, paths.Length);
         switch (chosenPath)
         {
             // Each chosen path will hide the other paths & hiding spots.
