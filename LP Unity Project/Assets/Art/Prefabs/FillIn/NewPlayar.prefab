@@ -320,6 +320,16 @@ PrefabInstance:
       propertyPath: shoulderOffsetX
       value: 2.05
       objectReference: {fileID: 0}
+    - target: {fileID: 3890445420285849084, guid: 2a39719f71044a646b6113cb50735fcf,
+        type: 3}
+      propertyPath: mouseSensitivity
+      value: 300
+      objectReference: {fileID: 0}
+    - target: {fileID: 3890445420285849084, guid: 2a39719f71044a646b6113cb50735fcf,
+        type: 3}
+      propertyPath: controllerSensitivity
+      value: 300
+      objectReference: {fileID: 0}
     - target: {fileID: 6305929109929151650, guid: 2a39719f71044a646b6113cb50735fcf,
         type: 3}
       propertyPath: m_CollisionDetection
