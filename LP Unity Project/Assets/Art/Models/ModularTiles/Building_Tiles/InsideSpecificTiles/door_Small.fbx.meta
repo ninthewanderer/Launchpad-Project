@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 90b3101218e59fe4696d054bc3f2a034
+guid: e3f8aa6274cb93e47913815e287ce795
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -7,22 +7,7 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Metal
-    second: {fileID: 2100000, guid: e5fb14f079693d440a3f1135389f4e48, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Shingles
-    second: {fileID: 2100000, guid: 2a4d4d27851487e478ac29a2a28f144b, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Wall1
-    second: {fileID: 2100000, guid: 9148cc766b7ab9b4ea2628bd9fbec300, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: lambert2
+      name: openPBR_shader1
     second: {fileID: 2100000, guid: 73ae21ddf50f82949936a11d646bacd2, type: 2}
   materials:
     materialImportMode: 2
