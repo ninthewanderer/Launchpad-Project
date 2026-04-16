@@ -41,8 +41,62 @@ Transform:
   - {fileID: 445790469601251574}
   - {fileID: 8316635628751319162}
   - {fileID: 4082275606102769358}
+  - {fileID: 8249733180566026508}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3634322550485219384
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8249733180566026508}
+  - component: {fileID: 2912869771969734546}
+  m_Layer: 3
+  m_Name: Collider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8249733180566026508
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3634322550485219384}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7610150914363796954}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &2912869771969734546
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3634322550485219384}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 12.023354, y: 9.581434, z: 12.995712}
+  m_Center: {x: -4.042362, y: 0.37585735, z: 7.1438713}
 --- !u!1001 &143236178902795862
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3167,6 +3221,8 @@ PrefabInstance:
     - {fileID: 5235734683201624939, guid: d39a1d0929f442b468a71a70d7284047, type: 3}
     - {fileID: 5638349231939497113, guid: d39a1d0929f442b468a71a70d7284047, type: 3}
     - {fileID: 1410215574588943924, guid: d39a1d0929f442b468a71a70d7284047, type: 3}
+    - {fileID: 7696923825842137019, guid: d39a1d0929f442b468a71a70d7284047, type: 3}
+    - {fileID: 2447261926992240546, guid: d39a1d0929f442b468a71a70d7284047, type: 3}
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 3774379215699806584, guid: d39a1d0929f442b468a71a70d7284047,
         type: 3}
