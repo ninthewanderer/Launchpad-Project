@@ -21,7 +21,7 @@ EditorBuildSettings:
     path: Assets/Scenes/UI Scenes/LoseScene.unity
     guid: a7f963c4b2f07e14d815251d4b821865
   - enabled: 1
-    path: Assets/Scenes/LvlPlatforming.unity
+    path: Assets/Scenes/LvlPlatformingFIX.unity
     guid: 484edcd69420b9f438cfd0cbfb234a20
   - enabled: 1
     path: Assets/Scenes/LvlHide&Seek.unity
