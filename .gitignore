@@ -93,3 +93,6 @@ crashlytics-build.properties
 
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
+
+# Ignores the local workspace file for individual IDEs.
+workspace.xml
