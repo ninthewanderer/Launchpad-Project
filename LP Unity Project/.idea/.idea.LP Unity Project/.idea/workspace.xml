@@ -5,17 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c69d5861-277c-44d1-bbc5-96bdb29f1afc" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.LP Unity Project/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.LP Unity Project/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Art/Materials/MiscellaneousMaterials/Path.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Materials/MiscellaneousMaterials/Path.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Art/Prefabs/PowerUps.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Art/Prefabs/PowerUps/Checkpoint Indicator.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Art/Prefabs/PowerUps/Checkpoint Indicator.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Art/Prefabs/PowerUps/Checkpoint.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Art/Prefabs/PowerUps/Checkpoint.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Art/Prefabs/PowerUps/Recovery Power-Up.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Art/Prefabs/PowerUps/Recovery Power-Up.prefab.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Art/Prefabs/NewPlayer.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/Prefabs/NewPlayer.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/LvlPlatformingOLD.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/LvlPlatformingOLD.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Tutorial.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Tutorial.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/HideAndSeek/HideAndSeekManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/HideAndSeek/HideAndSeekManager.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
