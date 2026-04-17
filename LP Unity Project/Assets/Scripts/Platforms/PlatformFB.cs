@@ -7,18 +7,20 @@ public class PlatformFB : MonoBehaviour
     public float Speed = 2f;
 
     private Vector3 originalPosition;
-    private bool hasStarted = false;
+    public bool hasStarted = false;
     private Coroutine moveCoroutine;
+    public bool isMoving = false;
 
     void Start()
     {
         originalPosition = transform.position;
     }
 
-    IEnumerator MovePlatform()
+    public IEnumerator MovePlatform()
     {
         Vector3 targetPosition = originalPosition + transform.forward * MoveDistance;
-
+        
+        isMoving = true;
         while (Vector3.Distance(transform.position, targetPosition) > 0.01f)
         {
             transform.position = Vector3.MoveTowards(
@@ -28,9 +30,23 @@ public class PlatformFB : MonoBehaviour
             );
             yield return null;
         }
+        isMoving = false;
+        // hasStarted = false;
+    }
 
-        
-        hasStarted = false;
+    public IEnumerator MovePlatformBack()
+    {
+       isMoving = true;
+       
+        while (Vector3.Distance(transform.position, originalPosition) > 0.01f)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, 
+                originalPosition, 
+                Speed * Time.deltaTime);
+            yield return null;
+        }
+
+        isMoving = false;
     }
 
     void OnCollisionEnter(Collision collision)
@@ -38,15 +54,15 @@ public class PlatformFB : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             collision.transform.SetParent(transform);
-
+    
             if (!hasStarted)
             {
                 hasStarted = true;
-                moveCoroutine = StartCoroutine(MovePlatform());
+                // moveCoroutine = StartCoroutine(MovePlatform());
             }
         }
     }
-
+    
     void OnCollisionExit(Collision collision)
     {
         if (collision.gameObject.CompareTag("Player"))
@@ -64,7 +80,7 @@ public class PlatformFB : MonoBehaviour
             StopCoroutine(moveCoroutine);
             moveCoroutine = null;
         }
-
+    
        
         hasStarted = false;
         transform.position = originalPosition;

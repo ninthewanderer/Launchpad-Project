@@ -96,3 +96,4 @@ crashlytics-build.properties
 
 # Ignores the local workspace file for individual IDEs.
 /LP Unity Project/.idea
+LP Unity Project/.idea/.idea.LP Unity Project/.idea/workspace.xml
