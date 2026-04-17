@@ -6,17 +6,17 @@ using UnityEngine;
 public class Button : MonoBehaviour
 {
     public GameObject[] affectedObjects;
-    public CanvasGroup buttonCanvas;
+    // public CanvasGroup buttonCanvas;
     public float platformWaitTime = 2f;
     private bool playerInRange;
     private bool objectsEnabled;
 
     void Start()
     {
-        if (buttonCanvas.isActiveAndEnabled)
-        {
-            buttonCanvas.gameObject.SetActive(false);
-        }
+        // if (buttonCanvas.isActiveAndEnabled)
+        // {
+        //     buttonCanvas.gameObject.SetActive(false);
+        // }
     }
 
     void Update()
@@ -97,7 +97,7 @@ public class Button : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInRange = true;
-            buttonCanvas.gameObject.SetActive(true);
+            // buttonCanvas.gameObject.SetActive(true);
         }
     }
     
@@ -106,7 +106,7 @@ public class Button : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInRange = false;
-            buttonCanvas.gameObject.SetActive(false);
+            // buttonCanvas.gameObject.SetActive(false);
         }
     }
 }

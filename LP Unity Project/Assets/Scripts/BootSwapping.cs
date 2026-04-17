@@ -6,17 +6,17 @@ using UnityEngine.UI;
 
 public class BootSwapping : MonoBehaviour
 {
-    public CanvasGroup bootSwapCanvas;
+    // public CanvasGroup bootSwapCanvas;
     public BootMovement player;
     public BootMovement.BootType bootToSwitch;
     private bool playerInRange;
 
     void Start()
     {
-        if (bootSwapCanvas.isActiveAndEnabled)
-        {
-            bootSwapCanvas.gameObject.SetActive(false);
-        }
+        // if (bootSwapCanvas.isActiveAndEnabled)
+        // {
+        //     bootSwapCanvas.gameObject.SetActive(false);
+        // }
     }
 
     void Update()
@@ -33,7 +33,7 @@ public class BootSwapping : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInRange = true;
-            bootSwapCanvas.gameObject.SetActive(true);
+            // bootSwapCanvas.gameObject.SetActive(true);
         }
     }
 
@@ -42,7 +42,7 @@ public class BootSwapping : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInRange = false;
-            bootSwapCanvas.gameObject.SetActive(false);
+            // bootSwapCanvas.gameObject.SetActive(false);
         }
     }
 }
