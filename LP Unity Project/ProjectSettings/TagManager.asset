@@ -12,6 +12,9 @@ TagManager:
   - Path 2
   - Path 3
   - Path 4
+  - Path
+  - HidingSpot
+  - Trace
   layers:
   - Default
   - TransparentFX

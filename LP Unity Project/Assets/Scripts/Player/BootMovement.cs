@@ -1,17 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class BootMovement : MonoBehaviour
 {
+    private PlayerController movement;
+    private Rigidbody rb;
+    private PlayerSounds playerSFX;
+    
+    public BootType currentBoots = BootType.None;
     public enum BootType
     {
         None,
         MagnetBoots,
-        SteamBoots,
+        DetectionBoots,
         RocketBoots
     }
 
+    [Header("------------- Steam Boots -------------")]
+    public CanvasGroup steamBootsCanvas;
+    private bool isSteamActive;
+    
     public float horizontalBoostForce = 20f;
     public float verticalBoostForce = 30f;
     public float maxVerticalSpeed = 12f;
@@ -19,32 +29,54 @@ public class BootMovement : MonoBehaviour
     public float dashCooldown = 0.5f;
     public float holdThreshold = 0.15f;
     public float dashLockoutTime = 0.15f;
-    public LayerMask MagneticLayer;
+    
     public Transform groundCheck;
     public float groundCheckRadius = 0.3f;
 
     private float dashTimer;
     private float holdTimer;
     private float airTime;
-
     private bool usedHorizontalDash;
     private bool usedVerticalBoost;
+    
+    [Header("------------- Magnetic Boots -------------")]
+    public LayerMask MagneticLayer;
     private bool isMagnetActive;
-
-
     private bool magnetJumpQueued;
     private bool magnetIsActive;
     private Vector3 magnetSurfaceNormal;
 
-    public BootType currentBoots = BootType.None;
-    public PlayerController movement;
-
-    private Rigidbody rb;
+    [Header("------------- Detection Boots -------------")]
+    public LayerMask traceLayer;
+    public DetectionBootsUI chargeBar;
+    public CanvasGroup chargeBarCanvas;
+    
+    private bool isDetectionActive;
+    public float detectionRadius;
+    public float disappearTime;
+    public float abilityCooldown;
+    private bool onCooldown = false;
+    
+    public float maxCharge;
+    private float currentCharge;
+    public float chargeLost;
 
     void Start()
     {
+        playerSFX = GetComponent<PlayerSounds>();
         movement = GetComponent<PlayerController>();
         rb = GetComponent<Rigidbody>();
+        
+        // Only disables the canvases if they're not already disabled.
+        if (chargeBarCanvas.gameObject.activeSelf)
+        {
+            chargeBarCanvas.gameObject.SetActive(false);
+        }
+
+        if (steamBootsCanvas.gameObject.activeSelf)
+        {
+            steamBootsCanvas.gameObject.SetActive(false);
+        }
     }
 
     void Update()
@@ -53,14 +85,24 @@ public class BootMovement : MonoBehaviour
 
         switch (currentBoots)
         {
+            case BootType.None:
+                break;
             case BootType.RocketBoots:
+                isDetectionActive = false;
+                chargeBarCanvas.gameObject.SetActive(false);
                 HandleRocketBoots();
                 break;
             case BootType.MagnetBoots:
+                isDetectionActive = false;
+                isSteamActive = false;
+                chargeBarCanvas.gameObject.SetActive(false);
+                steamBootsCanvas.gameObject.SetActive(false);
                 HandleMagnetBootsUpdate();
                 break;
-            case BootType.SteamBoots:
-                HandleSteamBoots();
+            case BootType.DetectionBoots:
+                isSteamActive = false;
+                steamBootsCanvas.gameObject.SetActive(false);
+                HandleDetectionBoots();
                 break;
             default:
                 Debug.LogWarning("No boots equipped or unrecognized boot type.");
@@ -74,10 +116,21 @@ public class BootMovement : MonoBehaviour
             HandleMagnetBootsFixed();
     }
 
-
+    public void ChangeBoots(BootType newBoots)
+    {
+        currentBoots = newBoots;
+    }
+    
     void HandleRocketBoots()
     {
         if (movement == null || rb == null) return;
+
+        // Only happens one time so that the steam boots functionality is enabled.
+        if (!isSteamActive)
+        {
+            steamBootsCanvas.gameObject.SetActive(true);
+            isSteamActive = true;
+        }
 
         if (movement.IsGrounded)
         {
@@ -135,8 +188,7 @@ public class BootMovement : MonoBehaviour
             rb.AddForce(boostDir * horizontalBoostForce, ForceMode.VelocityChange);
         }
     }
-
-
+    
     void HandleMagnetBootsUpdate()
     {
         
@@ -200,13 +252,92 @@ public class BootMovement : MonoBehaviour
 
         magnetJumpQueued = false;
     }
-
-
-    void HandleSteamBoots()
+    
+    void HandleDetectionBoots()
     {
-        // Placeholder for steam boots logic
+        // One-time setup for the detection boots.
+        if (!isDetectionActive)
+        {
+            chargeBarCanvas.gameObject.SetActive(true);
+            chargeBar.SetMaxCharge(maxCharge);
+            chargeBar.SetCurrentCharge(maxCharge);
+            currentCharge = maxCharge;
+            chargeBar.BarOffCooldown();
+            StartCoroutine(CooldownCheck()); // Starts constant boot cooldown management.
+            isDetectionActive = true;
+        }
+        
+        // E on keyboard, Y on controller
+        // This activates the detection boots ability.
+        if (!onCooldown && (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Joystick1Button3)))
+        {
+            onCooldown = true;
+            SetCharge(-chargeLost);
+            CheckForTraces();
+            playerSFX.PlayDetectionBootsSound();
+        }
+    }
+    
+    // Manages the ability cooldown for the boots.
+    private IEnumerator CooldownCheck()
+    {
+        while (true)
+        {
+            if (onCooldown)
+            {
+                chargeBar.BarOnCooldown();
+                yield return new WaitForSeconds(abilityCooldown);
+                chargeBar.BarOffCooldown();
+                onCooldown = false;
+            }
+            yield return null;
+        }
+    }
+    
+    // Manages the charge bar for the detection boots.
+    private void SetCharge(float newCharge)
+    {
+        // Adds the newCharge value onto currentCharge, ensuring it never drops below 0 or goes above maxCharge.
+        currentCharge += newCharge;
+        currentCharge = Mathf.Clamp(currentCharge, 0, maxCharge);
+
+        // If the player runs out of charge, they lose.
+        if (currentCharge == 0)
+        {
+            SceneManager.LoadScene("LoseScene");
+        }
+        chargeBar.SetCurrentCharge(currentCharge);
     }
 
+    // Checks for traces of the cat near the player.(Detection boots ability.)
+    private void CheckForTraces()
+    {
+        Collider[] traces = Physics.OverlapSphere(transform.position, detectionRadius, traceLayer,
+            QueryTriggerInteraction.Collide);
+
+        if (traces.Length != 0)
+        {
+            foreach (Collider trace in traces)
+            {
+                GameObject traceObj = trace.transform.gameObject;
+                if (traceObj.CompareTag("Trace") && traceObj.activeSelf)
+                {
+                    int defaultLayer = LayerMask.NameToLayer("Default");
+                    traceObj.layer = defaultLayer;
+                    StartCoroutine(TraceDisappear(traceObj));
+                }
+            }
+        }
+    }
+
+    // Makes the traces of the cat disappear after a specified amount of time.
+    private IEnumerator TraceDisappear(GameObject traceObj)
+    {
+        yield return new WaitForSeconds(disappearTime);
+        int traceLayerInt = LayerMask.NameToLayer("Cat_Traces");
+        traceObj.layer = traceLayerInt;
+    }
+    
     void HandleCooldowns()
     {
         if (dashTimer > 0f)

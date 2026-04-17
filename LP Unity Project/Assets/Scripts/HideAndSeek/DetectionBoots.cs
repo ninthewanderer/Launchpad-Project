@@ -6,13 +6,8 @@ using UnityEngine.SceneManagement;
 
 public class DetectionBoots : MonoBehaviour
 {
-    [Header("------- Hide & Seek -------")]
-    public HideAndSeekManager hnsManager;
-    public LayerMask traceLayer;
-    private String pathName;
-    [Space(10)]
-    
     [Header("------- Detection Boots -------")]
+    public LayerMask traceLayer;
     public float detectionRadius;
     public float disappearTime;
     public float abilityCooldown;
@@ -29,8 +24,6 @@ public class DetectionBoots : MonoBehaviour
         chargeBar.SetCurrentCharge(maxCharge);
         currentCharge = maxCharge;
         chargeBar.BarOffCooldown();
-        
-        pathName = hnsManager.GivePathName(); // Obtains the name of the path picked by the H&S Manager.
         StartCoroutine(CooldownCheck()); // Starts constant boot cooldown management.
     }
 
@@ -58,7 +51,7 @@ public class DetectionBoots : MonoBehaviour
             foreach (Collider trace in traces)
             {
                 GameObject traceObj = trace.transform.gameObject;
-                if (traceObj.CompareTag(pathName))
+                if (traceObj.CompareTag("Trace") && traceObj.activeSelf)
                 {
                     int defaultLayer = LayerMask.NameToLayer("Default");
                     traceObj.layer = defaultLayer;
@@ -72,8 +65,8 @@ public class DetectionBoots : MonoBehaviour
     private IEnumerator TraceDisappear(GameObject traceObj)
     {
         yield return new WaitForSeconds(disappearTime);
-        int traceLayer = LayerMask.NameToLayer("Cat_Traces");
-        traceObj.layer = traceLayer;
+        int traceLayerInt = LayerMask.NameToLayer("Cat_Traces");
+        traceObj.layer = traceLayerInt;
     }
 
     // Manages the ability cooldown for the boots.
