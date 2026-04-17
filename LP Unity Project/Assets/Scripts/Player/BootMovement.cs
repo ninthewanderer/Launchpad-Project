@@ -45,6 +45,10 @@ public class BootMovement : MonoBehaviour
     private bool magnetJumpQueued;
     private bool magnetIsActive;
     private Vector3 magnetSurfaceNormal;
+    public float magnetRotationSpeed = 10f;
+    public float gravityStrength = 9.81f;
+    public float magnetMoveSpeed = 5f;
+    private static readonly Vector3 WorldGravity = new Vector3(0f, -9.81f, 0f);
 
     [Header("------------- Detection Boots -------------")]
     public LayerMask traceLayer;
@@ -188,71 +192,80 @@ public class BootMovement : MonoBehaviour
             rb.AddForce(boostDir * horizontalBoostForce, ForceMode.VelocityChange);
         }
     }
-    
+
     void HandleMagnetBootsUpdate()
     {
-        
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Joystick1Button0))
             magnetJumpQueued = true;
     }
 
     void HandleMagnetBootsFixed()
     {
-        RaycastHit hit;
-        float sphereCastRadius  = 0.5f;
-        float sphereCastDistance = 2f;
+        if (rb == null) return;
 
-        rb.freezeRotation = true;
-        rb.useGravity     = true;
+        const float sphereCastRadius = 0.5f;
+        const float sphereCastDistance = 2f;
 
         bool onMagnetic = Physics.SphereCast(
-            transform.position, sphereCastRadius,
-            -transform.up, out hit,
-            sphereCastDistance, MagneticLayer);
+            transform.position,
+            sphereCastRadius,
+            -transform.up,
+            out RaycastHit hit,
+            sphereCastDistance,
+            MagneticLayer);
 
-        magnetIsActive = onMagnetic;
+        movement.magnetActive = onMagnetic;
 
         if (onMagnetic)
         {
-            magnetSurfaceNormal = hit.normal;
+            Vector3 normal = hit.normal;
+            movement.magnetSurfaceNormal = normal;
 
-           
-            rb.AddForce(-magnetSurfaceNormal * 9.81f, ForceMode.Acceleration);
 
-           
-            float rotationSpeed     = 10f;
-            Quaternion targetRotation = Quaternion.FromToRotation(transform.up, magnetSurfaceNormal) * transform.rotation;
-            transform.rotation      = Quaternion.Slerp(transform.rotation, targetRotation, Time.fixedDeltaTime * rotationSpeed);
+            Physics.gravity = -normal * gravityStrength;
+            rb.AddForce(-normal * gravityStrength, ForceMode.Acceleration);
 
-           
-            float keyH     = Input.GetAxis("Horizontal");
-            float stickH   = 0f;
-            try { stickH   = Input.GetAxis("LeftStickX"); } catch { }
-            float moveInput = Mathf.Abs(keyH) > Mathf.Abs(stickH) ? keyH : stickH;
 
-            float keyV     = Input.GetAxis("Vertical");
-            float stickV   = 0f;
-            try { stickV   = Input.GetAxis("LeftStickY"); } catch { }
-            float forwardInput = Mathf.Abs(keyV) > Mathf.Abs(stickV) ? keyV : stickV;
+            Quaternion targetRotation = Quaternion.FromToRotation(transform.up, normal) * transform.rotation;
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                targetRotation,
+                Time.fixedDeltaTime * magnetRotationSpeed);
 
-            float moveSpeed = 5f;
-            Vector3 moveDirection = transform.right * moveInput + transform.forward * forwardInput;
-            rb.MovePosition(rb.position + moveDirection * moveSpeed * Time.fixedDeltaTime);
 
-            
+            float inputH = GetAxis("Horizontal", "LeftStickX");
+            float inputV = GetAxis("Vertical", "LeftStickY");
+
+            Vector3 camForward = movement.cameraTarget.forward;
+            Vector3 surfaceForward = Vector3.ProjectOnPlane(camForward, normal).normalized;
+            Vector3 surfaceRight = Vector3.Cross(normal, surfaceForward);
+
+            Vector3 moveDir = surfaceForward * inputV + surfaceRight * inputH;
+
+            rb.MovePosition(rb.position + moveDir * magnetMoveSpeed * Time.fixedDeltaTime);
+
             if (magnetJumpQueued)
-                rb.AddForce(magnetSurfaceNormal * verticalBoostForce, ForceMode.Acceleration);
+            {
+                rb.AddForce(normal * verticalBoostForce, ForceMode.Impulse);
+                Physics.gravity = new Vector3(0f, -9.81f, 0f);
+            }
         }
         else
         {
-            
-            Quaternion uprightRotation = Quaternion.FromToRotation(transform.up, Vector3.up) * transform.rotation;
-            transform.rotation = Quaternion.Slerp(transform.rotation, uprightRotation, Time.fixedDeltaTime * 5f);
+            Physics.gravity = new Vector3(0f, -9.81f, 0f);
+
+
+            Quaternion upright = Quaternion.FromToRotation(transform.up, Vector3.up) * transform.rotation;
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                upright,
+                Time.fixedDeltaTime * magnetRotationSpeed * 0.5f);
         }
 
         magnetJumpQueued = false;
     }
-    
+
+
     void HandleDetectionBoots()
     {
         // One-time setup for the detection boots.
@@ -342,6 +355,13 @@ public class BootMovement : MonoBehaviour
     {
         if (dashTimer > 0f)
             dashTimer -= Time.deltaTime;
+    }
+    float GetAxis(string keyboardAxis, string joystickAxis)
+    {
+        float kb = Input.GetAxis(keyboardAxis);
+        float joy = 0f;
+        try { joy = Input.GetAxis(joystickAxis); } catch { }
+        return Mathf.Abs(kb) > Mathf.Abs(joy) ? kb : joy;
     }
 
     void CheckMagnet()
