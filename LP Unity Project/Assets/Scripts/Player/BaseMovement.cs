@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     public Transform groundCheck;
     public float groundCheckRadius = 0.3f;
     public LayerMask groundLayer;
+    public float steamBoost = 15f;
 
     [Header("Camera/Look")]
     public Transform cameraTarget;
@@ -36,6 +37,9 @@ public class PlayerController : MonoBehaviour
 
     [HideInInspector] public bool magnetActive = false;
     [HideInInspector] public Vector3 magnetSurfaceNormal = Vector3.up;
+
+    private Vector3 wallNormal = Vector3.zero;
+    private bool isTouchingWall = false;
 
     public bool IsGrounded => isGrounded;
 
@@ -134,7 +138,33 @@ public class PlayerController : MonoBehaviour
     {
         isGrounded = Physics.CheckSphere(groundCheck.position, groundCheckRadius, groundLayer);
     }
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Steam"))
+        {
+            rb.AddForce(Vector3.up * steamBoost, ForceMode.Impulse);
+        }
+    }
 
+    void OnCollisionStay(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Steam")) return;
+
+        foreach (ContactPoint contact in collision.contacts)
+        {
+            if (contact.normal.y < 0.4f)
+            {
+                wallNormal = contact.normal;
+                isTouchingWall = true;
+                return;
+            }
+        }
+    }
+    void OnCollisionExit(Collision collision)
+    {
+        isTouchingWall = false;
+        wallNormal = Vector3.zero;
+    }
     void UpdateCameraTarget()
     {
         cameraTarget.position = transform.position + Vector3.up * cameraYOffset;
