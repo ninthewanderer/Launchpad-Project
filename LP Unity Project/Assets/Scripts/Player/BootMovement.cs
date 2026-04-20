@@ -71,16 +71,11 @@ public class BootMovement : MonoBehaviour
         movement = GetComponent<PlayerController>();
         rb = GetComponent<Rigidbody>();
         
-        // Only disables the canvases if they're not already disabled.
         if (chargeBarCanvas.gameObject.activeSelf)
-        {
             chargeBarCanvas.gameObject.SetActive(false);
-        }
 
         if (steamBootsCanvas.gameObject.activeSelf)
-        {
             steamBootsCanvas.gameObject.SetActive(false);
-        }
     }
 
     void Update()
