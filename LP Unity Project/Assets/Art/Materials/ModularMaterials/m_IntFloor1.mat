@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: m_Concrete
+  m_Name: m_IntFloor1
   m_Shader: {fileID: -6465566751694194690, guid: aa65df480c3e9b44e9f0a8e3338fb9b6,
     type: 3}
   m_Parent: {fileID: 0}
@@ -25,7 +25,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: 5ee27756a09c7ea40aa111497d096ef5, type: 3}
+        m_Texture: {fileID: 2800000, guid: b3d0c9efaa8b18f4584e8574d2b78e76, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -49,7 +49,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 5ee27756a09c7ea40aa111497d096ef5, type: 3}
+        m_Texture: {fileID: 2800000, guid: b3d0c9efaa8b18f4584e8574d2b78e76, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -57,7 +57,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
-        m_Texture: {fileID: 2800000, guid: 78a7b4804c886bb448491cb753a538ff, type: 3}
+        m_Texture: {fileID: 2800000, guid: 4de92b7bf31806041ad28b9a860ae848, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
@@ -69,15 +69,15 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _baseTexture:
-        m_Texture: {fileID: 2800000, guid: ce36590e4cd82fb479458fc7fc8ae017, type: 3}
+        m_Texture: {fileID: 2800000, guid: 010131ad2caa3b546aa56cc144cb6b41, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _occlusionMap:
-        m_Texture: {fileID: 2800000, guid: 4822e8e641f3abc4c8126b9f9e9f5294, type: 3}
+        m_Texture: {fileID: 2800000, guid: fb4d87d7801f8cd4f919b34ec584bff0, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _texture:
-        m_Texture: {fileID: 2800000, guid: 5ee27756a09c7ea40aa111497d096ef5, type: 3}
+        m_Texture: {fileID: 2800000, guid: b3d0c9efaa8b18f4584e8574d2b78e76, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -130,11 +130,11 @@ Material:
     - _scaleFactorY: 1
     - _scaleFactorZ: 1
     m_Colors:
-    - _BaseColor: {r: 0.8396226, g: 0.808327, b: 0.7168476, a: 1}
-    - _Color: {r: 0.8396226, g: 0.808327, b: 0.7168476, a: 1}
+    - _BaseColor: {r: 0.84313726, g: 0.8117647, b: 0.7176471, a: 1}
+    - _Color: {r: 0.8431372, g: 0.8117647, b: 0.7176471, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
-    - _textureColor: {r: 1, g: 1, b: 1, a: 0}
+    - _textureColor: {r: 0.8784314, g: 0.84313726, b: 0.70980394, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &884464785510891603
 MonoBehaviour:
