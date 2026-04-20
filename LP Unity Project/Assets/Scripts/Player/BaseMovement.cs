@@ -124,6 +124,15 @@ public class PlayerController : MonoBehaviour
 
         rb.MoveRotation(Quaternion.Euler(0f, yaw, 0f));
     }
+    
+    public Quaternion GetMagnetRotation(Vector3 surfaceNormal, float rotationSpeed)
+    {
+        Quaternion surfaceUpright = Quaternion.FromToRotation(Vector3.up, surfaceNormal);
+        Quaternion yawRotation    = Quaternion.AngleAxis(yaw, surfaceNormal);
+        Quaternion target         = yawRotation * surfaceUpright;
+
+        return Quaternion.Slerp(transform.rotation, target, Time.fixedDeltaTime * rotationSpeed);
+    }
 
     void HandleJump()
     {
