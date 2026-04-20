@@ -120,10 +120,19 @@ public class PlayerController : MonoBehaviour
 
     void RotatePlayer()
     {
-
         if (magnetActive) return;
 
         rb.MoveRotation(Quaternion.Euler(0f, yaw, 0f));
+    }
+
+    
+    public Quaternion GetMagnetRotation(Vector3 surfaceNormal, float rotationSpeed)
+    {
+        Quaternion surfaceUpright = Quaternion.FromToRotation(Vector3.up, surfaceNormal);
+        Quaternion yawRotation    = Quaternion.AngleAxis(yaw, surfaceNormal);
+        Quaternion target         = yawRotation * surfaceUpright;
+
+        return Quaternion.Slerp(transform.rotation, target, Time.fixedDeltaTime * rotationSpeed);
     }
 
     void HandleJump()
@@ -138,6 +147,7 @@ public class PlayerController : MonoBehaviour
     {
         isGrounded = Physics.CheckSphere(groundCheck.position, groundCheckRadius, groundLayer);
     }
+
     void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Steam"))
@@ -160,11 +170,13 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+
     void OnCollisionExit(Collision collision)
     {
         isTouchingWall = false;
         wallNormal = Vector3.zero;
     }
+
     void UpdateCameraTarget()
     {
         cameraTarget.position = transform.position + Vector3.up * cameraYOffset;

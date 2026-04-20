@@ -71,16 +71,11 @@ public class BootMovement : MonoBehaviour
         movement = GetComponent<PlayerController>();
         rb = GetComponent<Rigidbody>();
         
-        // Only disables the canvases if they're not already disabled.
         if (chargeBarCanvas.gameObject.activeSelf)
-        {
             chargeBarCanvas.gameObject.SetActive(false);
-        }
 
         if (steamBootsCanvas.gameObject.activeSelf)
-        {
             steamBootsCanvas.gameObject.SetActive(false);
-        }
     }
 
     void Update()
@@ -129,7 +124,6 @@ public class BootMovement : MonoBehaviour
     {
         if (movement == null || rb == null) return;
 
-        // Only happens one time so that the steam boots functionality is enabled.
         if (!isSteamActive)
         {
             steamBootsCanvas.gameObject.SetActive(true);
@@ -147,7 +141,6 @@ public class BootMovement : MonoBehaviour
 
         airTime += Time.deltaTime;
 
-    
         bool boostHeld = Input.GetKey(KeyCode.Space)
                       || Input.GetKey(KeyCode.Joystick1Button0);
 
@@ -176,9 +169,8 @@ public class BootMovement : MonoBehaviour
         if (boostUp)
             holdTimer = 0f;
 
-   
         bool dashPressed = Input.GetKeyDown(KeyCode.LeftShift)
-                        || Input.GetKeyDown(KeyCode.Joystick1Button1); 
+                        || Input.GetKeyDown(KeyCode.Joystick1Button1);
 
         if (dashPressed &&
             airTime > dashLockoutTime &&
@@ -206,32 +198,46 @@ public class BootMovement : MonoBehaviour
         const float sphereCastRadius = 0.5f;
         const float sphereCastDistance = 2f;
 
-        bool onMagnetic = Physics.SphereCast(
+
+        RaycastHit[] hits = Physics.SphereCastAll(
             transform.position,
             sphereCastRadius,
             -transform.up,
-            out RaycastHit hit,
             sphereCastDistance,
             MagneticLayer);
+
+        bool onMagnetic = false;
+        RaycastHit bestHit = default;
+        float bestDot = -1f;
+
+        foreach (RaycastHit hit in hits)
+        {
+            
+            Transform hitTransform = hit.collider.transform;
+            Vector3 thinAxis = hitTransform.up;
+
+            
+            float dot = Mathf.Abs(Vector3.Dot(hit.normal, thinAxis));
+            if (dot > 0.7f && dot > bestDot)
+            {
+                bestDot = dot;
+                bestHit = hit;
+                onMagnetic = true;
+            }
+        }
 
         movement.magnetActive = onMagnetic;
 
         if (onMagnetic)
         {
-            Vector3 normal = hit.normal;
+            Vector3 normal = bestHit.normal;
             movement.magnetSurfaceNormal = normal;
-
 
             Physics.gravity = -normal * gravityStrength;
             rb.AddForce(-normal * gravityStrength, ForceMode.Acceleration);
 
-
-            Quaternion targetRotation = Quaternion.FromToRotation(transform.up, normal) * transform.rotation;
-            transform.rotation = Quaternion.Slerp(
-                transform.rotation,
-                targetRotation,
-                Time.fixedDeltaTime * magnetRotationSpeed);
-
+            
+            transform.rotation = movement.GetMagnetRotation(normal, magnetRotationSpeed);
 
             float inputH = GetAxis("Horizontal", "LeftStickX");
             float inputV = GetAxis("Vertical", "LeftStickY");
@@ -241,7 +247,6 @@ public class BootMovement : MonoBehaviour
             Vector3 surfaceRight = Vector3.Cross(normal, surfaceForward);
 
             Vector3 moveDir = surfaceForward * inputV + surfaceRight * inputH;
-
             rb.MovePosition(rb.position + moveDir * magnetMoveSpeed * Time.fixedDeltaTime);
 
             if (magnetJumpQueued)
@@ -254,7 +259,6 @@ public class BootMovement : MonoBehaviour
         {
             Physics.gravity = new Vector3(0f, -9.81f, 0f);
 
-
             Quaternion upright = Quaternion.FromToRotation(transform.up, Vector3.up) * transform.rotation;
             transform.rotation = Quaternion.Slerp(
                 transform.rotation,
@@ -265,10 +269,8 @@ public class BootMovement : MonoBehaviour
         magnetJumpQueued = false;
     }
 
-
     void HandleDetectionBoots()
     {
-        // One-time setup for the detection boots.
         if (!isDetectionActive)
         {
             chargeBarCanvas.gameObject.SetActive(true);
@@ -276,12 +278,10 @@ public class BootMovement : MonoBehaviour
             chargeBar.SetCurrentCharge(maxCharge);
             currentCharge = maxCharge;
             chargeBar.BarOffCooldown();
-            StartCoroutine(CooldownCheck()); // Starts constant boot cooldown management.
+            StartCoroutine(CooldownCheck());
             isDetectionActive = true;
         }
         
-        // E on keyboard, Y on controller
-        // This activates the detection boots ability.
         if (!onCooldown && (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Joystick1Button3)))
         {
             onCooldown = true;
@@ -291,7 +291,6 @@ public class BootMovement : MonoBehaviour
         }
     }
     
-    // Manages the ability cooldown for the boots.
     private IEnumerator CooldownCheck()
     {
         while (true)
@@ -307,22 +306,17 @@ public class BootMovement : MonoBehaviour
         }
     }
     
-    // Manages the charge bar for the detection boots.
     private void SetCharge(float newCharge)
     {
-        // Adds the newCharge value onto currentCharge, ensuring it never drops below 0 or goes above maxCharge.
         currentCharge += newCharge;
         currentCharge = Mathf.Clamp(currentCharge, 0, maxCharge);
 
-        // If the player runs out of charge, they lose.
         if (currentCharge == 0)
-        {
             SceneManager.LoadScene("LoseScene");
-        }
+
         chargeBar.SetCurrentCharge(currentCharge);
     }
 
-    // Checks for traces of the cat near the player.(Detection boots ability.)
     private void CheckForTraces()
     {
         Collider[] traces = Physics.OverlapSphere(transform.position, detectionRadius, traceLayer,
@@ -343,7 +337,6 @@ public class BootMovement : MonoBehaviour
         }
     }
 
-    // Makes the traces of the cat disappear after a specified amount of time.
     private IEnumerator TraceDisappear(GameObject traceObj)
     {
         yield return new WaitForSeconds(disappearTime);
@@ -356,6 +349,7 @@ public class BootMovement : MonoBehaviour
         if (dashTimer > 0f)
             dashTimer -= Time.deltaTime;
     }
+
     float GetAxis(string keyboardAxis, string joystickAxis)
     {
         float kb = Input.GetAxis(keyboardAxis);
