@@ -146,6 +146,7 @@ public class PlayerController : MonoBehaviour
     {
         isGrounded = Physics.CheckSphere(groundCheck.position, groundCheckRadius, groundLayer);
     }
+
     void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Steam"))
@@ -168,11 +169,13 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+
     void OnCollisionExit(Collision collision)
     {
         isTouchingWall = false;
         wallNormal = Vector3.zero;
     }
+
     void UpdateCameraTarget()
     {
         cameraTarget.position = transform.position + Vector3.up * cameraYOffset;
