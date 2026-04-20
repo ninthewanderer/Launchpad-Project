@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public class Button : MonoBehaviour
+public class PuzzleButton : MonoBehaviour
 {
     public GameObject[] affectedObjects;
     // public CanvasGroup buttonCanvas;

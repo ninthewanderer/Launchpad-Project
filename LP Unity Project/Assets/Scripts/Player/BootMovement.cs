@@ -124,6 +124,21 @@ public class BootMovement : MonoBehaviour
     {
         currentBoots = newBoots;
     }
+
+    public void ChangeToSteamBoots()
+    {
+        currentBoots = BootType.RocketBoots;
+    }
+
+    public void ChangeToDetectionBoots()
+    {
+        currentBoots = BootType.DetectionBoots;
+    }
+
+    public void ChangeToMagnetBoots()
+    {
+        currentBoots = BootType.MagnetBoots;
+    }
     
     void HandleRocketBoots()
     {
@@ -264,8 +279,7 @@ public class BootMovement : MonoBehaviour
 
         magnetJumpQueued = false;
     }
-
-
+    
     void HandleDetectionBoots()
     {
         // One-time setup for the detection boots.
