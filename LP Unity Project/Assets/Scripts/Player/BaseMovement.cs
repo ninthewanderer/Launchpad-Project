@@ -120,7 +120,6 @@ public class PlayerController : MonoBehaviour
 
     void RotatePlayer()
     {
-
         if (magnetActive) return;
 
         rb.MoveRotation(Quaternion.Euler(0f, yaw, 0f));
