@@ -5,6 +5,7 @@ using UnityEngine;
 public class WindowTrigger : MonoBehaviour
 {
     public OpenCloseWindow windowScript;
+    public bool oneTimePopup = true;
     
     void OnTriggerEnter(Collider other)
     {
@@ -19,7 +20,11 @@ public class WindowTrigger : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             windowScript.CloseWindow();
-            gameObject.SetActive(false);
+            
+            if (oneTimePopup)
+            {
+                gameObject.SetActive(false);
+            }
         }
     }
 }
