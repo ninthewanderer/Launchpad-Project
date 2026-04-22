@@ -60,28 +60,42 @@ public class BootSwapping : MonoBehaviour
 
     public void OpenMenu()
     {
-        // Disables the crosshair canvas for the player.
-        crosshairCanvas.gameObject.SetActive(false);
-        
-        // Unlocks the cursor so that the player can select which boots to equip. Time is also paused.
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
-        bootSwapCanvas.gameObject.SetActive(true);
-        Time.timeScale = 0;
-
         // If any particular boots are locked (tutorial purposes mostly) they will not be clickable.
         if (lockSteamBoots)
         {
             steamBootsIcon.interactable = false;
         }
+        else
+        {
+            steamBootsIcon.interactable = true;
+        }
+
         if (lockDetectionBoots)
         {
             detectionBootsIcon.interactable = false;
         }
+        else
+        {
+            detectionBootsIcon.interactable = true;
+        }
+
         if (lockMagnetBoots)
         {
             magnetBootsIcon.interactable = false;
         }
+        else
+        {
+            magnetBootsIcon.interactable = true;
+        }
+
+            // Disables the crosshair canvas for the player.
+            crosshairCanvas.gameObject.SetActive(false);
+        
+        // Unlocks the cursor so that the player can select which boots to equip. Time is also paused.
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+        bootSwapCanvas.gameObject.SetActive(true);
+        Time.timeScale = 0;       
     }
     
     // The CloseMenu() method has been migrated to the BootSwapUI script.
