@@ -12,7 +12,7 @@ public class PlayerAnimator : MonoBehaviour
     private static readonly int ParamIsDashing = Animator.StringToHash("IsDashing");
 
     [Header("Tuning")]
-    public float speedDampTime = 0.1f;
+    public float speedDampTime = 0.05f;
 
     private Animator         anim;
     private PlayerController player;
@@ -49,8 +49,13 @@ public class PlayerAnimator : MonoBehaviour
 
     void UpdateSpeed()
     {
-        Vector3 horizontalVelocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-        anim.SetFloat(ParamSpeed, horizontalVelocity.magnitude, speedDampTime, Time.deltaTime);
+        float h = Input.GetAxis("Horizontal");
+        float v = Input.GetAxis("Vertical");
+        float inputMagnitude = new Vector2(h, v).magnitude;
+
+        if (inputMagnitude < 0.1f) inputMagnitude = 0f;
+
+        anim.SetFloat(ParamSpeed, inputMagnitude, speedDampTime, Time.deltaTime);
     }
 
     void UpdateGrounded(bool grounded)
