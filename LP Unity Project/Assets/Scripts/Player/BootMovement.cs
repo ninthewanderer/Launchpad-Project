@@ -62,7 +62,7 @@ public class BootMovement : MonoBehaviour
     public bool onCooldown = false;
     
     public float maxCharge;
-S    private float currentCharge;
+    private float currentCharge;
     public float chargeLost;
 
     void Start()
