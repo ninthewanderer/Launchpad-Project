@@ -19,7 +19,7 @@ public class SceneDoors : MonoBehaviour
     [SerializeField] private OpenCloseWindow openWindowScript;
     [SerializeField] private CanvasGroup openWindowCanvas;
     [Space(10)]
-    
+
     [Header("-------- Door Type --------")]
     public DoorToUse chosenDoor = DoorToUse.Hub;
     public enum DoorToUse
@@ -30,18 +30,11 @@ public class SceneDoors : MonoBehaviour
         Platforming,
         Puzzle
     };
-    [Space(10)]
-    
-    [Header("-------- Level Conditions --------")]
-    public bool hideAndSeekComplete;
-    public bool platformingComplete;
-    public bool puzzleComplete;
-    
+
     private bool playerInRange;
 
     void Update()
     {
-        // To enter the level, you either press F on keyboard or X on controller.
         if (playerInRange && (Input.GetKeyDown(KeyCode.F) || Input.GetKeyDown(KeyCode.Joystick1Button2)))
         {
             CheckBoots(player.currentBoots);
@@ -64,6 +57,7 @@ public class SceneDoors : MonoBehaviour
         }
     }
 
+// Checks the player's current boots and determines if they can access the chosen door
     private void CheckBoots(BootMovement.BootType boots)
     {
         switch (boots)
@@ -74,10 +68,10 @@ public class SceneDoors : MonoBehaviour
                     MoveToScene(chosenDoor);
                     return;
                 }
-                
+
                 if (chosenDoor == DoorToUse.HideAndSeek)
                 {
-                    if (!hideAndSeekComplete)
+                    if (!SaveData.Instance.HideAndSeekComplete)
                     {
                         MoveToScene(chosenDoor);
                         return;
@@ -87,17 +81,17 @@ public class SceneDoors : MonoBehaviour
                 }
                 WarnPlayer(1);
                 return;
-            
+
             case BootMovement.BootType.RocketBoots:
                 if (chosenDoor == DoorToUse.Hub || chosenDoor == DoorToUse.Tutorial)
                 {
                     MoveToScene(chosenDoor);
                     return;
                 }
-                
+
                 if (chosenDoor == DoorToUse.Platforming)
                 {
-                    if (!platformingComplete)
+                    if (!SaveData.Instance.PlatformingComplete)
                     {
                         MoveToScene(chosenDoor);
                         return;
@@ -107,17 +101,17 @@ public class SceneDoors : MonoBehaviour
                 }
                 WarnPlayer(1);
                 return;
-            
+
             case BootMovement.BootType.MagnetBoots:
                 if (chosenDoor == DoorToUse.Hub || chosenDoor == DoorToUse.Tutorial)
                 {
                     MoveToScene(chosenDoor);
                     return;
                 }
-                
+
                 if (chosenDoor == DoorToUse.Puzzle)
                 {
-                    if (!puzzleComplete)
+                    if (!SaveData.Instance.PuzzleComplete)
                     {
                         MoveToScene(chosenDoor);
                         return;
@@ -127,7 +121,7 @@ public class SceneDoors : MonoBehaviour
                 }
                 WarnPlayer(1);
                 return;
-            
+
             default:
                 if (chosenDoor == DoorToUse.Hub || chosenDoor == DoorToUse.Tutorial)
                 {
@@ -138,7 +132,8 @@ public class SceneDoors : MonoBehaviour
                 return;
         }
     }
-    
+
+// Loads the appropriate scene based on the chosen door
     private void MoveToScene(DoorToUse door)
     {
         switch (door)
@@ -146,62 +141,61 @@ public class SceneDoors : MonoBehaviour
             case DoorToUse.Hub:
                 SceneManager.LoadScene("LvlHub");
                 break;
-            
+
             case DoorToUse.Puzzle:
                 SceneManager.LoadScene("LvlPuzzle");
                 break;
-            
+
             case DoorToUse.Platforming:
                 SceneManager.LoadScene("LvlPlatforming");
                 break;
-            
+
             case DoorToUse.HideAndSeek:
                 SceneManager.LoadScene("LvlHide&Seek");
                 break;
-            
+
             case DoorToUse.Tutorial:
                 SceneManager.LoadScene("Tutorial");
                 break;
-            
+
             default:
                 Debug.LogError("Unknown door: " + door);
                 break;
         }
     }
-
+// Displays a warning to the player if they try to access a door they don't have the boots for or have already completed
     private void WarnPlayer(int warningType)
     {
-        // If there is another window open when the warning pops up, it will close it.
         if (openWindowScript != null && openWindowCanvas != null)
         {
             openWindowScript.CloseWindow();
         }
-        
+
         switch (warningType)
         {
-            case 1: // Occurs when player is not wearing the right boots.
+            case 1:
                 if (bootWindowScript != null)
                 {
                     bootWindowScript.OpenWindow();
                     StartCoroutine(WaitToCloseWindow(1));
                 }
                 break;
-            
-            case 2: // Occurs when player has already completed the given level.
+
+            case 2:
                 if (levelWindowScript != null)
                 {
                     levelWindowScript.OpenWindow();
                     StartCoroutine(WaitToCloseWindow(2));
                 }
                 break;
-            
-            default: // Occurs only if the previous errors did not occur.
+
+            default:
                 Debug.LogError("Unknown warning.");
                 break;
         }
     }
 
-    // Waits for the specified amount of seconds before closing the given window.
+    // Closes the warning window after a delay
     private IEnumerator WaitToCloseWindow(int window)
     {
         yield return new WaitForSeconds(windowCloseTime);
@@ -210,7 +204,7 @@ public class SceneDoors : MonoBehaviour
             case 1:
                 bootWindowScript.CloseWindow();
                 break;
-            
+
             case 2:
                 levelWindowScript.CloseWindow();
                 break;

@@ -33,6 +33,7 @@ public class HiddenCatManager : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
+            SaveData.Instance.CompleteHideAndSeek();
             Debug.Log("The player found the cat!");
             SceneManager.LoadScene("WinScene");
         }
