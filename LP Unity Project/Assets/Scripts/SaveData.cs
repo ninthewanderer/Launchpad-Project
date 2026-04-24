@@ -8,16 +8,22 @@ public class SaveData : MonoBehaviour
     public bool PlatformingComplete  { get; private set; }
     public bool PuzzleComplete       { get; private set; }
 
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    private static void CreateInstance()
+    {
+        GameObject obj = new GameObject("SaveData");
+        Instance = obj.AddComponent<SaveData>();
+        DontDestroyOnLoad(obj);
+    }
+
     void Awake()
     {
+
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
             return;
         }
-
-        Instance = this;
-        DontDestroyOnLoad(gameObject);
     }
 
     public void CompleteHideAndSeek() => HideAndSeekComplete = true;
