@@ -3,7 +3,6 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerController))]
 [RequireComponent(typeof(BootMovement))]
 [RequireComponent(typeof(Rigidbody))]
-
 public class PlayerAnimator : MonoBehaviour
 {
     private static readonly int ParamSpeed     = Animator.StringToHash("Speed");
@@ -64,15 +63,20 @@ public class PlayerAnimator : MonoBehaviour
         bool justLeftGround = wasGrounded && !grounded;
         if (justLeftGround && rb.velocity.y > 0.5f)
             anim.SetTrigger(ParamJump);
+        else
+            anim.ResetTrigger(ParamJump);
     }
 
     void UpdateStomp()
     {
         bool detectionAbilityUsed = boots.currentBoots == BootMovement.BootType.DetectionBoots
+            && boots.onCooldown == false
             && (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Joystick1Button3));
 
         if (detectionAbilityUsed)
             anim.SetTrigger(ParamStomp);
+        else
+            anim.ResetTrigger(ParamStomp);
     }
 
     void UpdateDash()

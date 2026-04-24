@@ -59,10 +59,10 @@ public class BootMovement : MonoBehaviour
     public float detectionRadius;
     public float disappearTime;
     public float abilityCooldown;
-    private bool onCooldown = false;
+    public bool onCooldown = false;
     
     public float maxCharge;
-    private float currentCharge;
+S    private float currentCharge;
     public float chargeLost;
 
     void Start()
