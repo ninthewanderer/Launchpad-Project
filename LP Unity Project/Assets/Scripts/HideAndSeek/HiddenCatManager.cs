@@ -6,11 +6,13 @@ using UnityEngine.SceneManagement;
 
 public class HiddenCatManager : MonoBehaviour
 {
-    public HideAndSeekManager hnsManager;
+    private HideAndSeekManager hnsManager;
     private GameObject hidingSpot;
     
     void Start()
     {
+        hnsManager = FindObjectOfType<HideAndSeekManager>();
+        
         // Ensures only the chosen cat's script is active in the scene at any given time.
         try
         {
@@ -31,6 +33,7 @@ public class HiddenCatManager : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
+            SaveData.Instance.CompleteHideAndSeek();
             Debug.Log("The player found the cat!");
             SceneManager.LoadScene("WinScene");
         }

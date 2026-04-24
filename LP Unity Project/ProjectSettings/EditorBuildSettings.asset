@@ -5,28 +5,28 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/Scenes/SampleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Scenes/LvlHub.unity
+    guid: ef403ce024b69254cac398632a326302
   - enabled: 1
     path: Assets/Scenes/UI Scenes/MainMenu.unity
     guid: 362bc9b401d30b44984e3da55b283d11
-  - enabled: 0
-    path: Assets/Scenes/Old Blockouts/LvlTwoBlockout.unity
-    guid: 83d8b080822004040831563d253dafa7
+  - enabled: 1
+    path: Assets/Scenes/Tutorial.unity
+    guid: 34d24b30df2bd3c498cf6f32409ddce8
+  - enabled: 1
+    path: Assets/Scenes/LvlHide&Seek.unity
+    guid: 9471ec0ec7812a242983f38352282fde
+  - enabled: 1
+    path: Assets/Scenes/LvlPlatforming.unity
+    guid: beca76cc38c542e43b37399e79df4dea
+  - enabled: 1
+    path: Assets/Scenes/LvlPuzzle.unity
+    guid: 5d0387086d7bc3c448f3dda3a7d8d397
   - enabled: 1
     path: Assets/Scenes/UI Scenes/WinScene.unity
     guid: dc5cd339c46992c43a42795de545b508
   - enabled: 1
     path: Assets/Scenes/UI Scenes/LoseScene.unity
     guid: a7f963c4b2f07e14d815251d4b821865
-  - enabled: 1
-    path: Assets/Scenes/LvlPlatformingFIX.unity
-    guid: 484edcd69420b9f438cfd0cbfb234a20
-  - enabled: 1
-    path: Assets/Scenes/LvlHide&Seek.unity
-    guid: 9471ec0ec7812a242983f38352282fde
-  - enabled: 1
-    path: Assets/Scenes/LvlHub.unity
-    guid: ef403ce024b69254cac398632a326302
   m_configObjects: {}

@@ -65,6 +65,8 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: a70813b13f4666144a6a92ff3121c98d, type: 2}
+  - {fileID: 2100000, guid: a70813b13f4666144a6a92ff3121c98d, type: 2}
+  - {fileID: 2100000, guid: a70813b13f4666144a6a92ff3121c98d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -222,7 +224,7 @@ ParticleSystem:
     startSpeed:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 10.424423
+      scalar: 411.88943
       minScalar: 0.5
       maxCurve:
         serializedVersion: 2
@@ -723,8 +725,8 @@ ParticleSystem:
     boxThickness: {x: 0, y: 0, z: 0}
     radiusThickness: 0.59
     donutRadius: 0.2
-    m_Position: {x: 1, y: 5.91, z: -1}
-    m_Rotation: {x: -90, y: 0, z: 0}
+    m_Position: {x: 109.21631, y: 566.50885, z: -97.720375}
+    m_Rotation: {x: 270, y: 0.007636169, z: 0}
     m_Scale: {x: 1, y: 1, z: 1}
     placementMode: 0
     m_MeshMaterialIndex: 0
