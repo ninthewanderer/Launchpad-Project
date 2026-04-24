@@ -6,7 +6,7 @@ using UnityEngine;
 public class PlayerAnimator : MonoBehaviour
 {
     private static readonly int ParamSpeed     = Animator.StringToHash("Speed");
-    private static readonly int ParamIsGround  = Animator.StringToHash("isGround");
+    private static readonly int ParamIsGround  = Animator.StringToHash("isGrounded");
     private static readonly int ParamJump      = Animator.StringToHash("Jump");
     private static readonly int ParamStomp     = Animator.StringToHash("Stomp");
     private static readonly int ParamIsDashing = Animator.StringToHash("IsDashing");
@@ -63,20 +63,16 @@ public class PlayerAnimator : MonoBehaviour
         bool justLeftGround = wasGrounded && !grounded;
         if (justLeftGround && rb.velocity.y > 0.5f)
             anim.SetTrigger(ParamJump);
-        else
-            anim.ResetTrigger(ParamJump);
     }
 
     void UpdateStomp()
     {
         bool detectionAbilityUsed = boots.currentBoots == BootMovement.BootType.DetectionBoots
-            && boots.onCooldown == false
+            && !boots.onCooldown
             && (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Joystick1Button3));
 
         if (detectionAbilityUsed)
             anim.SetTrigger(ParamStomp);
-        else
-            anim.ResetTrigger(ParamStomp);
     }
 
     void UpdateDash()
