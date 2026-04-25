@@ -7650,6 +7650,11 @@ PrefabInstance:
       objectReference: {fileID: 8300000, guid: 887c705fb6a6b0349b8b90fcc7b6b6c1, type: 3}
     - target: {fileID: 4396246015011735218, guid: 2a39719f71044a646b6113cb50735fcf,
         type: 3}
+      propertyPath: buttonPressSound
+      value: 
+      objectReference: {fileID: 8300000, guid: dc16780f33a6cba4483dc7e538cfeccd, type: 3}
+    - target: {fileID: 4396246015011735218, guid: 2a39719f71044a646b6113cb50735fcf,
+        type: 3}
       propertyPath: magnetBootsSound
       value: 
       objectReference: {fileID: 8300000, guid: a919a506b2ff9704cb0fe7536d931ddb, type: 3}

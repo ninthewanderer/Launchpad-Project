@@ -14,6 +14,7 @@ public class PlayerSounds : MonoBehaviour
     public AudioClip detectionBootsSound;
     public AudioClip magnetBootsSound;
     public AudioClip swapBootsSound;
+    public AudioClip buttonPressSound;
 
     [Header("Volume")]
     [Range(0f, 1f)] public float walkVolume = 0.7f;
@@ -49,7 +50,16 @@ public class PlayerSounds : MonoBehaviour
     {
         BootMovement.OnBootEffect += BootMovement_OnBootEffect;
         BootMovement.OnBootSwap += BootMovement_OnBootSwap;
+        PuzzleButton2.OnButtonPressed += ButtonSound;
     }
+
+    private void ButtonSound(bool pressed)
+    {
+        if (pressed)
+        {
+            SoundManager.instance.PlaySoundFXClip(buttonPressSound, transform, 0.2f);
+        }
+    }   
 
     private void OnDisable()
     {

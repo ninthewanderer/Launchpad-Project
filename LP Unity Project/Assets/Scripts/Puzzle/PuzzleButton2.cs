@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -15,7 +16,8 @@ public class PuzzleButton2 : MonoBehaviour
     private bool playerInRange;
     private bool objectsEnabled;
     private bool isPressed;
-    
+
+    public static event Action<bool> OnButtonPressed;
 
     void Start()
     {
@@ -32,6 +34,7 @@ public class PuzzleButton2 : MonoBehaviour
         {
             if (!objectsEnabled)
             {
+                OnButtonPressed?.Invoke(true);
                 foreach (GameObject obj in affectedObjects)
                 {
                     if (obj.CompareTag("Magnetic Off"))
