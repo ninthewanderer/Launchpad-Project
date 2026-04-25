@@ -2217,6 +2217,31 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 4396246015011735218, guid: 2a39719f71044a646b6113cb50735fcf,
+        type: 3}
+      propertyPath: jumpSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 6a36400cf5d129b4f8948691a1568222, type: 3}
+    - target: {fileID: 4396246015011735218, guid: 2a39719f71044a646b6113cb50735fcf,
+        type: 3}
+      propertyPath: landSound
+      value: 
+      objectReference: {fileID: 8300000, guid: cbe0a217ae344a0498249974c1a358c6, type: 3}
+    - target: {fileID: 4396246015011735218, guid: 2a39719f71044a646b6113cb50735fcf,
+        type: 3}
+      propertyPath: swapBootsSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 887c705fb6a6b0349b8b90fcc7b6b6c1, type: 3}
+    - target: {fileID: 4396246015011735218, guid: 2a39719f71044a646b6113cb50735fcf,
+        type: 3}
+      propertyPath: magnetBootsSound
+      value: 
+      objectReference: {fileID: 8300000, guid: a919a506b2ff9704cb0fe7536d931ddb, type: 3}
+    - target: {fileID: 4396246015011735218, guid: 2a39719f71044a646b6113cb50735fcf,
+        type: 3}
+      propertyPath: rocketBootsSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 713bcfb26bce82b42b38d18ec6c43d3a, type: 3}
     - target: {fileID: 5055288482526620711, guid: 2a39719f71044a646b6113cb50735fcf,
         type: 3}
       propertyPath: m_UiScaleMode
