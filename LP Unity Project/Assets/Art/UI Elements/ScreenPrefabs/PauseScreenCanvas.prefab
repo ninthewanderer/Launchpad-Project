@@ -1045,7 +1045,7 @@ PrefabInstance:
     - target: {fileID: 2134306588870127319, guid: 6b8ec23a2c4fff748b6f6ce7b961294b,
         type: 3}
       propertyPath: m_Name
-      value: ExitButton
+      value: HubButton
       objectReference: {fileID: 0}
     - target: {fileID: 2192229673465984417, guid: 6b8ec23a2c4fff748b6f6ce7b961294b,
         type: 3}
@@ -1185,7 +1185,7 @@ PrefabInstance:
     - target: {fileID: 6197674855700704103, guid: 6b8ec23a2c4fff748b6f6ce7b961294b,
         type: 3}
       propertyPath: m_text
-      value: EXIT
+      value: BACK TO HUB
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
