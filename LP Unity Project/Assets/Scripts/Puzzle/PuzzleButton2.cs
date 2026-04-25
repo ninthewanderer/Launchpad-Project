@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public class PuzzleButton : MonoBehaviour
+public class PuzzleButton2 : MonoBehaviour
 {
     public GameObject[] affectedObjects;
     // public CanvasGroup buttonCanvas;
@@ -44,6 +44,7 @@ public class PuzzleButton : MonoBehaviour
                         if (!objectsEnabled)
                         {
                             EnableMovingPlatform(obj);
+                            Debug.Log("Enabled moving platform");
                         }
                     }
                 }
@@ -75,7 +76,8 @@ public class PuzzleButton : MonoBehaviour
     // Moves platforms back and forth, but the player has to keep pressing to repeat the behavior.
     private void EnableMovingPlatform(GameObject affectedObject)
     {
-        StartCoroutine(MovePlatformBackForth(affectedObject));
+        affectedObject.GetComponent<PlatformRL>().enabled = true;
+        Debug.Log("Enabled RL platform");
     }
 
     private IEnumerator MovePlatformBackForth(GameObject affectedObject)

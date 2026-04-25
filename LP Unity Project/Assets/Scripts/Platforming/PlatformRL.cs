@@ -4,59 +4,55 @@ using UnityEngine;
 public class PlatformRL : MonoBehaviour
 {
     public float MoveDistance = 5f;
-    public float Speed = 2f;        
+    public float Speed = 2f;
+    [SerializeField] private Vector3 moveDirection;
 
     private Vector3 originalPosition;
 
     void Start()
     {
+        
+    }
+
+    private void OnEnable()
+    {
         originalPosition = transform.position;
-        StartCoroutine(MoveSequenceLoop());
+        Debug.Log("original position: " + originalPosition);    
+        StartCoroutine(MovePlatform());
     }
 
 
-    IEnumerator MoveSequenceLoop()
+
+    public IEnumerator MovePlatform()
     {
-        while (true) 
+        Vector3 targetPosition = originalPosition + moveDirection;
+        while (Vector3.Distance(transform.position, targetPosition) > 0.01f)
         {
-            
-            yield return StartCoroutine(MoveTo(originalPosition + Vector3.up * MoveDistance));
-
-           
-            yield return StartCoroutine(MoveTo(originalPosition));
-
-            
-            yield return StartCoroutine(MoveTo(originalPosition + Vector3.down * MoveDistance));
-
-            
-            yield return StartCoroutine(MoveTo(originalPosition));
-        }
-    }
-
-   
-    IEnumerator MoveTo(Vector3 target)
-    {
-        while (Vector3.Distance(transform.position, target) > 0.01f)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, target, Speed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(
+                transform.position,
+                targetPosition,
+                Speed * Time.deltaTime
+            );
             yield return null;
         }
-        transform.position = target;
+        yield return new WaitForSeconds(2f);
+
+        StartCoroutine(MovePlatformBack());
+        // hasStarted = false;
     }
 
-    void OnCollisionEnter(Collision collision)
+    public IEnumerator MovePlatformBack()
     {
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            collision.transform.SetParent(transform);
-        }
-    }
 
-    void OnCollisionExit(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Player"))
+        while (Vector3.Distance(transform.position, originalPosition) > 0.01f)
         {
-            collision.transform.SetParent(null);
+            transform.position = Vector3.MoveTowards(transform.position,
+                originalPosition,
+                Speed * Time.deltaTime);
+            yield return null;
         }
+        yield return new WaitForSeconds(2f);
+        StartCoroutine(MovePlatform());
+
     }
 }
