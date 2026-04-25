@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 4092966326070999491}
   - component: {fileID: 2301666768018612761}
   - component: {fileID: 4762371785484236936}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Paw Print 2
-  m_TagString: Untagged
+  m_TagString: Trace
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -118,9 +118,9 @@ GameObject:
   - component: {fileID: 1333092905974610792}
   - component: {fileID: 5876822666709388154}
   - component: {fileID: 3744858333927074620}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Paw Print 1
-  m_TagString: Untagged
+  m_TagString: Trace
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -224,9 +224,9 @@ GameObject:
   - component: {fileID: 7663634749235770363}
   - component: {fileID: 4928722264036908480}
   - component: {fileID: 2271628231204999095}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Paw Print 3
-  m_TagString: Untagged
+  m_TagString: Trace
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
