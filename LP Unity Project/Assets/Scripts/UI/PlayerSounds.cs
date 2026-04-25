@@ -6,16 +6,24 @@ public class PlayerSounds : MonoBehaviour
     [Header("Movement Sounds")]
     public AudioClip walkSound;
     public AudioClip runSound;
+    public AudioClip jumpSound;
+    public AudioClip landSound;
 
     [Header("Boot Sounds")]
     public AudioClip rocketBootsSound;
     public AudioClip detectionBootsSound;
+    public AudioClip magnetBootsSound;
+    public AudioClip swapBootsSound;
 
     [Header("Volume")]
     [Range(0f, 1f)] public float walkVolume = 0.7f;
     [Range(0f, 1f)] public float runVolume = 1f;
+    [Range(0f, 1f)] public float landVolume = 0.9f;
+    [Range(0f, 1f)] public float jumpVolume = 2f;
     [Range(0f, 1f)] public float rocketBootsVolume = 0.8f;
     [Range(0f, 1f)] public float detectionBootsVolume = 0.9f;
+    [Range(0f, 1f)] public float magnetBootsVolume = 0.8f;
+
 
     private AudioSource audioSource;
     private PlayerController playerController;
@@ -38,6 +46,44 @@ public class PlayerSounds : MonoBehaviour
             Debug.LogWarning("PlayerSounds: No BootMovement found on this GameObject.");
     }
 
+    private void OnEnable()
+    {
+        BootMovement.OnBootEffect += BootMovement_OnBootEffect;
+        BootMovement.OnBootSwap += BootMovement_OnBootSwap;
+    }
+
+    private void OnDisable()
+    {
+        BootMovement.OnBootEffect -= BootMovement_OnBootEffect;
+        BootMovement.OnBootSwap -= BootMovement_OnBootSwap;
+    }   
+
+    private void BootMovement_OnBootSwap(bool boot)
+    {
+        SoundManager.instance.PlaySoundFXClip(swapBootsSound, transform, 0.8f);
+    }
+    private void BootMovement_OnBootEffect(BootMovement.BootType obj)
+    {
+        if (obj == BootMovement.BootType.RocketBoots)
+        {
+            SoundManager.instance.PlaySoundFXClip(rocketBootsSound, transform, rocketBootsVolume);
+        }
+        else if (obj == BootMovement.BootType.DetectionBoots)
+        {
+            SoundManager.instance.PlaySoundFXClip(detectionBootsSound, transform, detectionBootsVolume);
+        }
+         else if (obj == BootMovement.BootType.MagnetBoots)
+        {
+            SoundManager.instance.PlaySoundFXClip(magnetBootsSound, transform, magnetBootsVolume);
+        }
+        else
+        {
+            if (audioSource.isPlaying)
+                audioSource.Stop();
+        }
+        Debug.Log($"Boot effect sound played for {obj}.");
+    }
+
     void Update()
     {
         UpdateMovementSound();
@@ -49,22 +95,13 @@ public class PlayerSounds : MonoBehaviour
 
         float h = Input.GetAxis("Horizontal");
         float v = Input.GetAxis("Vertical");
+        
         bool isMoving = new Vector2(h, v).magnitude > MoveThreshold;
 
         bool isSprinting = Input.GetKey(KeyCode.LeftControl)
                         || Input.GetKey(KeyCode.Joystick1Button8)
                         || Input.GetKey(KeyCode.Joystick1Button2);
-
-
-        bool rocketActive = bootMovement != null
-                         && bootMovement.currentBoots == BootMovement.BootType.RocketBoots
-                         && !playerController.IsGrounded;
-
-        if (rocketActive)
-        {
-            PlayLoop(rocketBootsSound, rocketBootsVolume);
-            return;
-        }
+        bool isJumping = Input.GetKey(KeyCode.Space);   
 
         if (playerController.IsGrounded && isMoving)
         {
@@ -72,6 +109,13 @@ public class PlayerSounds : MonoBehaviour
             float volume     = isSprinting ? runVolume : walkVolume;
             PlayLoop(target, volume);
             return;
+        }
+
+        if (isJumping && playerController.IsGrounded)
+        {
+            AudioClip target = jumpSound;
+            audioSource.PlayOneShot(target, jumpVolume);
+             return;
         }
 
 

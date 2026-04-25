@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,6 +11,10 @@ public class BootMovement : MonoBehaviour
     private PlayerSounds playerSFX;
     
     public BootType currentBoots = BootType.None;
+
+    public static event Action<BootType> OnBootEffect;
+    public static event Action<bool> OnBootSwap;
+
     public enum BootType
     {
         None,
@@ -118,21 +123,26 @@ public class BootMovement : MonoBehaviour
     public void ChangeBoots(BootType newBoots)
     {
         currentBoots = newBoots;
+        OnBootSwap?.Invoke(true);
+
     }
 
     public void ChangeToSteamBoots()
     {
         currentBoots = BootType.RocketBoots;
+        OnBootSwap?.Invoke(true);
     }
 
     public void ChangeToDetectionBoots()
     {
         currentBoots = BootType.DetectionBoots;
+        OnBootSwap?.Invoke(true);
     }
 
     public void ChangeToMagnetBoots()
     {
         currentBoots = BootType.MagnetBoots;
+        OnBootSwap?.Invoke(true);
     }
     
     void HandleRocketBoots()
@@ -178,6 +188,7 @@ public class BootMovement : MonoBehaviour
                     rb.AddForce(Vector3.up * verticalBoostForce, ForceMode.Acceleration);
 
                 usedVerticalBoost = true;
+                OnBootEffect?.Invoke(BootType.RocketBoots);
             }
         }
 
@@ -302,7 +313,8 @@ public class BootMovement : MonoBehaviour
             onCooldown = true;
             SetCharge(-chargeLost);
             CheckForTraces();
-            playerSFX.PlayDetectionBootsSound();
+            // playerSFX.PlayDetectionBootsSound();
+            OnBootEffect?.Invoke(BootType.DetectionBoots);
         }
     }
     
