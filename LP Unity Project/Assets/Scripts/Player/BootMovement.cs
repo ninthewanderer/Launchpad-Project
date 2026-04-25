@@ -9,7 +9,7 @@ public class BootMovement : MonoBehaviour
     private PlayerController movement;
     private Rigidbody rb;
     private PlayerSounds playerSFX;
-    
+
     public BootType currentBoots = BootType.None;
 
     public static event Action<BootType> OnBootEffect;
@@ -26,7 +26,7 @@ public class BootMovement : MonoBehaviour
     [Header("------------- Steam Boots -------------")]
     public CanvasGroup steamBootsCanvas;
     private bool isSteamActive;
-    
+
     public float horizontalBoostForce = 20f;
     public float verticalBoostForce = 30f;
     public float maxVerticalSpeed = 12f;
@@ -34,7 +34,7 @@ public class BootMovement : MonoBehaviour
     public float dashCooldown = 0.5f;
     public float holdThreshold = 0.15f;
     public float dashLockoutTime = 0.15f;
-    
+
     public Transform groundCheck;
     public float groundCheckRadius = 0.3f;
 
@@ -43,29 +43,36 @@ public class BootMovement : MonoBehaviour
     private float airTime;
     private bool usedHorizontalDash;
     private bool usedVerticalBoost;
-    
+
     [Header("------------- Magnetic Boots -------------")]
     public LayerMask MagneticLayer;
-    private bool isMagnetActive;
-    private bool magnetJumpQueued;
-    private bool magnetIsActive;
-    private Vector3 magnetSurfaceNormal;
     public float magnetRotationSpeed = 10f;
-    public float gravityStrength = 9.81f;
-    public float magnetMoveSpeed = 5f;
-    private static readonly Vector3 WorldGravity = new Vector3(0f, -9.81f, 0f);
+    public float magnetGravityStrength = 20f;
+    public float magnetSnapAngleThreshold = 40f;
+    public float magnetTransitionTime = 0.2f;
+    public float dismountCooldown = 0.5f;
+
+    private bool isMagnetActive = false;
+    private bool isAttachedToMagnet = false;
+    private float dismountTimer = 0f;
+    private Vector3 currentGravityDir = Vector3.down;
+    private Vector3 targetSurfaceNormal = Vector3.up;
+    private Vector3 activeSurfaceNormal = Vector3.up;
+    private bool isTransitioning = false;
+    private float transitionTimer = 0f;
+    private Quaternion transitionStartRot;
 
     [Header("------------- Detection Boots -------------")]
     public LayerMask traceLayer;
     public DetectionBootsUI chargeBar;
     public CanvasGroup chargeBarCanvas;
-    
+
     private bool isDetectionActive;
     public float detectionRadius;
     public float disappearTime;
     public float abilityCooldown;
     private bool onCooldown = false;
-    
+
     public float maxCharge;
     private float currentCharge;
     public float chargeLost;
@@ -73,9 +80,9 @@ public class BootMovement : MonoBehaviour
     void Start()
     {
         playerSFX = GetComponent<PlayerSounds>();
-        movement = GetComponent<PlayerController>();
-        rb = GetComponent<Rigidbody>();
-        
+        movement  = GetComponent<PlayerController>();
+        rb        = GetComponent<Rigidbody>();
+
         if (chargeBarCanvas.gameObject.activeSelf)
             chargeBarCanvas.gameObject.SetActive(false);
 
@@ -91,23 +98,27 @@ public class BootMovement : MonoBehaviour
         {
             case BootType.None:
                 break;
+
             case BootType.RocketBoots:
                 isDetectionActive = false;
                 chargeBarCanvas.gameObject.SetActive(false);
                 HandleRocketBoots();
                 break;
+
             case BootType.MagnetBoots:
                 isDetectionActive = false;
-                isSteamActive = false;
+                isSteamActive     = false;
                 chargeBarCanvas.gameObject.SetActive(false);
                 steamBootsCanvas.gameObject.SetActive(false);
                 HandleMagnetBootsUpdate();
                 break;
+
             case BootType.DetectionBoots:
                 isSteamActive = false;
                 steamBootsCanvas.gameObject.SetActive(false);
                 HandleDetectionBoots();
                 break;
+
             default:
                 Debug.LogWarning("No boots equipped or unrecognized boot type.");
                 break;
@@ -122,29 +133,17 @@ public class BootMovement : MonoBehaviour
 
     public void ChangeBoots(BootType newBoots)
     {
+        if (newBoots != BootType.MagnetBoots)
+            DisableMagnetBoots();
+
         currentBoots = newBoots;
         OnBootSwap?.Invoke(true);
-
     }
 
-    public void ChangeToSteamBoots()
-    {
-        currentBoots = BootType.RocketBoots;
-        OnBootSwap?.Invoke(true);
-    }
+    public void ChangeToSteamBoots()      => ChangeBoots(BootType.RocketBoots);
+    public void ChangeToDetectionBoots()  => ChangeBoots(BootType.DetectionBoots);
+    public void ChangeToMagnetBoots()     => ChangeBoots(BootType.MagnetBoots);
 
-    public void ChangeToDetectionBoots()
-    {
-        currentBoots = BootType.DetectionBoots;
-        OnBootSwap?.Invoke(true);
-    }
-
-    public void ChangeToMagnetBoots()
-    {
-        currentBoots = BootType.MagnetBoots;
-        OnBootSwap?.Invoke(true);
-    }
-    
     void HandleRocketBoots()
     {
         if (movement == null || rb == null) return;
@@ -166,17 +165,11 @@ public class BootMovement : MonoBehaviour
 
         airTime += Time.deltaTime;
 
-        bool boostHeld = Input.GetKey(KeyCode.Space)
-                      || Input.GetKey(KeyCode.Joystick1Button0);
+        bool boostHeld = Input.GetKey(KeyCode.Space)      || Input.GetKey(KeyCode.Joystick1Button0);
+        bool boostDown = Input.GetKeyDown(KeyCode.Space)   || Input.GetKeyDown(KeyCode.Joystick1Button0);
+        bool boostUp   = Input.GetKeyUp(KeyCode.Space)     || Input.GetKeyUp(KeyCode.Joystick1Button0);
 
-        bool boostDown = Input.GetKeyDown(KeyCode.Space)
-                      || Input.GetKeyDown(KeyCode.Joystick1Button0);
-
-        bool boostUp   = Input.GetKeyUp(KeyCode.Space)
-                      || Input.GetKeyUp(KeyCode.Joystick1Button0);
-
-        if (boostDown)
-            holdTimer = 0f;
+        if (boostDown) holdTimer = 0f;
 
         if (boostHeld)
         {
@@ -192,107 +185,215 @@ public class BootMovement : MonoBehaviour
             }
         }
 
-        if (boostUp)
-            holdTimer = 0f;
+        if (boostUp) holdTimer = 0f;
 
-        bool dashPressed = Input.GetKeyDown(KeyCode.LeftShift)
-                        || Input.GetKeyDown(KeyCode.Joystick1Button1);
+        bool dashPressed = Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.Joystick1Button1);
 
-        if (dashPressed &&
-            airTime > dashLockoutTime &&
-            !usedHorizontalDash &&
-            dashTimer <= 0f)
+        if (dashPressed && airTime > dashLockoutTime && !usedHorizontalDash && dashTimer <= 0f)
         {
             usedHorizontalDash = true;
             dashTimer          = dashCooldown;
 
             Vector3 boostDir = movement.transform.forward;
             rb.AddForce(boostDir * horizontalBoostForce, ForceMode.VelocityChange);
+            OnBootEffect?.Invoke(BootType.RocketBoots);
         }
     }
 
     void HandleMagnetBootsUpdate()
     {
-        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Joystick1Button0))
-            magnetJumpQueued = true;
-    }
-
-    void HandleMagnetBootsFixed()
-    {
-        if (rb == null) return;
-
-        const float sphereCastRadius = 0.5f;
-        const float sphereCastDistance = 2f;
-
-
-        RaycastHit[] hits = Physics.SphereCastAll(
-            transform.position,
-            sphereCastRadius,
-            -transform.up,
-            sphereCastDistance,
-            MagneticLayer);
-
-        bool onMagnetic = false;
-        RaycastHit bestHit = default;
-        float bestDot = -1f;
-
-        foreach (RaycastHit hit in hits)
+        if (!isMagnetActive)
         {
-            
-            Transform hitTransform = hit.collider.transform;
-            Vector3 thinAxis = hitTransform.up;
+            isMagnetActive        = true;
+            isAttachedToMagnet    = false;
+            movement.magnetActive = false;
+            activeSurfaceNormal   = Vector3.up;
+            targetSurfaceNormal   = Vector3.up;
+            currentGravityDir     = Vector3.down;
+            rb.useGravity         = true;
+            Physics.gravity       = new Vector3(0f, -9.81f, 0f);
+        }
 
-            
-            float dot = Mathf.Abs(Vector3.Dot(hit.normal, thinAxis));
-            if (dot > 0.7f && dot > bestDot)
+        bool onMagneticSurface = CheckMagnet();
+
+        if (dismountTimer > 0f)
+            dismountTimer -= Time.deltaTime;
+
+        if ((Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Joystick1Button2)) && isAttachedToMagnet)
+        {
+            DetachFromMagnet();
+            return;
+        }
+
+        if (!isAttachedToMagnet)
+        {
+            if (onMagneticSurface && dismountTimer <= 0f)
             {
-                bestDot = dot;
-                bestHit = hit;
-                onMagnetic = true;
+                isAttachedToMagnet           = true;
+                movement.magnetActive        = true;
+                rb.useGravity                = false;
+                currentGravityDir            = -targetSurfaceNormal;
+                Physics.gravity              = currentGravityDir * magnetGravityStrength;
+                activeSurfaceNormal          = targetSurfaceNormal;
+                movement.magnetSurfaceNormal = activeSurfaceNormal;
+            }
+            return;
+        }
+
+        if (!onMagneticSurface)
+        {
+            bool touchingNonMagneticGround = Physics.CheckSphere(
+                groundCheck.position, groundCheckRadius,
+                ~MagneticLayer, QueryTriggerInteraction.Ignore);
+
+            if (touchingNonMagneticGround && movement.IsGrounded)
+            {
+                DetachFromMagnet();
+                return;
             }
         }
 
-        movement.magnetActive = onMagnetic;
-
-        if (onMagnetic)
+        if (!isTransitioning)
         {
-            Vector3 normal = bestHit.normal;
-            movement.magnetSurfaceNormal = normal;
+            float angle = Vector3.Angle(activeSurfaceNormal, targetSurfaceNormal);
+            if (onMagneticSurface && angle > magnetSnapAngleThreshold)
+                StartSurfaceTransition(targetSurfaceNormal);
+        }
 
-            Physics.gravity = -normal * gravityStrength;
-            rb.AddForce(-normal * gravityStrength, ForceMode.Acceleration);
+        if (isTransitioning)
+        {
+            transitionTimer += Time.deltaTime;
+            float t = Mathf.SmoothStep(0f, 1f, transitionTimer / magnetTransitionTime);
 
-            
-            transform.rotation = movement.GetMagnetRotation(normal, magnetRotationSpeed);
+            transform.rotation = Quaternion.Slerp(transitionStartRot,
+                movement.GetMagnetRotation(activeSurfaceNormal, magnetRotationSpeed), t);
 
-            float inputH = GetAxis("Horizontal", "LeftStickX");
-            float inputV = GetAxis("Vertical", "LeftStickY");
-
-            Vector3 camForward = movement.cameraTarget.forward;
-            Vector3 surfaceForward = Vector3.ProjectOnPlane(camForward, normal).normalized;
-            Vector3 surfaceRight = Vector3.Cross(normal, surfaceForward);
-
-            Vector3 moveDir = surfaceForward * inputV + surfaceRight * inputH;
-            rb.MovePosition(rb.position + moveDir * magnetMoveSpeed * Time.fixedDeltaTime);
-
-            if (magnetJumpQueued)
+            if (transitionTimer >= magnetTransitionTime)
             {
-                rb.AddForce(normal * verticalBoostForce, ForceMode.Impulse);
-                Physics.gravity = new Vector3(0f, -9.81f, 0f);
+                isTransitioning              = false;
+                transitionTimer              = 0f;
+                activeSurfaceNormal          = targetSurfaceNormal;
+                currentGravityDir            = -activeSurfaceNormal;
+                Physics.gravity              = currentGravityDir * magnetGravityStrength;
+                movement.magnetSurfaceNormal = activeSurfaceNormal;
             }
         }
         else
         {
-            Physics.gravity = new Vector3(0f, -9.81f, 0f);
+            transform.rotation = movement.GetMagnetRotation(activeSurfaceNormal, magnetRotationSpeed);
+        }
+    }
 
-            Quaternion upright = Quaternion.FromToRotation(transform.up, Vector3.up) * transform.rotation;
-            transform.rotation = Quaternion.Slerp(
-                transform.rotation,
-                upright,
-                Time.fixedDeltaTime * magnetRotationSpeed * 0.5f);
+    void DetachFromMagnet()
+    {
+        isAttachedToMagnet           = false;
+        isTransitioning              = false;
+        transitionTimer              = 0f;
+        dismountTimer                = dismountCooldown;
+        movement.magnetActive        = false;
+        activeSurfaceNormal          = Vector3.up;
+        targetSurfaceNormal          = Vector3.up;
+        currentGravityDir            = Vector3.down;
+        Physics.gravity              = new Vector3(0f, -9.81f, 0f);
+        rb.useGravity                = true;
+    }
+
+    void HandleMagnetBootsFixed()
+    {
+        if (!isMagnetActive) return;
+
+        float currentSpeed = movement.IsGrounded ? 5f : 3f;
+
+        Vector3 forward = Vector3.ProjectOnPlane(transform.forward, activeSurfaceNormal).normalized;
+        Vector3 right   = Vector3.ProjectOnPlane(transform.right,   activeSurfaceNormal).normalized;
+
+        Vector3 moveDir = (forward * movement.GetVerticalInput() +
+                           right   * movement.GetHorizontalInput()).normalized;
+
+        Vector3 targetVel    = moveDir * currentSpeed;
+        Vector3 currentVel   = rb.velocity;
+        Vector3 projectedVel = Vector3.ProjectOnPlane(currentVel, activeSurfaceNormal);
+        Vector3 velChange    = targetVel - projectedVel;
+
+        rb.AddForce(velChange, ForceMode.VelocityChange);
+
+        rb.AddForce(currentGravityDir * magnetGravityStrength, ForceMode.Acceleration);
+    }
+
+    bool CheckMagnet()
+    {
+        Collider[] hits = Physics.OverlapSphere(groundCheck.position, groundCheckRadius, MagneticLayer);
+
+        if (hits.Length > 0)
+        {
+            Vector3 bestNormal = activeSurfaceNormal;
+            float   bestDot    = -1f;
+
+            foreach (Collider col in hits)
+            {
+                Vector3 toSurface = (groundCheck.position - col.ClosestPoint(groundCheck.position)).normalized;
+
+                if (toSurface == Vector3.zero)
+                    toSurface = activeSurfaceNormal;
+
+                float dot = Vector3.Dot(toSurface, transform.up);
+
+                if (dot > bestDot)
+                {
+                    bestDot    = dot;
+                    bestNormal = toSurface;
+                }
+            }
+
+            targetSurfaceNormal = SnapToRightAngle(bestNormal);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    Vector3 SnapToRightAngle(Vector3 normal)
+    {
+        Vector3[] axes = new Vector3[]
+        {
+            Vector3.up, Vector3.down,
+            Vector3.right, Vector3.left,
+            Vector3.forward, Vector3.back
+        };
+
+        Vector3 best    = normal;
+        float   bestDot = -1f;
+
+        foreach (Vector3 axis in axes)
+        {
+            float dot = Vector3.Dot(normal, axis);
+            if (dot > bestDot)
+            {
+                bestDot = dot;
+                best    = axis;
+            }
         }
 
-        magnetJumpQueued = false;
+        return best;
+    }
+
+    void StartSurfaceTransition(Vector3 newNormal)
+    {
+        isTransitioning     = true;
+        transitionTimer     = 0f;
+        transitionStartRot  = transform.rotation;
+        activeSurfaceNormal = newNormal;
+
+        OnBootEffect?.Invoke(BootType.MagnetBoots);
+    }
+
+    void DisableMagnetBoots()
+    {
+        if (!isMagnetActive) return;
+        DetachFromMagnet();
+        isMagnetActive = false;
     }
 
     void HandleDetectionBoots()
@@ -307,17 +408,16 @@ public class BootMovement : MonoBehaviour
             StartCoroutine(CooldownCheck());
             isDetectionActive = true;
         }
-        
+
         if (!onCooldown && (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Joystick1Button3)))
         {
             onCooldown = true;
             SetCharge(-chargeLost);
             CheckForTraces();
-            // playerSFX.PlayDetectionBootsSound();
             OnBootEffect?.Invoke(BootType.DetectionBoots);
         }
     }
-    
+
     private IEnumerator CooldownCheck()
     {
         while (true)
@@ -332,11 +432,11 @@ public class BootMovement : MonoBehaviour
             yield return null;
         }
     }
-    
+
     private void SetCharge(float newCharge)
     {
         currentCharge += newCharge;
-        currentCharge = Mathf.Clamp(currentCharge, 0, maxCharge);
+        currentCharge  = Mathf.Clamp(currentCharge, 0, maxCharge);
 
         if (currentCharge == 0)
             SceneManager.LoadScene("LoseScene");
@@ -370,7 +470,7 @@ public class BootMovement : MonoBehaviour
         int traceLayerInt = LayerMask.NameToLayer("Cat_Traces");
         traceObj.layer = traceLayerInt;
     }
-    
+
     void HandleCooldowns()
     {
         if (dashTimer > 0f)
@@ -379,14 +479,9 @@ public class BootMovement : MonoBehaviour
 
     float GetAxis(string keyboardAxis, string joystickAxis)
     {
-        float kb = Input.GetAxis(keyboardAxis);
+        float kb  = Input.GetAxis(keyboardAxis);
         float joy = 0f;
         try { joy = Input.GetAxis(joystickAxis); } catch { }
         return Mathf.Abs(kb) > Mathf.Abs(joy) ? kb : joy;
-    }
-
-    void CheckMagnet()
-    {
-        isMagnetActive = Physics.CheckSphere(groundCheck.position, groundCheckRadius, MagneticLayer);
     }
 }
