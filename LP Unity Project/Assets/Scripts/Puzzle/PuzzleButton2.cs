@@ -36,6 +36,20 @@ public class PuzzleButton2 : MonoBehaviour
         {
             if (!objectsEnabled)
             {
+                foreach (Transform child in transform)
+                {
+                    Debug.Log("Swapping material for child: " + child.name);
+                    Material[] materials = child.GetComponent<Renderer>().materials;
+                    for (int i = 0; i < materials.Length; i++)
+                    {
+                        if (materials[i].name.Contains("red"))
+                        {
+                            int indexToSwitch = i;
+                            materials[indexToSwitch] = nonemissiveRed;
+                        }
+                    }
+                    child.GetComponent<Renderer>().materials = materials;
+                }
                 OnButtonPressed?.Invoke(true);
                 foreach (GameObject obj in affectedObjects)
                 {
@@ -91,20 +105,7 @@ public class PuzzleButton2 : MonoBehaviour
                     }
                 }
             }
-            foreach (Transform child in transform)
-            {
-                Debug.Log("Swapping material for child: " + child.name);
-                Material[] materials = child.GetComponent<Renderer>().materials;
-                for (int i = 0; i < materials.Length; i++)
-                {
-                    if (materials[i].name.Contains("red"))
-                    {
-                        int indexToSwitch = i;
-                        materials[indexToSwitch] = nonemissiveRed;
-                    }
-                }
-                child.GetComponent<Renderer>().materials = materials;
-            }
+            
         }
     }
 
