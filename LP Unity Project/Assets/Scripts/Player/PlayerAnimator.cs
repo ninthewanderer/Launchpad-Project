@@ -2,7 +2,6 @@ using UnityEngine;
 
 [RequireComponent(typeof(PlayerController))]
 [RequireComponent(typeof(BootMovement))]
-[RequireComponent(typeof(Rigidbody))]
 public class PlayerAnimator : MonoBehaviour
 {
     private static readonly int ParamSpeed     = Animator.StringToHash("Speed");
@@ -29,12 +28,22 @@ public class PlayerAnimator : MonoBehaviour
         boots  = GetComponent<BootMovement>();
         rb     = GetComponent<Rigidbody>();
 
-        if (anim == null) Debug.LogError("PlayerAnimator: Animator not found in children.");
+        if (anim   == null) Debug.LogError("PlayerAnimator: Animator not found in children.");
+        if (player == null) Debug.LogError("PlayerAnimator: PlayerController not found.");
+        if (boots  == null) Debug.LogError("PlayerAnimator: BootMovement not found.");
+        if (rb     == null) Debug.LogError("PlayerAnimator: Rigidbody not found.");
+
+        if (anim != null)
+        {
+            Debug.Log("Animator on: " + anim.gameObject.name);
+            foreach (AnimatorControllerParameter p in anim.parameters)
+                Debug.Log("Param: " + p.name + " | Hash: " + p.nameHash);
+        }
     }
 
     void Update()
     {
-        if (anim == null) return;
+        if (anim == null || rb == null) return;
 
         bool grounded = player.IsGrounded;
 
@@ -49,13 +58,23 @@ public class PlayerAnimator : MonoBehaviour
 
     void UpdateSpeed()
     {
-        float h = Input.GetAxis("Horizontal");
-        float v = Input.GetAxis("Vertical");
-        float inputMagnitude = new Vector2(h, v).magnitude;
+        float speed;
 
-        if (inputMagnitude < 0.1f) inputMagnitude = 0f;
+        if (boots.currentBoots == BootMovement.BootType.MagnetBoots)
+        {
+            float h = Input.GetAxis("Horizontal");
+            float v = Input.GetAxis("Vertical");
+            speed = new Vector2(h, v).magnitude;
+        }
+        else
+        {
+            Vector3 horizontalVelocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+            speed = horizontalVelocity.magnitude;
+        }
 
-        anim.SetFloat(ParamSpeed, inputMagnitude, speedDampTime, Time.deltaTime);
+        if (speed < 0.1f) speed = 0f;
+
+        anim.SetFloat(ParamSpeed, speed, speedDampTime, Time.deltaTime);
     }
 
     void UpdateGrounded(bool grounded)
@@ -68,6 +87,8 @@ public class PlayerAnimator : MonoBehaviour
         bool justLeftGround = wasGrounded && !grounded;
         if (justLeftGround && rb.velocity.y > 0.5f)
             anim.SetTrigger(ParamJump);
+        else
+            anim.ResetTrigger(ParamJump);
     }
 
     void UpdateStomp()
@@ -78,6 +99,8 @@ public class PlayerAnimator : MonoBehaviour
 
         if (detectionAbilityUsed)
             anim.SetTrigger(ParamStomp);
+        else
+            anim.ResetTrigger(ParamStomp);
     }
 
     void UpdateDash()
