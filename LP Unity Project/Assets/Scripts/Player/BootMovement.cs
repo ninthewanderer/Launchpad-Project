@@ -208,6 +208,7 @@ public class BootMovement : MonoBehaviour
 
             Vector3 boostDir = movement.transform.forward;
             rb.AddForce(boostDir * horizontalBoostForce, ForceMode.VelocityChange);
+            OnBootEffect?.Invoke(BootType.RocketBoots);
         }
     }
 
