@@ -3,29 +3,23 @@ using UnityEngine;
 
 public class PlatformFB : MonoBehaviour
 {
-    public float MoveDistance = 5f;
     public float Speed = 2f;
 
-    private Vector3 originalPosition;
-    public bool hasStarted = false;
+    public Transform startPosition;
+    public Transform endPosition;
+    
     private Coroutine moveCoroutine;
-    public bool isMoving = false;
-
-    void Start()
-    {
-        originalPosition = transform.position;
-    }
+    [System.NonSerialized] public bool hasStarted;
+    [System.NonSerialized] public bool isMoving;
 
     public IEnumerator MovePlatform()
     {
-        Vector3 targetPosition = originalPosition + transform.forward * MoveDistance;
-        
         isMoving = true;
-        while (Vector3.Distance(transform.position, targetPosition) > 0.01f)
+        while (Vector3.Distance(transform.position, endPosition.position) > 0.01f)
         {
             transform.position = Vector3.MoveTowards(
                 transform.position,
-                targetPosition,
+                endPosition.position,
                 Speed * Time.deltaTime
             );
             yield return null;
@@ -38,10 +32,10 @@ public class PlatformFB : MonoBehaviour
     {
        isMoving = true;
        
-        while (Vector3.Distance(transform.position, originalPosition) > 0.01f)
+        while (Vector3.Distance(transform.position, startPosition.position) > 0.01f)
         {
             transform.position = Vector3.MoveTowards(transform.position, 
-                originalPosition, 
+                startPosition.position, 
                 Speed * Time.deltaTime);
             yield return null;
         }
@@ -49,12 +43,24 @@ public class PlatformFB : MonoBehaviour
         isMoving = false;
     }
 
-    void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        if (other.gameObject.CompareTag("Player"))
         {
-            collision.transform.SetParent(transform);
-    
+            other.transform.SetParent(gameObject.transform);
+            if (!hasStarted)
+            {
+                hasStarted = true;
+                // moveCoroutine = StartCoroutine(MovePlatform());
+            }
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            other.transform.SetParent(gameObject.transform);
             if (!hasStarted)
             {
                 hasStarted = true;
@@ -63,11 +69,11 @@ public class PlatformFB : MonoBehaviour
         }
     }
     
-    void OnCollisionExit(Collision collision)
+    private void OnTriggerExit(Collider other)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        if (other.gameObject.CompareTag("Player"))
         {
-            collision.transform.SetParent(null);
+            other.transform.SetParent(null);
         }
     }
 
@@ -80,9 +86,8 @@ public class PlatformFB : MonoBehaviour
             StopCoroutine(moveCoroutine);
             moveCoroutine = null;
         }
-    
        
         hasStarted = false;
-        transform.position = originalPosition;
+        transform.position = startPosition.position;
     }
 }

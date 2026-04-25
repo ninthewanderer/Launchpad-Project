@@ -10,20 +10,14 @@ public class PuzzleButton : MonoBehaviour
     public float platformWaitTime = 2f;
     private bool playerInRange;
     private bool objectsEnabled;
-
-    void Start()
-    {
-        // if (buttonCanvas.isActiveAndEnabled)
-        // {
-        //     buttonCanvas.gameObject.SetActive(false);
-        // }
-    }
+    private bool buttonPressed;
 
     void Update()
     {
         // To press the button, you either press F on keyboard or X on controller.
-        if (playerInRange && (Input.GetKeyDown(KeyCode.F) || Input.GetKeyDown(KeyCode.Joystick1Button2)))
+        if (!buttonPressed && playerInRange && (Input.GetKeyDown(KeyCode.F) || Input.GetKeyDown(KeyCode.Joystick1Button2)))
         {
+            buttonPressed = true;
             if (!objectsEnabled)
             {
                 foreach (GameObject obj in affectedObjects)
@@ -79,17 +73,20 @@ public class PuzzleButton : MonoBehaviour
 
     private IEnumerator MovePlatformBackForth(GameObject affectedObject)
     {
-        objectsEnabled = true;
-        PlatformFB scriptToggle = affectedObject.GetComponent<PlatformFB>();
+        while (true)
+        {
+            objectsEnabled = true;
+            PlatformFB scriptToggle = affectedObject.GetComponent<PlatformFB>();
         
-        scriptToggle.StartCoroutine(scriptToggle.MovePlatform());
-        yield return new WaitUntil(() => !(scriptToggle.isMoving));
-        yield return new WaitForSeconds(platformWaitTime);
+            scriptToggle.StartCoroutine(scriptToggle.MovePlatform());
+            yield return new WaitUntil(() => !(scriptToggle.isMoving));
+            yield return new WaitForSeconds(platformWaitTime);
         
-        scriptToggle.StartCoroutine(scriptToggle.MovePlatformBack());
-        yield return new WaitUntil(() => !(scriptToggle.isMoving));
-        objectsEnabled = false;
-        yield return null;
+            scriptToggle.StartCoroutine(scriptToggle.MovePlatformBack());
+            yield return new WaitUntil(() => !(scriptToggle.isMoving));
+            yield return new WaitForSeconds(platformWaitTime);
+            yield return null;
+        }
     }
     
     void OnTriggerEnter(Collider other)
