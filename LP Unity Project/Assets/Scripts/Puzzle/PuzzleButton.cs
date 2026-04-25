@@ -10,7 +10,6 @@ public class PuzzleButton : MonoBehaviour
     public float platformWaitTime = 2f;
     private bool playerInRange;
     private bool objectsEnabled;
-    
 
     void Start()
     {
@@ -81,18 +80,16 @@ public class PuzzleButton : MonoBehaviour
     private IEnumerator MovePlatformBackForth(GameObject affectedObject)
     {
         objectsEnabled = true;
-        if (affectedObject.GetComponent<PlatformFB>() != null)
-        {
-            Debug.Log("Found FB platform");
-            PlatformFB scriptToggle = affectedObject.GetComponent<PlatformFB>();
-            scriptToggle.StartCoroutine(scriptToggle.MovePlatform());
-            yield return new WaitUntil(() => !(scriptToggle.isMoving));
-            yield return new WaitForSeconds(platformWaitTime);
-
-            scriptToggle.StartCoroutine(scriptToggle.MovePlatformBack());
-            yield return new WaitUntil(() => !(scriptToggle.isMoving));
-
-        }
+        PlatformFB scriptToggle = affectedObject.GetComponent<PlatformFB>();
+        
+        scriptToggle.StartCoroutine(scriptToggle.MovePlatform());
+        yield return new WaitUntil(() => !(scriptToggle.isMoving));
+        yield return new WaitForSeconds(platformWaitTime);
+        
+        scriptToggle.StartCoroutine(scriptToggle.MovePlatformBack());
+        yield return new WaitUntil(() => !(scriptToggle.isMoving));
+        objectsEnabled = false;
+        yield return null;
     }
     
     void OnTriggerEnter(Collider other)
