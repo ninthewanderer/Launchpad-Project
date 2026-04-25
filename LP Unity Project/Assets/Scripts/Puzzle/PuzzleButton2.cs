@@ -6,10 +6,15 @@ using UnityEngine;
 public class PuzzleButton2 : MonoBehaviour
 {
     public GameObject[] affectedObjects;
+    public Material magneticMaterial;
+    public GameObject ConnectedButton;
+    public bool timeLimit = false;
+    public float timeLimitDuration = 5f;
     // public CanvasGroup buttonCanvas;
     public float platformWaitTime = 2f;
     private bool playerInRange;
     private bool objectsEnabled;
+    private bool isPressed;
     
 
     void Start()
@@ -31,8 +36,40 @@ public class PuzzleButton2 : MonoBehaviour
                 {
                     if (obj.CompareTag("Magnetic Off"))
                     {
-                        EnableMagneticPlatform(obj);
-                        objectsEnabled = true;
+                        if (ConnectedButton != null)
+                        {
+                            if (timeLimit == true)
+                            {
+                                isPressed = true;
+                                if (ConnectedButton.GetComponent<PuzzleButton2>().isPressed == true)
+                                {
+                                    EnableMagneticPlatform(obj);
+                                    objectsEnabled = true;
+                                }
+                                else
+                                {
+                                    Debug.Log("Connected button is not pressed, cannot enable magnetic platform");
+                                    isPressed = true;
+                                }
+                                StartCoroutine(TurnOff());
+                                return;
+                            }
+                            if (ConnectedButton.GetComponent<PuzzleButton2>().isPressed == true)
+                            {
+                                EnableMagneticPlatform(obj);
+                                objectsEnabled = true;
+                            } else
+                            {
+                                Debug.Log("Connected button is not pressed, cannot enable magnetic platform");
+                                isPressed = true;
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            EnableMagneticPlatform(obj);
+                            objectsEnabled = true;
+                        }
                     }
                     else if (obj.CompareTag("Door Off"))
                     {
@@ -52,6 +89,12 @@ public class PuzzleButton2 : MonoBehaviour
         }
     }
 
+    IEnumerator TurnOff()
+    {
+        yield return new WaitForSeconds(timeLimitDuration);
+        isPressed = false;
+        Debug.Log("Time limit expired, button can be pressed again.");
+    }
     // "Enables" magnetic platforms by setting them to the right layer.
     private void EnableMagneticPlatform(GameObject affectedObject)
     {
@@ -63,7 +106,19 @@ public class PuzzleButton2 : MonoBehaviour
             foreach (Transform child in affectedObject.transform)
             {
                 child.gameObject.layer = magneticLayerInt;
+                Material[] materials = child.GetComponent<Renderer>().materials;
+                for (int i = 0; i < materials.Length; i++)
+                {
+                    if (materials[i].name.Contains("m_MagTileOFF"))
+                    {
+                        int indexToSwitch = i;
+                        materials[indexToSwitch] = magneticMaterial;
+                    }
+                }
+                child.GetComponent<Renderer>().materials = materials;
+                Debug.Log("Material swapped succesfully!");
             }
+
         }
     }
 
