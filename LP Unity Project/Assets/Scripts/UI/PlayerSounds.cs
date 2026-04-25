@@ -19,7 +19,6 @@ public class PlayerSounds : MonoBehaviour
     [Range(0f, 1f)] public float walkVolume = 0.7f;
     [Range(0f, 1f)] public float runVolume = 1f;
     [Range(0f, 1f)] public float landVolume = 0.9f;
-    [Range(0f, 1f)] public float jumpVolume = 2f;
     [Range(0f, 1f)] public float rocketBootsVolume = 0.8f;
     [Range(0f, 1f)] public float detectionBootsVolume = 0.9f;
     [Range(0f, 1f)] public float magnetBootsVolume = 0.8f;
@@ -101,7 +100,6 @@ public class PlayerSounds : MonoBehaviour
         bool isSprinting = Input.GetKey(KeyCode.LeftControl)
                         || Input.GetKey(KeyCode.Joystick1Button8)
                         || Input.GetKey(KeyCode.Joystick1Button2);
-        bool isJumping = Input.GetKey(KeyCode.Space);   
 
         if (playerController.IsGrounded && isMoving)
         {
@@ -111,11 +109,10 @@ public class PlayerSounds : MonoBehaviour
             return;
         }
 
-        if (isJumping && playerController.IsGrounded)
+        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Joystick1Button0)) && playerController.IsGrounded)
         {
-            AudioClip target = jumpSound;
-            audioSource.PlayOneShot(target, jumpVolume);
-             return;
+            SoundManager.instance.PlaySoundFXClip(jumpSound, transform, .8f);
+            return;
         }
 
 
