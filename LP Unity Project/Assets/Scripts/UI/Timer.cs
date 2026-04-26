@@ -31,6 +31,7 @@ public class Timer : MonoBehaviour
                 Debug.Log("Time's up!");
                 timeRemaining = 0;
                 timerIsRunning = false;
+                PlayerPrefs.SetString("PreviousScene", SceneManager.GetActiveScene().name);
                 SceneManager.LoadScene("LoseScene");
             }
         }
