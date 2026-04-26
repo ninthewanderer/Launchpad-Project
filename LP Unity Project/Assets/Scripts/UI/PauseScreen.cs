@@ -8,7 +8,6 @@ using UnityEngine.EventSystems;
 public class PauseScreen : MonoBehaviour
 {
     public static bool GameIsPaused = false;
-    public Button resumeButton;
 
     public GameObject pauseScreenUI;
 
@@ -52,5 +51,11 @@ public class PauseScreen : MonoBehaviour
     {
         Time.timeScale = 1f;
         SceneManager.LoadScene("MainMenu");
+    }
+
+    public void LoadHub()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("LvlHub");
     }
 }

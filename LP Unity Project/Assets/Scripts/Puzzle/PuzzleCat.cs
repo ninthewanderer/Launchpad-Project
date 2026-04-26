@@ -10,7 +10,7 @@ public class PuzzleCat : MonoBehaviour
         {
             SaveData.Instance.CompletePuzzle();
             Debug.Log("You Won!");
-            UnityEngine.SceneManagement.SceneManager.LoadScene("WinScene");
+            UnityEngine.SceneManagement.SceneManager.LoadScene("GameWin");
         }
     }
 }

@@ -109,7 +109,7 @@ public class PlayerController : MonoBehaviour
         horizontalInput = Mathf.Abs(keyboardH) > Mathf.Abs(stickH) ? keyboardH : stickH;
         verticalInput   = Mathf.Abs(keyboardV) > Mathf.Abs(stickV) ? keyboardV : stickV;
 
-        isSprinting = Input.GetKey(KeyCode.LeftControl);
+        isSprinting = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.Joystick1Button8);
 
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
