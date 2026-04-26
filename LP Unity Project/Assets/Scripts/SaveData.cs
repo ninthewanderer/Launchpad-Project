@@ -11,26 +11,12 @@ public class SaveData : MonoBehaviour
     public bool PuzzleComplete       { get; private set; }
     public bool TutorialComplete     { get; private set; }
 
-    private Image hideAndSeekCheckmark;
-    private Image platformingCheckmark;
-    private Image puzzleCheckmark;
-    private Image tutorialCheckmark;
-
-    [Header("Task Checkmark Object Names")]
-    [SerializeField] private string hideAndSeekCheckmarkName = "HideAndSeekCheckmark";
-    [SerializeField] private string platformingCheckmarkName  = "PlatformingCheckmark";
-    [SerializeField] private string puzzleCheckmarkName       = "PuzzleCheckmark";
-    [SerializeField] private string tutorialCheckmarkName     = "TutorialCheckmark";
-
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-    private static void CreateInstance()
-    {
-        GameObject obj = new GameObject("SaveData");
-        Instance = obj.AddComponent<SaveData>();
-        DontDestroyOnLoad(obj);
-    }
-
-    void Awake()
+    public bool IsHideAndSeekComplete() => HideAndSeekComplete;
+    public bool IsPlatformingComplete() => PlatformingComplete;
+    public bool IsPuzzleComplete() => PuzzleComplete;
+    public bool IsTutorialComplete() => TutorialComplete;
+    
+    private void Awake()
     {
         if (Instance != null && Instance != this)
         {
@@ -38,75 +24,28 @@ public class SaveData : MonoBehaviour
             return;
         }
 
-        SceneManager.sceneLoaded += OnSceneLoaded;
-    }
-
-    private void OnDestroy()
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
-
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        RegisterCheckmarks();
-    }
-
-    private void RegisterCheckmarks()
-    {
-        hideAndSeekCheckmark = FindImageByName(hideAndSeekCheckmarkName);
-        platformingCheckmark  = FindImageByName(platformingCheckmarkName);
-        puzzleCheckmark       = FindImageByName(puzzleCheckmarkName);
-        tutorialCheckmark     = FindImageByName(tutorialCheckmarkName);
-
-        RefreshCheckmarks();
-    }
-
-    private Image FindImageByName(string objectName)
-    {
-        foreach (Image img in Resources.FindObjectsOfTypeAll<Image>())
-        {
-            if (img.gameObject.name == objectName && img.gameObject.scene.IsValid())
-                return img;
-        }
-        Debug.LogWarning($"SaveData: Could not find Image named '{objectName}'");
-        return null;
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 
     public void CompleteHideAndSeek()
     {
         HideAndSeekComplete = true;
-        SetCheckmark(hideAndSeekCheckmark, true);
     }
 
     public void CompletePlatforming()
     {
         PlatformingComplete = true;
-        SetCheckmark(platformingCheckmark, true);
     }
 
     public void CompletePuzzle()
     {
         PuzzleComplete = true;
-        SetCheckmark(puzzleCheckmark, true);
     }
 
     public void CompleteTutorial()
     {
         TutorialComplete = true;
-        SetCheckmark(tutorialCheckmark, true);
     }
 
-    private void SetCheckmark(Image checkmark, bool isVisible)
-    {
-        if (checkmark != null)
-            checkmark.enabled = isVisible;
-    }
-
-    public void RefreshCheckmarks()
-    {
-        SetCheckmark(hideAndSeekCheckmark, HideAndSeekComplete);
-        SetCheckmark(platformingCheckmark,  PlatformingComplete);
-        SetCheckmark(puzzleCheckmark,       PuzzleComplete);
-        SetCheckmark(tutorialCheckmark,     TutorialComplete);
-    }
 }
