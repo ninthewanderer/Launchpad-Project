@@ -63,9 +63,13 @@ public class SaveData : MonoBehaviour
 
     private Image FindImageByName(string objectName)
     {
-        GameObject obj = GameObject.Find(objectName);
-        if (obj == null) return null;
-        return obj.GetComponent<Image>();
+        foreach (Image img in Resources.FindObjectsOfTypeAll<Image>())
+        {
+            if (img.gameObject.name == objectName && img.gameObject.scene.IsValid())
+                return img;
+        }
+        Debug.LogWarning($"SaveData: Could not find Image named '{objectName}'");
+        return null;
     }
 
     public void CompleteHideAndSeek()
