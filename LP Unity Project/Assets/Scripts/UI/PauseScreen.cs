@@ -56,6 +56,6 @@ public class PauseScreen : MonoBehaviour
     public void LoadHub()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene("LevelHub");
+        SceneManager.LoadScene("LvlHub");
     }
 }
