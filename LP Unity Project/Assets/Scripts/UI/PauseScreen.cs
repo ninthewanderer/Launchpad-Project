@@ -4,12 +4,15 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
+using System;
 
 public class PauseScreen : MonoBehaviour
 {
     public static bool GameIsPaused = false;
 
     public GameObject pauseScreenUI;
+
+    public static event Action<bool> ChangeScene;
 
 
     // Update is called once per frame
@@ -51,11 +54,15 @@ public class PauseScreen : MonoBehaviour
     {
         Time.timeScale = 1f;
         SceneManager.LoadScene("MainMenu");
+        ChangeScene?.Invoke(true);
+        
+        
     }
 
     public void LoadHub()
     {
         Time.timeScale = 1f;
         SceneManager.LoadScene("LvlHub");
+        ChangeScene?.Invoke(true);
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Cat : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class Cat : MonoBehaviour
         {
             SaveData.Instance.CompletePlatforming();
             Debug.Log("You Won!");
-            UnityEngine.SceneManagement.SceneManager.LoadScene("WinScene");
+            SceneManager.LoadScene("WinScene");
         }
     }
 }

@@ -67,6 +67,7 @@ public class SaveData : MonoBehaviour
 
     public void CompleteLevel(bool level)
     {
+        //Doesn't currrently work
         if (HideAndSeekComplete && PlatformingComplete && PuzzleComplete && TutorialComplete)
         {
             SceneManager.LoadScene("GameWin");
