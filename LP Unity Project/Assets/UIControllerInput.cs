@@ -6,9 +6,21 @@ using UnityEngine.UI;
 public class UIControllerInput : MonoBehaviour
 {
     public Button defaultButton;
+    public Button returnButton;
 
     void OnEnable()
     {
         defaultButton.Select();    
+    }
+    
+    void Update()
+    {
+        if (gameObject.activeInHierarchy)
+        {
+            if (Input.GetKeyDown(KeyCode.Joystick1Button1))
+            {
+                returnButton.onClick.Invoke();
+            }
+        }
     }
 }
