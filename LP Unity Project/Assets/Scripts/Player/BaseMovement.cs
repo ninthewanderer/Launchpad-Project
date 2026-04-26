@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour
@@ -38,6 +39,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public Vector3 magnetSurfaceNormal = Vector3.up;
 
     private Vector3 wallNormal = Vector3.zero;
+    private float initialJump;
 
     public bool IsGrounded => isGrounded;
 
@@ -47,6 +49,23 @@ public class PlayerController : MonoBehaviour
         rb.freezeRotation = true;
         Cursor.lockState = CursorLockMode.Locked;
         yaw = transform.eulerAngles.y;
+        initialJump = jumpForce;
+        BootMovement.OnBootSwap += JumpForceChange;
+    }
+
+    private void OnDisable()
+    {
+        BootMovement.OnBootSwap -= JumpForceChange;
+    }
+    private void JumpForceChange(BootMovement.BootType type)
+    {
+        if (type == BootMovement.BootType.MagnetBoots)
+        {
+            jumpForce *= 2;
+        } else
+        {
+            jumpForce = initialJump;
+        }
     }
 
     void Update()
@@ -55,7 +74,9 @@ public class PlayerController : MonoBehaviour
         ReadInput();
 
         if (!magnetActive)
+        {
             HandleJump();
+        }
     }
 
     void FixedUpdate()

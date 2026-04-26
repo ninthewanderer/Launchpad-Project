@@ -13,7 +13,7 @@ public class BootMovement : MonoBehaviour
     public BootType currentBoots = BootType.None;
 
     public static event Action<BootType> OnBootEffect;
-    public static event Action<bool> OnBootSwap;
+    public static event Action<BootType> OnBootSwap;
 
     public enum BootType
     {
@@ -137,7 +137,7 @@ public class BootMovement : MonoBehaviour
             DisableMagnetBoots();
 
         currentBoots = newBoots;
-        OnBootSwap?.Invoke(true);
+        OnBootSwap?.Invoke(currentBoots);
     }
 
     public void ChangeToSteamBoots()      => ChangeBoots(BootType.RocketBoots);

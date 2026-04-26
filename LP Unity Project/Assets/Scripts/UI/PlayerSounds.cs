@@ -51,6 +51,7 @@ public class PlayerSounds : MonoBehaviour
         BootMovement.OnBootEffect += BootMovement_OnBootEffect;
         BootMovement.OnBootSwap += BootMovement_OnBootSwap;
         PuzzleButton2.OnButtonPressed += ButtonSound;
+        PuzzleButton.OnButtonPressed += ButtonSound;
     }
 
     private void ButtonSound(bool pressed)
@@ -65,9 +66,11 @@ public class PlayerSounds : MonoBehaviour
     {
         BootMovement.OnBootEffect -= BootMovement_OnBootEffect;
         BootMovement.OnBootSwap -= BootMovement_OnBootSwap;
+        PuzzleButton2.OnButtonPressed -= ButtonSound;
+        PuzzleButton.OnButtonPressed -= ButtonSound;
     }   
 
-    private void BootMovement_OnBootSwap(bool boot)
+    private void BootMovement_OnBootSwap(BootMovement.BootType boot)
     {
         SoundManager.instance.PlaySoundFXClip(swapBootsSound, transform, 0.8f);
     }
