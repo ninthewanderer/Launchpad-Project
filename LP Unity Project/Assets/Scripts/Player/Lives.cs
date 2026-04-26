@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class Lives : MonoBehaviour
 {
+    public BootMovement player;
+    
     public int livesCount = 3;
     public float damageCooldown = 1f;
 
@@ -37,8 +39,8 @@ public class Lives : MonoBehaviour
         if (!canTakeDamage) return;
 
         canTakeDamage = false;
-        livesCount--;
-
+        
+        if (player.currentBoots == BootMovement.BootType.RocketBoots) livesCount--;
         Debug.Log("Lives remaining: " + livesCount);
 
         UpdateHearts();
