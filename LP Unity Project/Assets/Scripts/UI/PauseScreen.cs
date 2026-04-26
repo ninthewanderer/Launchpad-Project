@@ -43,7 +43,6 @@ public class PauseScreen : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         pauseScreenUI.SetActive(true);
-        StartCoroutine(HandleControllerAnimation());
         Time.timeScale = 0f;
         GameIsPaused = true;
         
@@ -53,16 +52,5 @@ public class PauseScreen : MonoBehaviour
     {
         Time.timeScale = 1f;
         SceneManager.LoadScene("MainMenu");
-    }
-    
-    private IEnumerator HandleControllerAnimation()
-    {
-        yield return null;
-        resumeButton.gameObject.SetActive(true);
-        resumeButton.Select();
-        resumeButton.OnSelect(null);
-        // EventSystem.current.SetSelectedGameObject(null);
-        // EventSystem.current.SetSelectedGameObject(resumeButton.gameObject);
-        yield return null;
     }
 }
