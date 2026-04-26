@@ -17,7 +17,7 @@ public class UIControllerInput : MonoBehaviour
     {
         if (gameObject.activeInHierarchy)
         {
-            if (Input.GetKeyDown(KeyCode.Joystick1Button1))
+            if (returnButton != null && Input.GetKeyDown(KeyCode.Joystick1Button1))
             {
                 returnButton.onClick.Invoke();
             }
