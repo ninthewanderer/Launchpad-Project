@@ -8,7 +8,7 @@ public class MainMenu : MonoBehaviour
 {
     public void StartGame()
     {
-        SceneManager.LoadScene("LvlHub");
+        SaveAndLoadNewScene("LvlHub");
     }
 
     public void Quit()
@@ -18,11 +18,25 @@ public class MainMenu : MonoBehaviour
 
     public void LoadMainMenu()
     {
-        SceneManager.LoadScene("MainMenu");
+        SaveAndLoadNewScene("MainMenu");
     }
 
     public void LoadHub()
     {
-        SceneManager.LoadScene("LvlHub");
+        SaveAndLoadNewScene("LvlHub");
+    }
+
+    public void SaveAndLoadNewScene(string sceneToLoad)
+    {
+        PlayerPrefs.SetString("PreviousScene", SceneManager.GetActiveScene().name);
+        SceneManager.LoadScene(sceneToLoad);
+    }
+
+    public void LoadLastScene()
+    {
+        UnityEngine.Debug.Log(PlayerPrefs.GetString("PreviousScene")); 
+        string prevScene = PlayerPrefs.GetString("PreviousScene", "LvlHub");
+        UnityEngine.Debug.Log(prevScene);
+        SceneManager.LoadScene(prevScene);
     }
 }

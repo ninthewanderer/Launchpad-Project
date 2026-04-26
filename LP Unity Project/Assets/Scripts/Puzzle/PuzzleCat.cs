@@ -11,6 +11,7 @@ public class PuzzleCat : MonoBehaviour
         {
             SaveData.Instance.CompletePuzzle();
             Debug.Log("You Won!");
+            PlayerPrefs.SetString("PreviousScene", SceneManager.GetActiveScene().name);
             SceneManager.LoadScene("WinScene");
         }
     }

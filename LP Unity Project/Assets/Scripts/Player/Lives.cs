@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Lives : MonoBehaviour
@@ -97,6 +98,7 @@ public class Lives : MonoBehaviour
     void GameOver()
     {
         Debug.Log("Game Over!");
-        UnityEngine.SceneManagement.SceneManager.LoadScene("LoseScene");
+        PlayerPrefs.SetString("PreviousScene", SceneManager.GetActiveScene().name);
+        SceneManager.LoadScene("LoseScene");
     }
 }

@@ -11,7 +11,9 @@ public class Cat : MonoBehaviour
         {
             SaveData.Instance.CompletePlatforming();
             Debug.Log("You Won!");
+            PlayerPrefs.SetString("PreviousScene", SceneManager.GetActiveScene().name);
             SceneManager.LoadScene("WinScene");
+
         }
     }
 }
