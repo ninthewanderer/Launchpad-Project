@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PuzzleCat : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class PuzzleCat : MonoBehaviour
         {
             SaveData.Instance.CompletePuzzle();
             Debug.Log("You Won!");
-            UnityEngine.SceneManagement.SceneManager.LoadScene("GameWin");
+            SceneManager.LoadScene("WinScene");
         }
     }
 }
