@@ -11,15 +11,4 @@ public class UIControllerInput : MonoBehaviour
     {
         defaultButton.Select();    
     }
-    
-    // void Update()
-    // {
-    //     if (gameObject.activeInHierarchy)
-    //     {
-    //         if (Input.GetKeyDown(KeyCode.Joystick1Button1))
-    //         {
-    //             defaultButton.onClick.Invoke();
-    //         }
-    //     }
-    // }
 }
