@@ -1,14 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIControllerInput : MonoBehaviour
 {
-    void Update()
+    public Button defaultButton;
+
+    void OnEnable()
     {
-        if (Input.GetKeyDown(KeyCode.Joystick1Button1))
-        {
-            
-        }
+        defaultButton.Select();    
     }
+    
+    // void Update()
+    // {
+    //     if (gameObject.activeInHierarchy)
+    //     {
+    //         if (Input.GetKeyDown(KeyCode.Joystick1Button1))
+    //         {
+    //             defaultButton.onClick.Invoke();
+    //         }
+    //     }
+    // }
 }
