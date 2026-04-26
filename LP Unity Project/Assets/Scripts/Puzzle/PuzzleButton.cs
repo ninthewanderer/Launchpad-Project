@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using System;
 
 public class PuzzleButton : MonoBehaviour
 {
@@ -11,8 +10,6 @@ public class PuzzleButton : MonoBehaviour
     public float platformWaitTime = 2f;
     private bool playerInRange;
     private bool objectsEnabled;
-
-    public static event Action<bool> OnButtonPressed;
     
 
     void Start()
@@ -30,7 +27,6 @@ public class PuzzleButton : MonoBehaviour
         {
             if (!objectsEnabled)
             {
-                OnButtonPressed?.Invoke(true);
                 foreach (GameObject obj in affectedObjects)
                 {
                     if (obj.CompareTag("Magnetic Off"))
