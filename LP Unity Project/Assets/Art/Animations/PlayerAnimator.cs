@@ -33,12 +33,6 @@ public class PlayerAnimator : MonoBehaviour
         if (boots  == null) Debug.LogError("PlayerAnimator: BootMovement not found.");
         if (rb     == null) Debug.LogError("PlayerAnimator: Rigidbody not found.");
 
-        if (anim != null)
-        {
-            Debug.Log("Animator on: " + anim.gameObject.name);
-            foreach (AnimatorControllerParameter p in anim.parameters)
-                Debug.Log("Param: " + p.name + " | Hash: " + p.nameHash);
-        }
     }
 
     void Update()

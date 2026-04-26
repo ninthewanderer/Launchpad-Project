@@ -8,6 +8,8 @@ public class PuzzleButton2 : MonoBehaviour
 {
     public GameObject[] affectedObjects;
     public Material magneticMaterial;
+    public Material emissiveRed;
+    public Material nonemissiveRed;
     public GameObject ConnectedButton;
     public bool timeLimit = false;
     public float timeLimitDuration = 5f;
@@ -34,6 +36,20 @@ public class PuzzleButton2 : MonoBehaviour
         {
             if (!objectsEnabled)
             {
+                foreach (Transform child in transform)
+                {
+                    Debug.Log("Swapping material for child: " + child.name);
+                    Material[] materials = child.GetComponent<Renderer>().materials;
+                    for (int i = 0; i < materials.Length; i++)
+                    {
+                        if (materials[i].name.Contains("red"))
+                        {
+                            int indexToSwitch = i;
+                            materials[indexToSwitch] = nonemissiveRed;
+                        }
+                    }
+                    child.GetComponent<Renderer>().materials = materials;
+                }
                 OnButtonPressed?.Invoke(true);
                 foreach (GameObject obj in affectedObjects)
                 {
@@ -89,6 +105,7 @@ public class PuzzleButton2 : MonoBehaviour
                     }
                 }
             }
+            
         }
     }
 
@@ -97,6 +114,19 @@ public class PuzzleButton2 : MonoBehaviour
         yield return new WaitForSeconds(timeLimitDuration);
         isPressed = false;
         Debug.Log("Time limit expired, button can be pressed again.");
+            foreach (Transform child in transform)
+                {
+                    Material[] materials = child.GetComponent<Renderer>().materials;
+                    for (int i = 0; i < materials.Length; i++)
+                    {
+                        if (materials[i].name.Contains("red"))
+                        {
+                            int indexToSwitch = i;
+                            materials[indexToSwitch] = emissiveRed;
+                        }
+                    }
+                    child.GetComponent<Renderer>().materials = materials;
+        }
     }
     // "Enables" magnetic platforms by setting them to the right layer.
     private void EnableMagneticPlatform(GameObject affectedObject)

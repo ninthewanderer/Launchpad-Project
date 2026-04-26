@@ -219,7 +219,7 @@ public class BootMovement : MonoBehaviour
         if (dismountTimer > 0f)
             dismountTimer -= Time.deltaTime;
 
-        if ((Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Joystick1Button2)) && isAttachedToMagnet)
+        if ((Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Joystick1Button3)) && isAttachedToMagnet)
         {
             DetachFromMagnet();
             return;

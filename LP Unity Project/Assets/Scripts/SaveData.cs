@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class SaveData : MonoBehaviour
 {
@@ -7,26 +9,43 @@ public class SaveData : MonoBehaviour
     public bool HideAndSeekComplete { get; private set; }
     public bool PlatformingComplete  { get; private set; }
     public bool PuzzleComplete       { get; private set; }
+    public bool TutorialComplete     { get; private set; }
 
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-    private static void CreateInstance()
+    public bool IsHideAndSeekComplete() => HideAndSeekComplete;
+    public bool IsPlatformingComplete() => PlatformingComplete;
+    public bool IsPuzzleComplete() => PuzzleComplete;
+    public bool IsTutorialComplete() => TutorialComplete;
+    
+    private void Awake()
     {
-        GameObject obj = new GameObject("SaveData");
-        Instance = obj.AddComponent<SaveData>();
-        DontDestroyOnLoad(obj);
-    }
-
-    void Awake()
-    {
-
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
             return;
         }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 
-    public void CompleteHideAndSeek() => HideAndSeekComplete = true;
-    public void CompletePlatforming()  => PlatformingComplete  = true;
-    public void CompletePuzzle()       => PuzzleComplete       = true;
+    public void CompleteHideAndSeek()
+    {
+        HideAndSeekComplete = true;
+    }
+
+    public void CompletePlatforming()
+    {
+        PlatformingComplete = true;
+    }
+
+    public void CompletePuzzle()
+    {
+        PuzzleComplete = true;
+    }
+
+    public void CompleteTutorial()
+    {
+        TutorialComplete = true;
+    }
+
 }

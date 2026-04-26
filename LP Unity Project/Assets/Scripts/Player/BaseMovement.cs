@@ -38,7 +38,6 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public Vector3 magnetSurfaceNormal = Vector3.up;
 
     private Vector3 wallNormal = Vector3.zero;
-    private bool isTouchingWall = false;
 
     public bool IsGrounded => isGrounded;
 
@@ -158,7 +157,6 @@ public class PlayerController : MonoBehaviour
             if (contact.normal.y < 0.4f)
             {
                 wallNormal     = contact.normal;
-                isTouchingWall = true;
                 return;
             }
         }
@@ -166,7 +164,6 @@ public class PlayerController : MonoBehaviour
 
     void OnCollisionExit(Collision collision)
     {
-        isTouchingWall = false;
         wallNormal     = Vector3.zero;
     }
 
