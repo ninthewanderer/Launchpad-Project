@@ -70,7 +70,7 @@ public class PlayerSounds : MonoBehaviour
         PuzzleButton.OnButtonPressed -= ButtonSound;
     }   
 
-    private void BootMovement_OnBootSwap(bool boot)
+    private void BootMovement_OnBootSwap(BootMovement.BootType boot)
     {
         SoundManager.instance.PlaySoundFXClip(swapBootsSound, transform, 0.8f);
     }
