@@ -458,7 +458,10 @@ public class BootMovement : MonoBehaviour
         currentCharge  = Mathf.Clamp(currentCharge, 0, maxCharge);
 
         if (currentCharge == 0)
+        {
+            PlayerPrefs.SetString("PreviousScene", SceneManager.GetActiveScene().name);
             SceneManager.LoadScene("LoseScene");
+        }
 
         chargeBar.SetCurrentCharge(currentCharge);
     }
