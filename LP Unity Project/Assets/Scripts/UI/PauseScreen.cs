@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 
 public class PauseScreen : MonoBehaviour
 {
     public static bool GameIsPaused = false;
+    public Button resumeButton;
 
     public GameObject pauseScreenUI;
 
@@ -13,7 +16,7 @@ public class PauseScreen : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Joystick1Button7))
         {
             if (GameIsPaused)
             {
@@ -40,13 +43,26 @@ public class PauseScreen : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         pauseScreenUI.SetActive(true);
+        StartCoroutine(HandleControllerAnimation());
         Time.timeScale = 0f;
         GameIsPaused = true;
+        
     }
 
     public void LoadMainMenu()
     {
         Time.timeScale = 1f;
         SceneManager.LoadScene("MainMenu");
+    }
+    
+    private IEnumerator HandleControllerAnimation()
+    {
+        yield return null;
+        resumeButton.gameObject.SetActive(true);
+        resumeButton.Select();
+        resumeButton.OnSelect(null);
+        // EventSystem.current.SetSelectedGameObject(null);
+        // EventSystem.current.SetSelectedGameObject(resumeButton.gameObject);
+        yield return null;
     }
 }
