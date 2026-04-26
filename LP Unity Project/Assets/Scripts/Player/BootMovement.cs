@@ -90,6 +90,25 @@ public class BootMovement : MonoBehaviour
             steamBootsCanvas.gameObject.SetActive(false);
     }
 
+    private void OnEnable()
+    {
+        PauseScreen.ChangeScene += ChangeBoots;
+    }
+
+    private void OnDisable()
+    {
+        PauseScreen.ChangeScene -= ChangeBoots;
+    }
+
+    private void ChangeBoots(bool b)
+    {
+        if (currentBoots == BootType.MagnetBoots) {
+            isMagnetActive = false;
+            HandleMagnetBootsUpdate();
+        }
+        currentBoots = BootType.None;
+    }
+
     void Update()
     {
         HandleCooldowns();
