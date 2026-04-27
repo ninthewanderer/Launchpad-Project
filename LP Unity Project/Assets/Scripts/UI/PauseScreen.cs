@@ -65,4 +65,11 @@ public class PauseScreen : MonoBehaviour
         SceneManager.LoadScene("LvlHub");
         ChangeScene?.Invoke(true);
     }
+
+    public void LoadLoseScene()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("LoseScene");
+        ChangeScene?.Invoke(true);
+    }
 }

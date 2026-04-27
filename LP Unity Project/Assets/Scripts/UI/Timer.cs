@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -10,6 +11,7 @@ public class Timer : MonoBehaviour
     public bool timerIsRunning = false;
 
     public TextMeshProUGUI timeText;
+    public static event Action<bool> OnSceneChange;
 
     private void Start()
     {
@@ -32,6 +34,7 @@ public class Timer : MonoBehaviour
                 timeRemaining = 0;
                 timerIsRunning = false;
                 PlayerPrefs.SetString("PreviousScene", SceneManager.GetActiveScene().name);
+                OnSceneChange?.Invoke(true);
                 SceneManager.LoadScene("LoseScene");
             }
         }

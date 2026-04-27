@@ -93,11 +93,13 @@ public class BootMovement : MonoBehaviour
     private void OnEnable()
     {
         PauseScreen.ChangeScene += ChangeBoots;
+        Timer.OnSceneChange += ChangeBoots;
     }
 
     private void OnDisable()
     {
         PauseScreen.ChangeScene -= ChangeBoots;
+        Timer.OnSceneChange -= ChangeBoots;
     }
 
     private void ChangeBoots(bool b)
