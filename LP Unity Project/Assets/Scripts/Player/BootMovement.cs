@@ -24,6 +24,8 @@ public class BootMovement : MonoBehaviour
     }
 
     [Header("------------- Steam Boots -------------")]
+    public ParticleSystem steamBootsVFXLeft;
+    public ParticleSystem steamBootsVFXRight;
     public CanvasGroup steamBootsCanvas;
     private bool isSteamActive;
 
@@ -198,11 +200,19 @@ public class BootMovement : MonoBehaviour
 
             if (holdTimer > holdThreshold && !usedVerticalBoost)
             {
+                // steamBootsVFXLeft.Simulate(0f, true, true, false);
+                
+                // steamBootsVFXRight.Simulate(0f, true, true, false);
+                
                 if (rb.velocity.y < maxVerticalSpeed)
+                {
                     rb.AddForce(Vector3.up * verticalBoostForce, ForceMode.Acceleration);
-
+                }
+                
                 usedVerticalBoost = true;
                 OnBootEffect?.Invoke(BootType.RocketBoots);
+                steamBootsVFXLeft.Play();
+                steamBootsVFXRight.Play();
             }
         }
 
