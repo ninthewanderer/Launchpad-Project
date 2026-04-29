@@ -23,7 +23,7 @@ public class HubRewards : MonoBehaviour
 
     void Start()
     {
-        blackMaterial = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+        blackMaterial = new Material(Shader.Find("Universal Render Pipeline/Unlit"));
         blackMaterial.color = Color.black;
 
         UpdateRewards();

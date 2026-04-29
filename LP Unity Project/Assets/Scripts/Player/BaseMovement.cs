@@ -188,6 +188,23 @@ public class PlayerController : MonoBehaviour
         wallNormal     = Vector3.zero;
     }
 
+    // Specific to moving platforms because otherwise the player will jitter and continuously slide off.
+    void OnTriggerEnter(Collider other)
+    {
+        if (gameObject.transform.parent != null && gameObject.transform.parent.CompareTag("Moving Off"))
+        {
+            rb.interpolation = RigidbodyInterpolation.None;
+        }
+    }
+    
+    void OnTriggerExit(Collider other)
+    {
+        if (rb.interpolation == RigidbodyInterpolation.None)
+        {
+            rb.interpolation = RigidbodyInterpolation.Interpolate;
+        }
+    }
+
     void UpdateCameraTarget()
     {
         cameraTarget.position  = transform.position + Vector3.up * cameraYOffset;
