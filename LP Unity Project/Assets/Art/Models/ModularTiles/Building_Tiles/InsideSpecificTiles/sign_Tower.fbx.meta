@@ -13,7 +13,7 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: typeOpenPBRSurface2
-    second: {fileID: 2100000, guid: 2f82d1b4f09d8d442b5365196356f97e, type: 2}
+    second: {fileID: 2100000, guid: 0a7113f648d071342a47f141ae15782a, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
