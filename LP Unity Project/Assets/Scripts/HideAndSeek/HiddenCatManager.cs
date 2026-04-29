@@ -36,7 +36,6 @@ public class HiddenCatManager : MonoBehaviour
             SaveData.Instance.CompleteHideAndSeek();
             Debug.Log("The player found the cat!");
             PlayerPrefs.SetString("PreviousScene", SceneManager.GetActiveScene().name);
-            SceneManager.LoadScene("WinScene");
         }
     }
 }
