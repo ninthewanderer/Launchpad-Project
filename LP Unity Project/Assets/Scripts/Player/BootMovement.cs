@@ -200,10 +200,6 @@ public class BootMovement : MonoBehaviour
 
             if (holdTimer > holdThreshold && !usedVerticalBoost)
             {
-                // steamBootsVFXLeft.Simulate(0f, true, true, false);
-                
-                // steamBootsVFXRight.Simulate(0f, true, true, false);
-                
                 if (rb.velocity.y < maxVerticalSpeed)
                 {
                     rb.AddForce(Vector3.up * verticalBoostForce, ForceMode.Acceleration);
@@ -228,6 +224,8 @@ public class BootMovement : MonoBehaviour
             Vector3 boostDir = movement.transform.forward;
             rb.AddForce(boostDir * horizontalBoostForce, ForceMode.VelocityChange);
             OnBootEffect?.Invoke(BootType.RocketBoots);
+            steamBootsVFXLeft.Play();
+            steamBootsVFXRight.Play();
         }
     }
 
