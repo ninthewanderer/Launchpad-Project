@@ -70,10 +70,11 @@ public class SaveData : MonoBehaviour
         //Doesn't currrently work
         if (HideAndSeekComplete && PlatformingComplete && PuzzleComplete && TutorialComplete)
         {
-            SceneManager.LoadScene("GameWin");
+            SceneManager.LoadScene("GameWinCutScene");
         } else
         {
             Debug.Log("More levels left to play!");
+            SceneManager.LoadScene("WinScene");
         }
     }
 
