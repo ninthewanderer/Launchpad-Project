@@ -56,11 +56,11 @@ public class AlternateWindows : MonoBehaviour
     
     void OnTriggerExit(Collider other)
     {
-        StopAllCoroutines();
+        if (windowSwitchingCoroutine != null) StopCoroutine(windowSwitchingCoroutine);
         if (other.CompareTag("Player"))
         {
-            keyboardWindowScript.CloseWindow();
-            controllerWindowScript.CloseWindow();
+            if (keyboardWindowScript.gameObject.activeSelf) keyboardWindowScript.CloseWindow();
+            if (controllerWindowScript.gameObject.activeSelf) controllerWindowScript.CloseWindow();
             
             if (oneTimePopup)
             {
