@@ -6,9 +6,18 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
+    private static bool HasPlayedBefore;
     public void StartGame()
     {
-        SaveAndLoadNewScene("LvlHub");
+        if (HasPlayedBefore)
+        {
+            SaveAndLoadNewScene("LvlHub");
+        }
+        else
+        {
+            SaveAndLoadNewScene("GameStartCutScene");
+            HasPlayedBefore = true;
+        }
     }
 
     public void Quit()
@@ -18,7 +27,7 @@ public class MainMenu : MonoBehaviour
 
     public void LoadMainMenu()
     {
-        SaveAndLoadNewScene("MainMenu");
+        SceneManager.LoadScene("MainMenu");
     }
 
     public void LoadHub()
