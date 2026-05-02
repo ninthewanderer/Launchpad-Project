@@ -33,6 +33,7 @@ public class PlayerAnimator : MonoBehaviour
         if (boots  == null) Debug.LogError("PlayerAnimator: BootMovement not found.");
         if (rb     == null) Debug.LogError("PlayerAnimator: Rigidbody not found.");
 
+        Debug.Log("Animator found: " + (anim != null) + " | " + (anim != null ? anim.gameObject.name : "NULL"));
     }
 
     void Update()
@@ -73,7 +74,10 @@ public class PlayerAnimator : MonoBehaviour
 
     void UpdateGrounded(bool grounded)
     {
-        anim.SetBool(ParamIsGround, grounded);
+        bool magnetGrounded = boots.currentBoots == BootMovement.BootType.MagnetBoots
+                              && boots.IsAttachedToMagnet;
+
+        anim.SetBool(ParamIsGround, grounded || magnetGrounded);
     }
 
     void UpdateJump(bool grounded)

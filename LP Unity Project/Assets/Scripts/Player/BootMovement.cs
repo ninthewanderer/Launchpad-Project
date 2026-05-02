@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -63,6 +63,7 @@ public class BootMovement : MonoBehaviour
     private bool isTransitioning = false;
     private float transitionTimer = 0f;
     private Quaternion transitionStartRot;
+    public bool IsAttachedToMagnet => isAttachedToMagnet;
 
     [Header("------------- Detection Boots -------------")]
     public LayerMask traceLayer;
