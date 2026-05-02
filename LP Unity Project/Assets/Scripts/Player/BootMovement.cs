@@ -46,8 +46,6 @@ public class BootMovement : MonoBehaviour
     private bool usedHorizontalDash;
     private bool usedVerticalBoost;
 
-    // Tracks whether a horizontal dash is currently active so PlayerController
-    // can suppress depenetration-induced upward velocity spikes on collision.
     public bool isDashing = false;
     private float dashActiveTimer = 0f;
     public float dashActiveTime = 0.15f;
@@ -229,8 +227,6 @@ public class BootMovement : MonoBehaviour
             usedHorizontalDash = true;
             dashTimer = dashCooldown;
 
-            // Flag the dash as active so PlayerController can suppress
-            // depenetration spikes if the player clips a ceiling corner.
             isDashing = true;
             dashActiveTimer = dashActiveTime;
 
@@ -521,7 +517,6 @@ public class BootMovement : MonoBehaviour
         if (dashTimer > 0f)
             dashTimer -= Time.deltaTime;
 
-        // Count down the active dash window and clear the flag when it expires.
         if (dashActiveTimer > 0f)
         {
             dashActiveTimer -= Time.deltaTime;
