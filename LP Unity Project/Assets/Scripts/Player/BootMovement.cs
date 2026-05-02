@@ -46,6 +46,12 @@ public class BootMovement : MonoBehaviour
     private bool usedHorizontalDash;
     private bool usedVerticalBoost;
 
+    // Tracks whether a horizontal dash is currently active so PlayerController
+    // can suppress depenetration-induced upward velocity spikes on collision.
+    public bool isDashing = false;
+    private float dashActiveTimer = 0f;
+    public float dashActiveTime = 0.15f;
+
     [Header("------------- Magnetic Boots -------------")]
     public LayerMask MagneticLayer;
     public float magnetRotationSpeed = 10f;
@@ -74,7 +80,7 @@ public class BootMovement : MonoBehaviour
     public float detectionRadius;
     public float disappearTime;
     public float abilityCooldown;
-   public bool onCooldown = false;
+    public bool onCooldown = false;
 
     public float maxCharge;
     private float currentCharge;
@@ -83,8 +89,8 @@ public class BootMovement : MonoBehaviour
     void Start()
     {
         playerSFX = GetComponent<PlayerSounds>();
-        movement  = GetComponent<PlayerController>();
-        rb        = GetComponent<Rigidbody>();
+        movement = GetComponent<PlayerController>();
+        rb = GetComponent<Rigidbody>();
 
         if (chargeBarCanvas.gameObject.activeSelf)
             chargeBarCanvas.gameObject.SetActive(false);
@@ -107,7 +113,8 @@ public class BootMovement : MonoBehaviour
 
     private void ChangeBoots(bool b)
     {
-        if (currentBoots == BootType.MagnetBoots) {
+        if (currentBoots == BootType.MagnetBoots)
+        {
             isMagnetActive = false;
             HandleMagnetBootsUpdate();
         }
@@ -131,7 +138,7 @@ public class BootMovement : MonoBehaviour
 
             case BootType.MagnetBoots:
                 isDetectionActive = false;
-                isSteamActive     = false;
+                isSteamActive = false;
                 chargeBarCanvas.gameObject.SetActive(false);
                 steamBootsCanvas.gameObject.SetActive(false);
                 HandleMagnetBootsUpdate();
@@ -164,9 +171,9 @@ public class BootMovement : MonoBehaviour
         OnBootSwap?.Invoke(currentBoots);
     }
 
-    public void ChangeToSteamBoots()      => ChangeBoots(BootType.RocketBoots);
-    public void ChangeToDetectionBoots()  => ChangeBoots(BootType.DetectionBoots);
-    public void ChangeToMagnetBoots()     => ChangeBoots(BootType.MagnetBoots);
+    public void ChangeToSteamBoots() => ChangeBoots(BootType.RocketBoots);
+    public void ChangeToDetectionBoots() => ChangeBoots(BootType.DetectionBoots);
+    public void ChangeToMagnetBoots() => ChangeBoots(BootType.MagnetBoots);
 
     void HandleRocketBoots()
     {
@@ -181,17 +188,17 @@ public class BootMovement : MonoBehaviour
         if (movement.IsGrounded)
         {
             usedHorizontalDash = false;
-            usedVerticalBoost  = false;
-            holdTimer          = 0f;
-            airTime            = 0f;
+            usedVerticalBoost = false;
+            holdTimer = 0f;
+            airTime = 0f;
             return;
         }
 
         airTime += Time.deltaTime;
 
-        bool boostHeld = Input.GetKey(KeyCode.Space)      || Input.GetKey(KeyCode.Joystick1Button0);
-        bool boostDown = Input.GetKeyDown(KeyCode.Space)   || Input.GetKeyDown(KeyCode.Joystick1Button0);
-        bool boostUp   = Input.GetKeyUp(KeyCode.Space)     || Input.GetKeyUp(KeyCode.Joystick1Button0);
+        bool boostHeld = Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Joystick1Button0);
+        bool boostDown = Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Joystick1Button0);
+        bool boostUp = Input.GetKeyUp(KeyCode.Space) || Input.GetKeyUp(KeyCode.Joystick1Button0);
 
         if (boostDown) holdTimer = 0f;
 
@@ -205,7 +212,7 @@ public class BootMovement : MonoBehaviour
                 {
                     rb.AddForce(Vector3.up * verticalBoostForce, ForceMode.Acceleration);
                 }
-                
+
                 usedVerticalBoost = true;
                 OnBootEffect?.Invoke(BootType.RocketBoots);
                 steamBootsVFXLeft.Play();
@@ -220,7 +227,12 @@ public class BootMovement : MonoBehaviour
         if (dashPressed && airTime > dashLockoutTime && !usedHorizontalDash && dashTimer <= 0f)
         {
             usedHorizontalDash = true;
-            dashTimer          = dashCooldown;
+            dashTimer = dashCooldown;
+
+            // Flag the dash as active so PlayerController can suppress
+            // depenetration spikes if the player clips a ceiling corner.
+            isDashing = true;
+            dashActiveTimer = dashActiveTime;
 
             Vector3 boostDir = movement.transform.forward;
             rb.AddForce(boostDir * horizontalBoostForce, ForceMode.VelocityChange);
@@ -234,14 +246,14 @@ public class BootMovement : MonoBehaviour
     {
         if (!isMagnetActive)
         {
-            isMagnetActive        = true;
-            isAttachedToMagnet    = false;
+            isMagnetActive = true;
+            isAttachedToMagnet = false;
             movement.magnetActive = false;
-            activeSurfaceNormal   = Vector3.up;
-            targetSurfaceNormal   = Vector3.up;
-            currentGravityDir     = Vector3.down;
-            rb.useGravity         = true;
-            Physics.gravity       = new Vector3(0f, -9.81f, 0f);
+            activeSurfaceNormal = Vector3.up;
+            targetSurfaceNormal = Vector3.up;
+            currentGravityDir = Vector3.down;
+            rb.useGravity = true;
+            Physics.gravity = new Vector3(0f, -9.81f, 0f);
         }
 
         bool onMagneticSurface = CheckMagnet();
@@ -259,12 +271,12 @@ public class BootMovement : MonoBehaviour
         {
             if (onMagneticSurface && dismountTimer <= 0f)
             {
-                isAttachedToMagnet           = true;
-                movement.magnetActive        = true;
-                rb.useGravity                = false;
-                currentGravityDir            = -targetSurfaceNormal;
-                Physics.gravity              = currentGravityDir * magnetGravityStrength;
-                activeSurfaceNormal          = targetSurfaceNormal;
+                isAttachedToMagnet = true;
+                movement.magnetActive = true;
+                rb.useGravity = false;
+                currentGravityDir = -targetSurfaceNormal;
+                Physics.gravity = currentGravityDir * magnetGravityStrength;
+                activeSurfaceNormal = targetSurfaceNormal;
                 movement.magnetSurfaceNormal = activeSurfaceNormal;
             }
             return;
@@ -300,11 +312,11 @@ public class BootMovement : MonoBehaviour
 
             if (transitionTimer >= magnetTransitionTime)
             {
-                isTransitioning              = false;
-                transitionTimer              = 0f;
-                activeSurfaceNormal          = targetSurfaceNormal;
-                currentGravityDir            = -activeSurfaceNormal;
-                Physics.gravity              = currentGravityDir * magnetGravityStrength;
+                isTransitioning = false;
+                transitionTimer = 0f;
+                activeSurfaceNormal = targetSurfaceNormal;
+                currentGravityDir = -activeSurfaceNormal;
+                Physics.gravity = currentGravityDir * magnetGravityStrength;
                 movement.magnetSurfaceNormal = activeSurfaceNormal;
             }
         }
@@ -316,16 +328,16 @@ public class BootMovement : MonoBehaviour
 
     void DetachFromMagnet()
     {
-        isAttachedToMagnet           = false;
-        isTransitioning              = false;
-        transitionTimer              = 0f;
-        dismountTimer                = dismountCooldown;
-        movement.magnetActive        = false;
-        activeSurfaceNormal          = Vector3.up;
-        targetSurfaceNormal          = Vector3.up;
-        currentGravityDir            = Vector3.down;
-        Physics.gravity              = new Vector3(0f, -9.81f, 0f);
-        rb.useGravity                = true;
+        isAttachedToMagnet = false;
+        isTransitioning = false;
+        transitionTimer = 0f;
+        dismountTimer = dismountCooldown;
+        movement.magnetActive = false;
+        activeSurfaceNormal = Vector3.up;
+        targetSurfaceNormal = Vector3.up;
+        currentGravityDir = Vector3.down;
+        Physics.gravity = new Vector3(0f, -9.81f, 0f);
+        rb.useGravity = true;
     }
 
     void HandleMagnetBootsFixed()
@@ -335,15 +347,15 @@ public class BootMovement : MonoBehaviour
         float currentSpeed = movement.IsGrounded ? 5f : 3f;
 
         Vector3 forward = Vector3.ProjectOnPlane(transform.forward, activeSurfaceNormal).normalized;
-        Vector3 right   = Vector3.ProjectOnPlane(transform.right,   activeSurfaceNormal).normalized;
+        Vector3 right = Vector3.ProjectOnPlane(transform.right, activeSurfaceNormal).normalized;
 
         Vector3 moveDir = (forward * movement.GetVerticalInput() +
-                           right   * movement.GetHorizontalInput()).normalized;
+                           right * movement.GetHorizontalInput()).normalized;
 
-        Vector3 targetVel    = moveDir * currentSpeed;
-        Vector3 currentVel   = rb.velocity;
+        Vector3 targetVel = moveDir * currentSpeed;
+        Vector3 currentVel = rb.velocity;
         Vector3 projectedVel = Vector3.ProjectOnPlane(currentVel, activeSurfaceNormal);
-        Vector3 velChange    = targetVel - projectedVel;
+        Vector3 velChange = targetVel - projectedVel;
 
         rb.AddForce(velChange, ForceMode.VelocityChange);
 
@@ -357,7 +369,7 @@ public class BootMovement : MonoBehaviour
         if (hits.Length > 0)
         {
             Vector3 bestNormal = activeSurfaceNormal;
-            float   bestDot    = -1f;
+            float bestDot = -1f;
 
             foreach (Collider col in hits)
             {
@@ -370,7 +382,7 @@ public class BootMovement : MonoBehaviour
 
                 if (dot > bestDot)
                 {
-                    bestDot    = dot;
+                    bestDot = dot;
                     bestNormal = toSurface;
                 }
             }
@@ -393,8 +405,8 @@ public class BootMovement : MonoBehaviour
             Vector3.forward, Vector3.back
         };
 
-        Vector3 best    = normal;
-        float   bestDot = -1f;
+        Vector3 best = normal;
+        float bestDot = -1f;
 
         foreach (Vector3 axis in axes)
         {
@@ -402,7 +414,7 @@ public class BootMovement : MonoBehaviour
             if (dot > bestDot)
             {
                 bestDot = dot;
-                best    = axis;
+                best = axis;
             }
         }
 
@@ -411,9 +423,9 @@ public class BootMovement : MonoBehaviour
 
     void StartSurfaceTransition(Vector3 newNormal)
     {
-        isTransitioning     = true;
-        transitionTimer     = 0f;
-        transitionStartRot  = transform.rotation;
+        isTransitioning = true;
+        transitionTimer = 0f;
+        transitionStartRot = transform.rotation;
         activeSurfaceNormal = newNormal;
 
         OnBootEffect?.Invoke(BootType.MagnetBoots);
@@ -466,7 +478,7 @@ public class BootMovement : MonoBehaviour
     private void SetCharge(float newCharge)
     {
         currentCharge += newCharge;
-        currentCharge  = Mathf.Clamp(currentCharge, 0, maxCharge);
+        currentCharge = Mathf.Clamp(currentCharge, 0, maxCharge);
 
         if (currentCharge == 0)
         {
@@ -508,11 +520,19 @@ public class BootMovement : MonoBehaviour
     {
         if (dashTimer > 0f)
             dashTimer -= Time.deltaTime;
+
+        // Count down the active dash window and clear the flag when it expires.
+        if (dashActiveTimer > 0f)
+        {
+            dashActiveTimer -= Time.deltaTime;
+            if (dashActiveTimer <= 0f)
+                isDashing = false;
+        }
     }
 
     float GetAxis(string keyboardAxis, string joystickAxis)
     {
-        float kb  = Input.GetAxis(keyboardAxis);
+        float kb = Input.GetAxis(keyboardAxis);
         float joy = 0f;
         try { joy = Input.GetAxis(joystickAxis); } catch { }
         return Mathf.Abs(kb) > Mathf.Abs(joy) ? kb : joy;

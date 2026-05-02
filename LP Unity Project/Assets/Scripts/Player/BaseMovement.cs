@@ -28,6 +28,7 @@ public class PlayerController : MonoBehaviour
     public float stickDeadZone = 0.15f;
 
     private Rigidbody rb;
+    private BootMovement boots;
     private bool isGrounded;
     private float yaw;
     private float pitch;
@@ -46,10 +47,13 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        boots = GetComponent<BootMovement>();
+
         rb.freezeRotation = true;
         Cursor.lockState = CursorLockMode.Locked;
         yaw = transform.eulerAngles.y;
         initialJump = jumpForce;
+
         BootMovement.OnBootSwap += JumpForceChange;
     }
 
@@ -57,15 +61,13 @@ public class PlayerController : MonoBehaviour
     {
         BootMovement.OnBootSwap -= JumpForceChange;
     }
+
     private void JumpForceChange(BootMovement.BootType type)
     {
         if (type == BootMovement.BootType.MagnetBoots)
-        {
             jumpForce *= 2;
-        } else
-        {
+        else
             jumpForce = initialJump;
-        }
     }
 
     void Update()
@@ -74,9 +76,7 @@ public class PlayerController : MonoBehaviour
         ReadInput();
 
         if (!magnetActive)
-        {
             HandleJump();
-        }
     }
 
     void FixedUpdate()
@@ -107,7 +107,7 @@ public class PlayerController : MonoBehaviour
         float stickV = ApplyDeadZone(Input.GetAxis("LeftStickY"));
 
         horizontalInput = Mathf.Abs(keyboardH) > Mathf.Abs(stickH) ? keyboardH : stickH;
-        verticalInput   = Mathf.Abs(keyboardV) > Mathf.Abs(stickV) ? keyboardV : stickV;
+        verticalInput = Mathf.Abs(keyboardV) > Mathf.Abs(stickV) ? keyboardV : stickV;
 
         isSprinting = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.Joystick1Button8);
 
@@ -117,9 +117,9 @@ public class PlayerController : MonoBehaviour
         float stickX = ApplyDeadZone(Input.GetAxis("RightStickX")) * controllerSensitivity * Time.deltaTime;
         float stickY = ApplyDeadZone(Input.GetAxis("RightStickY")) * controllerSensitivity * Time.deltaTime;
 
-        yaw   += mouseX + stickX;
+        yaw += mouseX + stickX;
         pitch -= mouseY + stickY;
-        pitch  = Mathf.Clamp(pitch, minPitch, maxPitch);
+        pitch = Mathf.Clamp(pitch, minPitch, maxPitch);
     }
 
     void MovePlayer()
@@ -127,7 +127,7 @@ public class PlayerController : MonoBehaviour
         float currentSpeed = isSprinting ? sprintSpeed : speed;
 
         Vector3 moveDir = (transform.forward * verticalInput +
-                           transform.right   * horizontalInput).normalized;
+                           transform.right * horizontalInput).normalized;
 
         Vector3 targetVelocity = moveDir * currentSpeed;
         Vector3 velocityChange = targetVelocity - new Vector3(rb.velocity.x, 0f, rb.velocity.z);
@@ -144,13 +144,20 @@ public class PlayerController : MonoBehaviour
     public Quaternion GetMagnetRotation(Vector3 surfaceNormal, float rotationSpeed)
     {
         Quaternion surfaceUpright = Quaternion.FromToRotation(Vector3.up, surfaceNormal);
-        Quaternion yawRotation    = Quaternion.AngleAxis(yaw, surfaceNormal);
-        Quaternion target         = yawRotation * surfaceUpright;
+        Quaternion yawRotation = Quaternion.AngleAxis(yaw, surfaceNormal);
+        Quaternion target = yawRotation * surfaceUpright;
         return Quaternion.Slerp(transform.rotation, target, Time.fixedDeltaTime * rotationSpeed);
     }
 
     public float GetHorizontalInput() => horizontalInput;
-    public float GetVerticalInput()   => verticalInput;
+    public float GetVerticalInput() => verticalInput;
+
+    public void SuppressUpwardVelocity(float maxUpward = 0f)
+    {
+        Vector3 v = rb.velocity;
+        if (v.y > maxUpward)
+            rb.velocity = new Vector3(v.x, maxUpward, v.z);
+    }
 
     void HandleJump()
     {
@@ -166,7 +173,13 @@ public class PlayerController : MonoBehaviour
     void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Steam"))
+        {
             rb.AddForce(Vector3.up * steamBoost, ForceMode.Impulse);
+            return;
+        }
+
+        if (boots != null && boots.isDashing)
+            SuppressUpwardVelocity(0f);
     }
 
     void OnCollisionStay(Collision collision)
@@ -177,7 +190,7 @@ public class PlayerController : MonoBehaviour
         {
             if (contact.normal.y < 0.4f)
             {
-                wallNormal     = contact.normal;
+                wallNormal = contact.normal;
                 return;
             }
         }
@@ -185,30 +198,26 @@ public class PlayerController : MonoBehaviour
 
     void OnCollisionExit(Collision collision)
     {
-        wallNormal     = Vector3.zero;
+        wallNormal = Vector3.zero;
     }
 
     // Specific to moving platforms because otherwise the player will jitter and continuously slide off.
     void OnTriggerEnter(Collider other)
     {
         if (gameObject.transform.parent != null && gameObject.transform.parent.CompareTag("Moving Off"))
-        {
             rb.interpolation = RigidbodyInterpolation.None;
-        }
     }
-    
+
     void OnTriggerExit(Collider other)
     {
         if (rb.interpolation == RigidbodyInterpolation.None)
-        {
             rb.interpolation = RigidbodyInterpolation.Interpolate;
-        }
     }
 
     void UpdateCameraTarget()
     {
-        cameraTarget.position  = transform.position + Vector3.up * cameraYOffset;
-        cameraTarget.rotation  = Quaternion.Euler(pitch, yaw, 0f);
+        cameraTarget.position = transform.position + Vector3.up * cameraYOffset;
+        cameraTarget.rotation = Quaternion.Euler(pitch, yaw, 0f);
         cameraTarget.position += cameraTarget.right * shoulderOffsetX;
     }
 }
