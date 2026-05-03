@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class WindowTrigger : MonoBehaviour
 {
-    [SerializeField] private CanvasGroup pauseMenu;
     [SerializeField] private CanvasGroup bootSwapMenu;
+    public CanvasGroup pauseMenu;
     public OpenCloseWindow windowScript;
     public bool oneTimePopup = true;
     public bool canToggle = false;
     private bool toggleOn;
+    private bool gamePaused;
 
     // Until we find a way to pause the player's movement while they're in the boot-swapping menu,
     // the boot-swap logic here won't work.
@@ -25,24 +26,35 @@ public class WindowTrigger : MonoBehaviour
                 toggleOn = !toggleOn;
             }
         }
-        
+
+        CheckForPauseMenu();
+    }
+
+    private void CheckForPauseMenu()
+    {
         // If the pause menu or boot swap menu is open, the pop-up will close automatically so that it isn't overlapping.
-        if (pauseMenu.gameObject.activeSelf && windowScript.gameObject.activeSelf)
+        
+        if (bootSwapMenu != null && bootSwapMenu.gameObject.activeSelf)
         {
-            windowScript.gameObject.SetActive(false);
-            if (bootSwapMenu != null && bootSwapMenu.gameObject.activeSelf)
+            if (windowScript.gameObject.activeSelf) windowScript.gameObject.SetActive(false);
+            gamePaused = true;
+            return;
+        }
+        
+        for (int i = 0; i < pauseMenu.transform.childCount; i++)
+        {
+            if (pauseMenu.transform.GetChild(i).gameObject.activeSelf)
             {
-                windowScript.gameObject.SetActive(false);
+                if (windowScript.gameObject.activeSelf) windowScript.gameObject.SetActive(false);
+                gamePaused = true;
+                return;
             }
         }
-        // If the window is currently toggled off, it will not reappear after the pause menu or boot swap menu closes.
-        else if (!pauseMenu.gameObject.activeSelf && !windowScript.gameObject.activeSelf && !toggleOn)
+        
+        gamePaused = false;
+        if (!gamePaused && !toggleOn)
         {
-            windowScript.gameObject.SetActive(true);
-            if (bootSwapMenu != null && !bootSwapMenu.gameObject.activeSelf)
-            {
-                windowScript.gameObject.SetActive(true);
-            }
+            if (!windowScript.gameObject.activeSelf) windowScript.gameObject.SetActive(true);
         }
     }
     

@@ -2358,6 +2358,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3804694774939087074}
   - component: {fileID: 2590210292045580008}
+  - component: {fileID: 5882113145317117630}
   m_Layer: 5
   m_Name: PauseScreen
   m_TagString: Untagged
@@ -2398,6 +2399,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pauseScreenUI: {fileID: 4307808197634636548}
+--- !u!114 &5882113145317117630
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4307808197634636548}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7fb75aa9dc3f194eb43d59c8c196031, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defaultButton: {fileID: 733556500839525308}
+  returnButton: {fileID: 733556500839525308}
 --- !u!1 &4371558239783885232
 GameObject:
   m_ObjectHideFlags: 0
@@ -3683,6 +3698,7 @@ GameObject:
   - component: {fileID: 599171971712951072}
   - component: {fileID: 2951235465433601154}
   - component: {fileID: 8112128588680751081}
+  - component: {fileID: 2818414235908318870}
   m_Layer: 5
   m_Name: PauseScreenCanvas
   m_TagString: Untagged
@@ -3788,6 +3804,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84e2172cf604e844890466fc31ab20f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!225 &2818414235908318870
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6030593965488410852}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &6155956736678461922
 GameObject:
   m_ObjectHideFlags: 0
@@ -7353,6 +7381,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6b8ec23a2c4fff748b6f6ce7b961294b, type: 3}
+--- !u!114 &733556500839525308 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6078992602040939242, guid: 6b8ec23a2c4fff748b6f6ce7b961294b,
+    type: 3}
+  m_PrefabInstance: {fileID: 6805772812311550294}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &4620318377009081591 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2192229673465984417, guid: 6b8ec23a2c4fff748b6f6ce7b961294b,
