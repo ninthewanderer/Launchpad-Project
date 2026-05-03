@@ -19,13 +19,11 @@ public class HubRewards : MonoBehaviour
     [SerializeField] private Renderer puzzleClockPart;
     [SerializeField] private Material puzzleClockMaterial;
 
-    private Material blackMaterial;
+    [Header("-------- Black Material --------")]
+    [SerializeField] private Material blackMaterial;
 
     void Start()
     {
-        blackMaterial = new Material(Shader.Find("Universal Render Pipeline/Unlit"));
-        blackMaterial.color = Color.black;
-
         UpdateRewards();
     }
 
