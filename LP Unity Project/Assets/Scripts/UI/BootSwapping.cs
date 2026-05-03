@@ -9,6 +9,7 @@ public class BootSwapping : MonoBehaviour
     private bool playerInRange;
 
     [Header("---------- UI Controls ----------")]
+    public CanvasGroup pauseMenu;
     public CanvasGroup crosshairCanvas;
     public CanvasGroup bootSwapCanvas;
     public Button steamBootsIcon;
@@ -19,12 +20,12 @@ public class BootSwapping : MonoBehaviour
     public bool lockDetectionBoots;
     public bool lockMagnetBoots;
     
+    private BootSwapUI bootSwapUI;
+    
     // Gets necessary components and hides the menu if it isn't already hidden.
     void Start()
     {
-        // steamBootsIcon.GetComponent<Button>();
-        // detectionBootsIcon = gameObject.GetComponent<Button>();
-        // magnetBootsIcon = gameObject.GetComponent<Button>();
+        bootSwapUI = FindObjectOfType<BootSwapUI>();
         
         if (bootSwapCanvas.gameObject.activeInHierarchy)
         {
@@ -40,6 +41,8 @@ public class BootSwapping : MonoBehaviour
         {
             OpenMenu();
         }
+
+        CheckForPauseMenu();
     }
     
     void OnTriggerEnter(Collider other)
@@ -99,4 +102,16 @@ public class BootSwapping : MonoBehaviour
     }
     
     // The CloseMenu() method has been migrated to the BootSwapUI script.
+
+    private void CheckForPauseMenu()
+    {
+        for (int i = 0; i < pauseMenu.transform.childCount; i++)
+        {
+            if (pauseMenu.transform.GetChild(i).gameObject.activeInHierarchy)
+            {
+                    if (bootSwapCanvas.gameObject.activeSelf) bootSwapUI.CloseMenu();
+                    return;
+            }
+        }
+    }
 }
