@@ -220,7 +220,7 @@ public class BootMovement : MonoBehaviour
 
         if (boostUp) holdTimer = 0f;
 
-        bool dashPressed = Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.Joystick1Button1);
+        bool dashPressed = Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.Joystick1Button3);
 
         if (dashPressed && airTime > dashLockoutTime && !usedHorizontalDash && dashTimer <= 0f)
         {

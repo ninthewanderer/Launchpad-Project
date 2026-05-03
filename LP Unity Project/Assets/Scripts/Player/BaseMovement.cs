@@ -36,6 +36,9 @@ public class PlayerController : MonoBehaviour
     private float verticalInput;
     private bool isSprinting;
 
+    [Header("UI")]
+    public Canvas pauseScreenCanvas;
+
     [HideInInspector] public bool magnetActive = false;
     [HideInInspector] public Vector3 magnetSurfaceNormal = Vector3.up;
 
@@ -158,9 +161,19 @@ public class PlayerController : MonoBehaviour
         if (v.y > maxUpward)
             rb.velocity = new Vector3(v.x, maxUpward, v.z);
     }
-
     void HandleJump()
     {
+        if (PauseScreen.GameIsPaused) return;
+
+        if (pauseScreenCanvas != null)
+        {
+            for (int i = 0; i < pauseScreenCanvas.transform.childCount; i++)
+            {
+                if (pauseScreenCanvas.transform.GetChild(i).gameObject.activeSelf)
+                    return;
+            }
+        }
+
         if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Joystick1Button0)) && isGrounded)
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
     }
